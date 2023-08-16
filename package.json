@@ -1,0 +1,17 @@
+{
+  "name": "com.chartboost.core",
+  "displayName": "Chartboost Core",
+  "version": "0.1.0",
+  "unity": "2020.3",
+  "dependencies": {
+    "com.unity.nuget.newtonsoft-json": "3.2.1"
+  },
+  "keywords": [],
+  "license": "",
+  "author": {
+    "name": "Chartboost",
+    "email": "",
+    "url": "https://chartboost.com"
+  },
+  "homepage": "https://chartboost.com"
+}

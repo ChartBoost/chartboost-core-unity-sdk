@@ -1,0 +1,23 @@
+
+buildscript {
+    ext.kotlin_version = '1.8.21'
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:7.4.2'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"
+        classpath "org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"
+        // NOTE: Do not place your application dependencies here; they belong
+        // in the individual module build.gradle files
+    }
+}
+
+task buildBridge {
+    dependsOn ':core-android-bridge:lint'
+    dependsOn ':core-android-bridge:build'
+    dependsOn ':core-android-bridge:copyToDesiredLocation'
+}
