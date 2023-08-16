@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dependencies>
+    <androidPackages>
+        <!-- Chartboost Core Dependency -->
+        <androidPackage spec="com.chartboost:chartboost-core-sdk:0.1.0"/>
+        <androidPackage spec="androidx.appcompat:appcompat:1.6.1"/>
+        <androidPackage spec="androidx.core:core-ktx:1.8.21"/>
+        <androidPackage spec="org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1"/>
+        <androidPackage spec="org.jetbrains.kotlinx:kotlinx-coroutines-android:1.6.4"/>
+        <androidPackage spec="com.google.android.gms:play-services-ads-identifier:18.0.1"/>
+        <androidPackage spec="com.google.android.gms:play-services-appset:16.0.2"/>
+        <repositories>
+            <repository>https://cboost.jfrog.io/artifactory/chartboost-core/</repository>
+        </repositories>
+    </androidPackages>
+    <iosPods>
+        <!-- Chartboost Mediation SDK Private Podspec Repo -->
+        <iosPod name="ChartboostCoreSDK" version="0.1.0">
+            <sources>
+                <source>https://github.com/CocoaPods/Specs</source>
+            </sources>
+        </iosPod>
+    </iosPods>
+</dependencies>
