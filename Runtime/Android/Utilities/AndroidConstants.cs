@@ -22,7 +22,7 @@ namespace Chartboost.Core.Android.Utilities
 
         #region Android Chartboost Core SDK
 
-        internal const string ChartboostCoreError = "com.chartboost.core.error.ChartboostCoreError";
+        internal const string CoreError = "com.chartboost.core.unity.CoreErrorUnity";
         internal const string GetError = "getError";
         internal const string GetCode = "getCode";
         internal const string GetMessage = "getMessage";
@@ -31,7 +31,6 @@ namespace Chartboost.Core.Android.Utilities
         
         internal const string ChartboostCore = "com.chartboost.core.ChartboostCore";
         internal const string InitializeSDK = "initializeSdk";
-        internal const string InitializePreferences = "initializePreferences";
         internal const string GetSDKVersion = "getSdkVersion";
         internal const string GetDebug = "getDebug";
         internal const string SetDebug = "setDebug";
@@ -123,7 +122,11 @@ namespace Chartboost.Core.Android.Utilities
         #region Chartboost Core Android Bridge
         internal const string BridgeCBC = "com.chartboost.core.unity.BridgeCBC";
         internal const string BridgeCMP = "com.chartboost.core.unity.BridgeCMP";
-        internal const string AwaiterBooleanResult = "com.chartboost.core.unity.AwaiterBooleanResult";
+        internal const string BridgeEnvAdvertising = "com.chartboost.core.unity.BridgeEnvAdvertising";
+        internal const string BridgeEnvAnalytics = "com.chartboost.core.unity.BridgeEnvAnalytics";
+        internal const string BridgeEnvAttribution = "com.chartboost.core.unity.BridgeEnvAttribution";
+        internal const string ResultBoolean = "com.chartboost.core.unity.ResultBoolean";
+        internal const string ResultString = "com.chartboost.core.unity.ResultString";
         internal const string ModuleInitializerConsumer = "com.chartboost.core.unity.ModuleInitializerConsumer";
         internal const string ModuleFactory = "com.chartboost.core.unity.ModuleFactory";
         internal const string FuncMakeUnityModule = "makeUnityModule";

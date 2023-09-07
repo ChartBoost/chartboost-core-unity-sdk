@@ -17,7 +17,7 @@ Chartboost Core Unity SDK is distributed using the public [npm registry](https:/
 
 ```json
   "dependencies": {
-    "com.chartboost.core": "0.1.0",
+    "com.chartboost.core": "0.2.0",
     ...
   },
   "scopedRegistries": [

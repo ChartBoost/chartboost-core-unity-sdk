@@ -11,23 +11,54 @@ namespace Chartboost.Core.Android.Utilities
         /// <summary>
         /// Gets a class ref to the Native SDK. Should be utilized with the see <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/using">using statement</a>.
         /// </summary>
-        /// <returns></returns>
-        public static AndroidJavaObject GetNativeSDK() => new AndroidJavaClass(AndroidConstants.ChartboostCore);
+        /// <returns>The <see cref="AndroidJavaClass"/> instance.</returns>
+        public static AndroidJavaClass NativeSDK() => new AndroidJavaClass(AndroidConstants.ChartboostCore);
         
         /// <summary>
         /// Gets a class ref to the Android bridge. Should be utilized with the see <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/using">using statement</a>.
         /// </summary>
-        /// <returns></returns>
-        public static AndroidJavaObject GetAndroidBridge() => new AndroidJavaClass(AndroidConstants.BridgeCBC);
+        /// <returns>The <see cref="AndroidJavaClass"/> instance.</returns>
+        public static AndroidJavaClass AndroidBridge() => new AndroidJavaClass(AndroidConstants.BridgeCBC);
+
+        /// <summary>
+        /// Gets a class ref to the Advertising bridge. Should be utilized with the see <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/using">using statement</a>.
+        /// </summary>
+        /// <returns>The <see cref="AndroidJavaClass"/> instance.</returns>
+        public static AndroidJavaClass AdvertisingBridge() => new AndroidJavaClass(AndroidConstants.BridgeEnvAdvertising);
         
-        public static AndroidJavaObject GetConsentManagementPlatform()
+        /// <summary>
+        /// Gets a class ref to the Analytics bridge. Should be utilized with the see <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/using">using statement</a>.
+        /// </summary>
+        /// <returns>The <see cref="AndroidJavaClass"/> instance.</returns>
+        public static AndroidJavaClass AnalyticsBridge() => new AndroidJavaClass(AndroidConstants.BridgeEnvAnalytics);
+                
+        /// <summary>
+        /// Gets a class ref to the Attribution bridge. Should be utilized with the see <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/using">using statement</a>.
+        /// </summary>
+        /// <returns>The <see cref="AndroidJavaClass"/> instance.</returns>
+        public static AndroidJavaClass AttributionBridge() => new AndroidJavaClass(AndroidConstants.BridgeEnvAttribution);
+        
+        /// <summary>
+        /// Gets a class ref to the Native SDK <see cref="IConsentManagementPlatform"/>. Should be utilized with the see <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/using">using statement</a>.
+        /// </summary>
+        /// <returns>The <see cref="AndroidJavaClass"/> instance.</returns>
+        public static AndroidJavaObject ConsentManagementPlatform()
         {
-            using var sdk = GetNativeSDK();
+            using var sdk = NativeSDK();
             return sdk.CallStatic<AndroidJavaObject>(AndroidConstants.Consent);
         }
 
-        public static AndroidJavaObject GetConsentManagementPlatformBridge() => new AndroidJavaClass(AndroidConstants.BridgeCMP);
+        /// <summary>
+        /// Gets a class ref to the CMP Android bridge. Should be utilized with the see <a href="https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/statements/using">using statement</a>.
+        /// </summary>
+        /// <returns>The <see cref="AndroidJavaClass"/> instance.</returns>
+        public static AndroidJavaObject ConsentManagementPlatformBridge() => new AndroidJavaClass(AndroidConstants.BridgeCMP);
         
+        /// <summary>
+        /// Creates a <see cref="ModuleInitializationResult"/> from a native instance.
+        /// </summary>
+        /// <param name="nativeResult">A <see cref="AndroidJavaObject"/> instance of <see cref="ModuleInitializationResult"/>.</param>
+        /// <returns>A Unity C# instance of <see cref="ModuleInitializationResult"/>.</returns>
         public static ModuleInitializationResult ToUnityModuleInitializationResult(this AndroidJavaObject nativeResult)
         {
             var start = nativeResult.Get<long>(AndroidConstants.ModuleInitializationResultStart);
@@ -51,12 +82,22 @@ namespace Chartboost.Core.Android.Utilities
             return new ModuleInitializationResult(start, end, duration, chartboostError, unityModule);
         }
 
-        public static AndroidJavaObject ToNativeChartboostError(this ChartboostCoreError error)
+        /// <summary>
+        /// Extension method for <see cref="ChartboostCoreError"/>, creates a <see cref="AndroidJavaObject"/> instance with the same properties.
+        /// </summary>
+        /// <param name="error">Unity C# instance of <see cref="ChartboostCoreError"/>.</param>
+        /// <returns>A <see cref="AndroidJavaObject"/> instance of <see cref="ChartboostCoreError"/>.</returns>
+        public static AndroidJavaObject ToNativeCoreError(this ChartboostCoreError error)
         {
-            return new AndroidJavaObject(AndroidConstants.ChartboostCoreError, error.Code, error.Message, error.Cause, error.Resolution);
+            return new AndroidJavaObject(AndroidConstants.CoreError, error.Code, error.Message, error.Cause, error.Resolution);
         }
         
-        public static AndroidJavaObject GetConsentSource(this ConsentStatusSource source)
+        /// <summary>
+        /// Extension method for <see cref="ConsentStatusSource"/>, creates a <see cref="AndroidJavaObject"/> instance with the same properties.
+        /// </summary>
+        /// <param name="source">An instance of <see cref="ConsentStatusSource"/>.</param>
+        /// <returns>A <see cref="AndroidJavaObject"/> instance of <see cref="ConsentStatusSource"/>.</returns>
+        public static AndroidJavaObject ConsentSource(this ConsentStatusSource source)
         {
             using var statusEnumClass = new AndroidJavaClass(AndroidConstants.ConsentStatusEnum);
             using var statusSourceEnumClass = new AndroidJavaClass(AndroidConstants.ConsentStatusSourceEnum);

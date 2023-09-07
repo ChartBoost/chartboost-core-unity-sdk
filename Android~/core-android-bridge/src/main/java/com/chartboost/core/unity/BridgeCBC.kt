@@ -9,21 +9,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 
+@Suppress("unused")
 class BridgeCBC {
-    @Suppress("unused")
     companion object
     {
         private val modules = mutableListOf<InitializableModule>()
         @JvmStatic
         fun addModule(module: InitializableModule){
             modules.add(module)
-        }
-
-        @JvmStatic
-        fun initializePreferences(){
-            UnityPlayer.currentActivity.let {
-                ChartboostCore.initializePreferences(it)
-            }
         }
 
         @JvmStatic

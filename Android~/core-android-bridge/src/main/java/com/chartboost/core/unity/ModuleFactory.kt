@@ -32,7 +32,7 @@ class ModuleFactory {
                 private suspend fun awaitInitialization(initializer: ModuleInitializerConsumer) : Exception? {
                     return suspendCoroutine { continuation ->
                         initializer.initialize(object : ModuleInitializeCompletion {
-                            override fun completed(error: ChartboostCoreError?) {
+                            override fun completed(error: CoreErrorUnity?) {
                                 error?.let {
                                     continuation.resume(ChartboostCoreException(it))
                                 } ?: run {

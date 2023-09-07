@@ -99,8 +99,10 @@ extern "C" {
         return getCStringOrNull([[ChartboostCore analyticsEnvironment] playerID]);
     }
 
-    const char* _analyticsEnvironmentGetUserAgent(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] userAgent]);
+    void _analyticsEnvironmentGetUserAgent(int hashCode, ChartbosotCoreResultString onResult){
+        [[ChartboostCore analyticsEnvironment] userAgentWithCompletion:^(NSString * _Nonnull userAgent) {
+            onResult(hashCode, getCStringOrNull(userAgent));
+        }];
     }
 
     const char* _analyticsEnvironmentGetAdvertisingIdentifier(){

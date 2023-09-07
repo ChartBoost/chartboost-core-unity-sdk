@@ -2,8 +2,6 @@
 #import "UnityAppController.h"
 #import "CBCUnityObserver.h"
 
-typedef void (*ChartboostCoreOnConsentActionCompletion)(int hashCode, bool completion);
-
 extern "C" {
     int _chartboostCoreGetConsentStatus(){
         return (int)[[ChartboostCore consent] consentStatus];
@@ -24,25 +22,25 @@ extern "C" {
         return [[ChartboostCore consent] shouldCollectConsent];
     }
 
-    void _chartboostCoreGrantConsent(int statusSource, int hashCode, ChartboostCoreOnConsentActionCompletion callback){
+    void _chartboostCoreGrantConsent(int statusSource, int hashCode, ChartboostCoreResultBoolean callback){
         [[ChartboostCore consent] grantConsentWithSource:(CBCConsentStatusSource)statusSource completion:^(BOOL result) {
             callback(hashCode, result);
         }];
     }
 
-    void _chartboostCoreDenyConsent(int statusSource, int hashCode, ChartboostCoreOnConsentActionCompletion callback){
+    void _chartboostCoreDenyConsent(int statusSource, int hashCode, ChartboostCoreResultBoolean callback){
         [[ChartboostCore consent] denyConsentWithSource:(CBCConsentStatusSource)statusSource completion:^(BOOL result) {
             callback(hashCode, result);
         }];
     }
 
-    void _chartboostCoreResetConsent(int hashCode, ChartboostCoreOnConsentActionCompletion callback){
+    void _chartboostCoreResetConsent(int hashCode, ChartboostCoreResultBoolean callback){
         [[ChartboostCore consent] resetConsentWithCompletion:^(BOOL result) {
             callback(hashCode, result);
         }];
     }
 
-    void _chartboostCoreShowConsentDialog(int dialogType, int hashCode, ChartboostCoreOnConsentActionCompletion callback){
+    void _chartboostCoreShowConsentDialog(int dialogType, int hashCode, ChartboostCoreResultBoolean callback){
         CBCConsentDialogType consentDialogType = (CBCConsentDialogType)dialogType;
         [[ChartboostCore consent] showConsentDialog:consentDialogType from:UnityGetGLViewController() completion:^(BOOL result) {
             callback(hashCode, result);

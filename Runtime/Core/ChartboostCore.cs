@@ -5,24 +5,42 @@ using Chartboost.Core.Utilities;
 
 namespace Chartboost.Core
 {
+    /// <summary>
+    /// The main interface to the Chartboost Core SDK. Provides users with access to all of Core’s functionalities.
+    /// </summary>
     public abstract partial class ChartboostCore
     {
         internal static ChartboostCore Instance
         {
-            get => GetInstance();
+            get => FindInstance();
             set => _instance = value;
         }
 
+        /// <summary>
+        /// Called whenever a module is initialized by the Chartboost Core SDK.
+        /// </summary>
         public static event ChartboostCoreModuleInitializationDelegate ModuleInitializationCompleted;
 
+        /// <summary>
+        /// The CMP in charge of handling user consent.
+        /// </summary>
         public static IConsentManagementPlatform Consent => Instance._consent;
         
         public static IPublisherMetadata PublisherMetadata => Instance._publisherMetadata;
 
+        /// <summary>
+        /// The environment that contains information intended solely for advertising purposes.
+        /// </summary>
         public static IAdvertisingEnvironment AdvertisingEnvironment => Instance._advertisingEnvironment;
 
+        /// <summary>
+        /// The environment that contains information intended solely for analytics purposes.
+        /// </summary>
         public static IAnalyticsEnvironment AnalyticsEnvironment => Instance._analyticsEnvironment;
 
+        /// <summary>
+        /// The environment that contains information intended solely for attribution purposes.
+        /// </summary>
         public static IAttributionEnvironment AttributionEnvironment => Instance._attributionEnvironment;
 
         public static bool Debug
@@ -31,9 +49,15 @@ namespace Chartboost.Core
             set => Instance._debug = value;
         }
 
-        public static string NativeSDKVersion => Instance._version;
+        /// <summary>
+        /// The version of the Native Core SDK.
+        /// </summary>
+        public static string NativeSDKVersion => Instance._version ?? UnitySDKVersion;
 
-        public static string UnitySDKVersion => "0.0.0";
+        /// <summary>
+        /// The version of the Unity Core SDK.
+        /// </summary>
+        public static string UnitySDKVersion => "0.2.0";
 
         public static void Initialize(SDKConfiguration sdkConfiguration, InitializableModule[] modules) => Instance._initialize(sdkConfiguration, modules);
         

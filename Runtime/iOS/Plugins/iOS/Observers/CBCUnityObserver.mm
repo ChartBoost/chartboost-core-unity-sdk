@@ -63,11 +63,12 @@ static NSMutableDictionary* _nativeModuleStore;
         NSString* message = [error localizedDescription];
         NSString* cause = [error localizedFailureReason];
         NSString* resolution = [error localizedRecoverySuggestion];
-        NSDictionary *dict = @{ @"domain" : domain,
+        
+        NSDictionary *dict = @{ @"domain" : domain ?: [NSNull null],
                                 @"code" : [NSNumber numberWithInt:(int)code],
-                                @"message" : message,
-                                @"cause" : cause,
-                                @"resolution" : resolution };
+                                @"message" : message ?: [NSNull null],
+                                @"cause" : cause ?: [NSNull null],
+                                @"resolution" : resolution ?: [NSNull null] };
         exception = dictToJson(dict);
     }
     

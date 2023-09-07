@@ -5,8 +5,17 @@ using UnityEngine;
 
 namespace Chartboost.Core.Utilities
 {
+    /// <summary>
+    /// <para>This class can be used to implement any java interface.Any java vm method invocation matching the interface on the proxy object will automatically be passed to the c# implementation.</para>
+    /// Utilized to resolve awaitable APIs from Java/Kotlin integrations.
+    /// </summary>
+    /// <typeparam name="TResult">Result type</typeparam>
     public class AwaitableAndroidJavaProxy<TResult> : AndroidJavaProxy
     {
+        /// <summary>
+        /// Returns the <see cref="TaskAwaiter"/> of the passed <see cref="TResult"/> type.
+        /// </summary>
+        /// <returns></returns>
         public TaskAwaiter<TResult> GetAwaiter() 
         {
             if (_taskCompletionSource != null)
@@ -22,6 +31,10 @@ namespace Chartboost.Core.Utilities
             return _taskCompletionSource.Task.GetAwaiter();
         }
         
+        /// <summary>
+        /// Constructs an <see cref="AwaitableAndroidJavaProxy{TResult}"/>
+        /// </summary>
+        /// <param name="nativeInterface">Java interface implemented by the proxy.</param>
         protected AwaitableAndroidJavaProxy(string nativeInterface) : base(nativeInterface) { }
 
         protected void _complete(TResult result)
@@ -44,7 +57,7 @@ namespace Chartboost.Core.Utilities
             }
             catch (ObjectDisposedException e)
             {
-                Debug.Log(e.Message);
+               ChartboostCoreLogger.LogException(e);
             }
         }
 

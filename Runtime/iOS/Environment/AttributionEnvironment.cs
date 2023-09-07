@@ -1,17 +1,25 @@
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Chartboost.Core.Environment;
 using Chartboost.Core.iOS.Utilities;
 
 namespace Chartboost.Core.iOS.Environment
 {
     #nullable enable
-    public class AttributionEnvironment : IAttributionEnvironment
+    /// <summary>
+    /// <para>iOS Implementation of <see cref="IAttributionEnvironment"/>.</para>
+    /// <inheritdoc cref="IAttributionEnvironment"/>
+    /// </summary>
+    public class AttributionEnvironment : BaseIOSEnvironment, IAttributionEnvironment
     {
-        public string? AdvertisingIdentifier => _attributionEnvironmentGetAdvertisingIdentifier();
-        public string? UserAgent => _attributionEnvironmentGetUserAgent();
+        /// <inheritdoc cref="IAttributionEnvironment.AdvertisingIdentifier"/>
+        public Task<string?> AdvertisingIdentifier => Task.FromResult(_attributionEnvironmentGetAdvertisingIdentifier());
+        
+        /// <inheritdoc cref="IAttributionEnvironment.UserAgent"/>
+        public Task<string?> UserAgent => AwaitableString(_attributionEnvironmentGetUserAgent);
         
         [DllImport(IOSConstants.DLLImport)] private static extern string? _attributionEnvironmentGetAdvertisingIdentifier();
-        [DllImport(IOSConstants.DLLImport)] private static extern string? _attributionEnvironmentGetUserAgent();
+        [DllImport(IOSConstants.DLLImport)] private static extern void _attributionEnvironmentGetUserAgent(int hashCode, ChartboostCoreOnResultString callback);
     }
     #nullable disable
 }
