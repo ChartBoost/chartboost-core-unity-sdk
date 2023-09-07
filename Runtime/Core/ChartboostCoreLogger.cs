@@ -3,33 +3,59 @@ using UnityEngine;
 
 namespace Chartboost.Core
 {
+    /// <summary>
+    /// Core SDK common logger. Messages by this logger are controlled by <see cref="ChartboostCore.Debug"/> flag.
+    /// <br/>
+    /// <para>Exceptions are always logged.</para>
+    /// </summary>
     public static class ChartboostCoreLogger
     {
         public static bool UnityLogger { get; set; } = true;
         
         private const string Tag = "[ChartboostCoreUnity]";
 
-        public static void Log(string message)
+        /// <summary>
+        /// Logs a message to the Unity Console.
+        /// </summary>
+        /// <param name="message">String or object to be converted to string representation for display.</param>
+        public static void Log(object message)
         {
             CoreLog(message, LogType.Log);
         }
 
+        /// <summary>
+        /// A variant of ChartboostCoreLogger.Log that logs a warning message to the console.
+        /// </summary>
+        /// <param name="message">String or object to be converted to string representation for display.</param>
         public static void LogWarning(string message)
         {
             CoreLog(message, LogType.Warning);
         }
 
+        /// <summary>
+        /// A variant of ChartboostCoreLogger.Log that logs an error message to the console.
+        /// </summary>
+        /// <param name="message">String or object to be converted to string representation for display.</param>
         public static void LogError(string message)
         {
             CoreLog(message, LogType.Error);
         }
 
+        /// <summary>
+        /// A variant of Debug.Log that logs an error message to the console.
+        /// </summary>
+        /// <param name="exception">Runtime Exception.</param>
         public static void LogException(Exception exception)
         {
             Debug.LogException(exception);
         }
 
-        private static void CoreLog(string message, LogType type)
+        /// <summary>
+        /// Private handler for Core Logs
+        /// </summary>
+        /// <param name="message">String or object to be converted to string representation for display.</param>
+        /// <param name="type">The type of the log message.</param>
+        private static void CoreLog(object message, LogType type)
         {
             if (!ChartboostCore.Debug)
                 return;

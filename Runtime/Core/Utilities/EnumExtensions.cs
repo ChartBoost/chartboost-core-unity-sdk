@@ -4,6 +4,9 @@ using Chartboost.Core.Environment;
 
 namespace Chartboost.Core.Utilities
 {
+    /// <summary>
+    /// Enum extensions class to wrap native string values to Enums. Not all platforms support this values as enum.
+    /// </summary>
     internal static class EnumExtensions
     {
         private const string DialogTypeConcise = "concise";
@@ -39,7 +42,12 @@ namespace Chartboost.Core.Utilities
 
         private const string Application = "application";
 
-        public static ConsentDialogType GetDialogType(this string source)
+        /// <summary>
+        /// Converts a string to a <see cref="ConsentDialogType"/> enum value.
+        /// </summary>
+        /// <param name="source">The string value to convert.</param>
+        /// <returns>The <see cref="ConsentDialogType"/> matching value or <see cref="ConsentDialogType.Detailed"/> if null or empty.</returns>
+        public static ConsentDialogType DialogType(this string source)
         {
             if (string.IsNullOrEmpty(source))
                 return ConsentDialogType.Detailed;
@@ -52,68 +60,88 @@ namespace Chartboost.Core.Utilities
             };
         }
 
-        public static ConsentStatus GetConsentStatus(this string source)
+        /// <summary>
+        /// Converts a string to a <see cref="ConsentStatus"/> enum value.
+        /// </summary>
+        /// <param name="source">The string value to convert.</param>
+        /// <returns>The <see cref="ConsentStatus"/> matching value or <see cref="ConsentStatus.Unknown"/> if null or empty.</returns>
+        public static ConsentStatus ConsentStatus(this string source)
         {
             if (string.IsNullOrEmpty(source))
-                return ConsentStatus.Unknown;
+                return Consent.ConsentStatus.Unknown;
 
             return source.ToLower() switch
             {
-                Granted => ConsentStatus.Granted,
-                Denied => ConsentStatus.Denied,
-                Unknown => ConsentStatus.Unknown,
-                _ => ConsentStatus.Unknown
+                Granted => Consent.ConsentStatus.Granted,
+                Denied => Consent.ConsentStatus.Denied,
+                Unknown => Consent.ConsentStatus.Unknown,
+                _ => Consent.ConsentStatus.Unknown
             };
         }
 
-        public static ConsentStatusSource GetConsentStatusSource(this string source)
+        /// <summary>
+        /// Converts a string to a <see cref="ConsentStatusSource"/> enum value.
+        /// </summary>
+        /// <param name="source">The string value to convert.</param>
+        /// <returns>The <see cref="ConsentStatusSource"/> matching value or <see cref="ConsentStatusSource.Developer"/> if null or empty.</returns>
+        public static ConsentStatusSource ConsentStatusSource(this string source)
         {
             if (string.IsNullOrEmpty(source))
-                return ConsentStatusSource.Developer;
+                return Consent.ConsentStatusSource.Developer;
 
             return source.ToLower() switch
             {
-                User => ConsentStatusSource.User,
-                Developer => ConsentStatusSource.Developer,
-                _ => ConsentStatusSource.Developer
+                User => Consent.ConsentStatusSource.User,
+                Developer => Consent.ConsentStatusSource.Developer,
+                _ => Consent.ConsentStatusSource.Developer
             };
         }
 
-        public static NetworkConnectionType GetNetworkConnectionType(this string source)
+        /// <summary>
+        /// Converts a string to a <see cref="NetworkConnectionType"/> enum value.
+        /// </summary>
+        /// <param name="source">The string value to convert.</param>
+        /// <returns>The <see cref="NetworkConnectionType"/> matching value or <see cref="NetworkConnectionType.Unknown"/> if null or empty.</returns>
+        public static NetworkConnectionType NetworkConnectionType(this string source)
         {
             if (string.IsNullOrEmpty(source))
-                return NetworkConnectionType.Unknown;
+                return Environment.NetworkConnectionType.Unknown;
             
             return source.ToLower() switch
             {
-                Unknown => NetworkConnectionType.Unknown,
-                Wired => NetworkConnectionType.Wired,
-                Wifi => NetworkConnectionType.Wifi,
-                CellularUnknown => NetworkConnectionType.CellularUnknown,
-                Cellular_Unknown => NetworkConnectionType.CellularUnknown,
-                Cellular2G => NetworkConnectionType.Cellular2G,
-                Cellular_2G => NetworkConnectionType.Cellular2G,
-                Cellular3G => NetworkConnectionType.Cellular3G,
-                Cellular_3G => NetworkConnectionType.Cellular3G,
-                Cellular4G => NetworkConnectionType.Cellular4G,
-                Cellular_4G => NetworkConnectionType.Cellular4G,
-                Cellular5G => NetworkConnectionType.Cellular5G,
-                Cellular_5G => NetworkConnectionType.Cellular5G,
-                _ => NetworkConnectionType.Unknown
+                Unknown => Environment.NetworkConnectionType.Unknown,
+                Wired => Environment.NetworkConnectionType.Wired,
+                Wifi => Environment.NetworkConnectionType.Wifi,
+                CellularUnknown => Environment.NetworkConnectionType.CellularUnknown,
+                Cellular_Unknown => Environment.NetworkConnectionType.CellularUnknown,
+                Cellular2G => Environment.NetworkConnectionType.Cellular2G,
+                Cellular_2G => Environment.NetworkConnectionType.Cellular2G,
+                Cellular3G => Environment.NetworkConnectionType.Cellular3G,
+                Cellular_3G => Environment.NetworkConnectionType.Cellular3G,
+                Cellular4G => Environment.NetworkConnectionType.Cellular4G,
+                Cellular_4G => Environment.NetworkConnectionType.Cellular4G,
+                Cellular5G => Environment.NetworkConnectionType.Cellular5G,
+                Cellular_5G => Environment.NetworkConnectionType.Cellular5G,
+                _ => Environment.NetworkConnectionType.Unknown
             };
         }
 
-        public static VendorIdentifierScope GetVendorIdentifierScope(this string source)
+        /// <summary>
+        /// Converts a string to a <see cref="VendorIdentifierScope"/> enum value.
+        /// </summary>
+        /// <param name="source">The string value to convert.</param>
+        /// <returns>The <see cref="VendorIdentifierScope"/> matching value or <see cref="VendorIdentifierScope.Unknown"/> if null or empty.</returns>
+        public static VendorIdentifierScope VendorIdentifierScope(this string source)
         {
             if (string.IsNullOrEmpty(source))
-                return VendorIdentifierScope.Unknown;
+                return Environment.VendorIdentifierScope.Unknown;
 
             return source.ToLower() switch
             {
-                Unknown => VendorIdentifierScope.Unknown,
-                Application => VendorIdentifierScope.Application,
-                Developer => VendorIdentifierScope.Developer,
-                _ => VendorIdentifierScope.Unknown
+                Unknown => Environment.VendorIdentifierScope.Unknown,
+                Application => Environment.VendorIdentifierScope.Application,
+                Developer => Environment.VendorIdentifierScope.Developer,
+                _ => Environment.VendorIdentifierScope.Unknown
             };
         }
     }

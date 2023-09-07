@@ -1,40 +1,94 @@
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using Chartboost.Core.Environment;
 using Chartboost.Core.iOS.Utilities;
-using JetBrains.Annotations;
 
 namespace Chartboost.Core.iOS.Environment
 {
     #nullable enable
-    public class AnalyticsEnvironment : IAnalyticsEnvironment
+    /// <summary>
+    /// <para>iOS Implementation of <see cref="IAnalyticsEnvironment"/>.</para>
+    /// <inheritdoc cref="IAnalyticsEnvironment"/>
+    /// </summary>
+    public class AnalyticsEnvironment : BaseIOSEnvironment, IAnalyticsEnvironment
     {
+        /// <inheritdoc cref="IAnalyticsEnvironment.OSName"/>
         public string OSName => _analyticsEnvironmentGetOsName();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.OSVersion"/>
         public string OSVersion => _analyticsEnvironmentGetOsVersion();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.DeviceMake"/>
         public string DeviceMake => _analyticsEnvironmentGetDeviceMake();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.DeviceModel"/>
         public string DeviceModel => _analyticsEnvironmentGetDeviceModel();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.DeviceLocale"/>
         public string? DeviceLocale => _analyticsEnvironmentGetDeviceLocale();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.ScreenHeight"/>
         public double? ScreenHeight => _analyticsEnvironmentGetScreenHeight();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.ScreenScale"/>
         public double? ScreenScale => _analyticsEnvironmentGetScreenScale();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.ScreenWidth"/>
         public double? ScreenWidth => _analyticsEnvironmentGetScreenWidth();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.BundleIdentifier"/>
         public string? BundleIdentifier => _analyticsEnvironmentGetBundleIdentifier();
-        public bool? LimitAdTrackingEnabled => _analyticsEnvironmentGetLimitAdTrackingEnabled();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.LimitAdTrackingEnabled"/>
+        public Task<bool?> LimitAdTrackingEnabled => Task.FromResult<bool?>(_analyticsEnvironmentGetLimitAdTrackingEnabled());
+       
+        /// <inheritdoc cref="IAnalyticsEnvironment.NetworkConnectionType"/>
         public NetworkConnectionType NetworkConnectionType => (NetworkConnectionType)_analyticsEnvironmentGetNetworkConnectionType();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.Volume"/>
         public double? Volume => _analyticsEnvironmentGetVolume();
-        public string? VendorIdentifier => _analyticsEnvironmentGetVendorIdentifier();
-
-        public VendorIdentifierScope VendorIdentifierScope => (VendorIdentifierScope)_analyticsEnvironmentGetVendorIdentifierScope();
+                
+        /// <inheritdoc cref="IAnalyticsEnvironment.VendorIdentifier"/>
+        public Task<string?> VendorIdentifier => Task.FromResult(_analyticsEnvironmentGetVendorIdentifier());
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.VendorIdentifierScope"/>
+        public Task<VendorIdentifierScope> VendorIdentifierScope => Task.FromResult((VendorIdentifierScope)_analyticsEnvironmentGetVendorIdentifierScope());
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.AppTrackingTransparencyStatus"/>
         public AuthorizationStatus AppTrackingTransparencyStatus => (AuthorizationStatus)_analyticsEnvironmentGetAuthorizationStatus();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.AppVersion"/>
         public string? AppVersion => _analyticsEnvironmentGetAppVersion();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.AppSessionDuration"/>
         public double AppSessionDuration => _analyticsEnvironmentGetAppSessionDuration();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.AppSessionIdentifier"/>
         public string? AppSessionIdentifier => _analyticsEnvironmentGetAppSessionIdentifier();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.IsUserUnderage"/>
         public bool? IsUserUnderage => _analyticsEnvironmentGetIsUserUnderage();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.PublisherSessionIdentifier"/>
         public string? PublisherSessionIdentifier => _analyticsEnvironmentGetPublisherSessionIdentifier();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.PublisherAppIdentifier"/>
         public string? PublisherAppIdentifier => _analyticsEnvironmentGetPublisherAppIdentifier();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.FrameworkName"/>
         public string? FrameworkName => _analyticsEnvironmentGetFrameworkName();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.FrameworkVersion"/>
         public string? FrameworkVersion => _analyticsEnvironmentGetFrameworkVersion();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.PlayerIdentifier"/>
         public string? PlayerIdentifier => _analyticsEnvironmentGetPlayerIdentifier();
-        public string? AdvertisingIdentifier => _analyticsEnvironmentGetAdvertisingIdentifier();
-        public string? UserAgent => _analyticsEnvironmentGetUserAgent();
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.AdvertisingIdentifier"/>
+        public Task<string?> AdvertisingIdentifier => Task.FromResult(_analyticsEnvironmentGetAdvertisingIdentifier());
+        
+        /// <inheritdoc cref="IAnalyticsEnvironment.UserAgent"/>
+        public Task<string?> UserAgent => AwaitableString(_analyticsEnvironmentGetUserAgent);
         
         [DllImport(IOSConstants.DLLImport)] private static extern string _analyticsEnvironmentGetOsName();
         [DllImport(IOSConstants.DLLImport)] private static extern string _analyticsEnvironmentGetOsVersion();
@@ -60,7 +114,7 @@ namespace Chartboost.Core.iOS.Environment
         [DllImport(IOSConstants.DLLImport)] private static extern string? _analyticsEnvironmentGetFrameworkName();
         [DllImport(IOSConstants.DLLImport)] private static extern string? _analyticsEnvironmentGetFrameworkVersion();
         [DllImport(IOSConstants.DLLImport)] private static extern string? _analyticsEnvironmentGetPlayerIdentifier();
-        [DllImport(IOSConstants.DLLImport)] private static extern string? _analyticsEnvironmentGetUserAgent();
+        [DllImport(IOSConstants.DLLImport)] private static extern void _analyticsEnvironmentGetUserAgent(int hashCode, ChartboostCoreOnResultString callback);
         [DllImport(IOSConstants.DLLImport)] private static extern string? _analyticsEnvironmentGetAdvertisingIdentifier();
     }
     #nullable disable

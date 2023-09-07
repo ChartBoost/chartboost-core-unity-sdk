@@ -5,14 +5,25 @@ using Chartboost.Core.Error;
 
 namespace Chartboost.Core.Initialization
 {
-    public class NativeInitializableModule<T> : InitializableModule where T : class
+    /// <summary>
+    /// Generic representation of a native <see cref="InitializableModule"/>, used to create the C# base class of a native module.
+    /// </summary>
+    /// <typeparam name="T">Module type.</typeparam>
+    public abstract class NativeInitializableModule<T> : InitializableModule where T : class
     {
-        public static Type InstanceType;
+        // ReSharper disable once StaticMemberInGenericType
+        public static Type InstanceType { get; set; }
         private readonly InitializableModule _instance;
         private readonly Dictionary<string, object> _jsonConfig;
 
         public NativeInitializableModule(params object[] parameters)
         {
+            if (InstanceType == null)
+            {
+                ChartboostCoreLogger.Log($"could not create an instance of NativeModule.");
+                return;
+            }
+
             var instance = (InitializableModule)Activator.CreateInstance(InstanceType, parameters);
             if (instance == null)
             {
@@ -35,10 +46,13 @@ namespace Chartboost.Core.Initialization
             _jsonConfig = config;
         }
 
+        protected abstract string DefaultModuleId { get; }
+        protected abstract string DefaultModuleVersion { get; }
+
         public override string ModuleId 
-            => _instance?.ModuleId;
+            => _instance?.ModuleId ?? DefaultModuleId;
         public override string ModuleVersion 
-            => _instance?.ModuleVersion;
+            => _instance?.ModuleVersion ?? DefaultModuleVersion;
 
         protected override Task<ChartboostCoreError?> Initialize()
         {

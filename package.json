@@ -1,7 +1,7 @@
 {
   "name": "com.chartboost.core",
   "displayName": "Chartboost Core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "unity": "2020.3",
   "dependencies": {
     "com.unity.nuget.newtonsoft-json": "3.2.1"
@@ -13,5 +13,7 @@
     "email": "",
     "url": "https://chartboost.com"
   },
-  "homepage": "https://chartboost.com"
+  "homepage": "https://chartboost.com",
+  "type": "library",
+  "description": "ChartboostCore SDK is a modular Unity SDK designed as an entry point to manage and facilitate different modules for your application/game. Each module can be individually initialized and has its metrics collected and reported, offering detailed insights into module performance and potential issues."
 }

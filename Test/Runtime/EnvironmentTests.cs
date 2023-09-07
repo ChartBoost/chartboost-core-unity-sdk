@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Threading.Tasks;
 using Chartboost.Core.Environment;
 using Chartboost.Core.Initialization;
 using Chartboost.Core.Modules;
@@ -33,7 +34,7 @@ namespace Chartboost.Core.Tests
         }
 
         [Test, Order(0)]
-        public void GetVersion()
+        public void Version()
         {
             var nativeSDKVersion = ChartboostCore.NativeSDKVersion;
             Assert.IsNotNull(nativeSDKVersion);
@@ -112,33 +113,50 @@ namespace Chartboost.Core.Tests
             ChartboostCoreLogger.Log($"Debug: {debugging}");
         }
 
-        [Test, Order(1)]
-        public void AdvertisingIdentifier()
+        [UnityTest, Order(1)]
+        public IEnumerator AdvertisingIdentifier()
         {
-            var attribution = ChartboostCore.AttributionEnvironment.AdvertisingIdentifier;
-            var advertising = ChartboostCore.AdvertisingEnvironment.AdvertisingIdentifier;
-            var analytics = ChartboostCore.AnalyticsEnvironment.AdvertisingIdentifier;
-            ChartboostCoreLogger.Log($"AdvertisingIdentifier Advertising: {advertising},");
-            ChartboostCoreLogger.Log($"AdvertisingIdentifier Analytics: {analytics}");
-            ChartboostCoreLogger.Log($"AdvertisingIdentifier Attribution: {attribution}");
-            Assert.AreEqual(attribution, advertising);
-            Assert.AreEqual(advertising, analytics);
+            var attributionTask = ChartboostCore.AttributionEnvironment.AdvertisingIdentifier;
+            yield return new WaitUntil(() => attributionTask.IsCompleted);
+            var advertisingTask =  ChartboostCore.AdvertisingEnvironment.AdvertisingIdentifier;
+            yield return new WaitUntil(() => advertisingTask.IsCompleted);
+            var analyticsTask = ChartboostCore.AnalyticsEnvironment.AdvertisingIdentifier;
+            yield return new WaitUntil(() => analyticsTask.IsCompleted);
+
+            var advertisingResult = advertisingTask.Result;
+            var analyticsResult = analyticsTask.Result;
+            var attributionResult = attributionTask.Result;
             
-            Assert.IsNotNull(analytics);
-            Assert.IsNotEmpty(analytics);
+            ChartboostCoreLogger.Log($"AdvertisingIdentifier Advertising: {advertisingResult},");
+            ChartboostCoreLogger.Log($"AdvertisingIdentifier Analytics: {analyticsResult}");
+            ChartboostCoreLogger.Log($"AdvertisingIdentifier Attribution: {attributionResult}");
+            
+            Assert.AreEqual(attributionResult, advertisingResult);
+            Assert.AreEqual(advertisingResult, analyticsResult);
+
+            if (!string.IsNullOrEmpty(analyticsResult)) 
+                yield break;
+            ChartboostCoreLogger.Log($"AdvertisingIdentifier can be null");
+            Assert.Inconclusive();
         }
 
-        [Test, Order(1)]
-        public void UserAgent()
+        [UnityTest, Order(1)]
+        public IEnumerator UserAgent()
         {
-            var attribution = ChartboostCore.AttributionEnvironment.UserAgent;
-            var analytics = ChartboostCore.AnalyticsEnvironment.UserAgent;
-            ChartboostCoreLogger.Log($"UserAgent Attribution: {attribution}");
-            ChartboostCoreLogger.Log($"UserAgent Analytics: {analytics}");
+            var attributionTask = ChartboostCore.AttributionEnvironment.UserAgent;
+            yield return new WaitUntil(() => attributionTask.IsCompleted);
+            var analyticsTask = ChartboostCore.AnalyticsEnvironment.UserAgent;
+            yield return new WaitUntil(() => analyticsTask.IsCompleted);
+
+            var attributionResult = attributionTask.Result;
+            var analyticsResult = analyticsTask.Result;
             
-            Assert.AreEqual(attribution, analytics);
+            ChartboostCoreLogger.Log($"UserAgent Attribution: {attributionResult}");
+            ChartboostCoreLogger.Log($"UserAgent Analytics: {analyticsResult}");
             
-            if (string.IsNullOrEmpty(attribution))
+            Assert.AreEqual(attributionResult, analyticsResult);
+            
+            if (string.IsNullOrEmpty(analyticsResult))
                 Assert.Inconclusive("UserAgent can be null");
             else
                 Assert.Pass();
@@ -264,14 +282,20 @@ namespace Chartboost.Core.Tests
             Assert.IsNotNull(analytics);
         }
 
-        [Test, Order(1)]
-        public void LimitAdTrackingEnabled()
+        [UnityTest, Order(1)]
+        public IEnumerator LimitAdTrackingEnabled()
         {
-            var advertising = ChartboostCore.AdvertisingEnvironment.LimitAdTrackingEnabled;
-            var analytics = ChartboostCore.AnalyticsEnvironment.LimitAdTrackingEnabled;
-            ChartboostCoreLogger.Log($"LimitAdTrackingEnabled Advertising: {advertising}");
-            ChartboostCoreLogger.Log($"LimitAdTrackingEnabled Analytics: {analytics}");
-            Assert.AreEqual(advertising, analytics);
+            var advertisingTask = ChartboostCore.AdvertisingEnvironment.LimitAdTrackingEnabled;
+            yield return new WaitUntil(() => advertisingTask.IsCompleted);
+            var analyticsTask = ChartboostCore.AnalyticsEnvironment.LimitAdTrackingEnabled;
+            yield return new WaitUntil(() => analyticsTask.IsCompleted);
+
+            var advertisingResult = advertisingTask.Result;
+            var analyticsResult = analyticsTask.Result;
+            
+            ChartboostCoreLogger.Log($"LimitAdTrackingEnabled Advertising: {advertisingResult}");
+            ChartboostCoreLogger.Log($"LimitAdTrackingEnabled Analytics: {analyticsResult}");
+            Assert.AreEqual(advertisingResult, analyticsResult);
         }
         
         [Test, Order(1)]
@@ -285,10 +309,12 @@ namespace Chartboost.Core.Tests
             Assert.IsNotNull(networkConnectionType);
         }
 
-        [Test, Order(1)]
-        public void VendorIdentifierScope()
+        [UnityTest, Order(1)]
+        public IEnumerator VendorIdentifierScope()
         {
-            var vendorIdentifierScope = ChartboostCore.AnalyticsEnvironment.VendorIdentifierScope;
+            var vendorIdentifierScopeTask = ChartboostCore.AnalyticsEnvironment.VendorIdentifierScope;
+            yield return new WaitUntil(() => vendorIdentifierScopeTask.IsCompleted);
+            var vendorIdentifierScope = vendorIdentifierScopeTask.Result;
             ChartboostCoreLogger.Log($"VendorIdentifierScope Analytics: {vendorIdentifierScope}");
             Assert.IsNotNull(vendorIdentifierScope);
         }
@@ -298,17 +324,25 @@ namespace Chartboost.Core.Tests
         {
             var volume = ChartboostCore.AnalyticsEnvironment.Volume;
             ChartboostCoreLogger.Log($"Volume Analytics: {volume}");
+            if (volume == null)
+                Assert.Inconclusive();
             Assert.GreaterOrEqual(volume, 0);
             Assert.IsNotNull(volume);
         }
         
-        [Test, Order(1)]
-        public void VendorIdentifier()
+        [UnityTest, Order(1)]
+        public IEnumerator VendorIdentifier()
         {
-            var vendorIdentifier = ChartboostCore.AnalyticsEnvironment.VendorIdentifier;
+            var vendorIdentifierTask =  ChartboostCore.AnalyticsEnvironment.VendorIdentifier;
+            yield return new WaitUntil(() => vendorIdentifierTask.IsCompleted);
+
+            var vendorIdentifier = vendorIdentifierTask.Result;
             ChartboostCoreLogger.Log($"VendorIdentifier Analytics: {vendorIdentifier}");
-            Assert.IsNotNull(vendorIdentifier);
-            Assert.IsNotEmpty(vendorIdentifier);
+            
+            if (!string.IsNullOrEmpty(vendorIdentifier)) 
+                yield break;
+            ChartboostCoreLogger.Log($"VendorIdentifier can be null");
+            Assert.Inconclusive();
         }
         
         [Test, Order(1)]

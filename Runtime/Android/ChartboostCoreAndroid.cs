@@ -19,14 +19,9 @@ namespace Chartboost.Core.Android
                 return;
             Instance = new ChartboostCoreAndroid();
         }
-        
-        public ChartboostCoreAndroid()
-        {
-            using var bridge = AndroidUtils.GetAndroidBridge();
-            bridge.CallStatic(AndroidConstants.InitializePreferences);
-           _observer =new InitializableModuleObserver(OnModuleInitializationCompleted);
-        }
-        
+
+        public ChartboostCoreAndroid() => _observer = new InitializableModuleObserver(OnModuleInitializationCompleted);
+
         private static InitializableModuleObserver _observer;
 
         protected override IConsentManagementPlatform _consent { get; } = new ConsentManagementPlatform();
@@ -38,12 +33,12 @@ namespace Chartboost.Core.Android
         {
             get
             {
-                using var sdk = AndroidUtils.GetNativeSDK();
+                using var sdk = AndroidUtils.NativeSDK();
                 return sdk.CallStatic<bool>(AndroidConstants.GetDebug);
             }
             set
             {
-                using var sdk = AndroidUtils.GetNativeSDK();
+                using var sdk = AndroidUtils.NativeSDK();
                 sdk.CallStatic(AndroidConstants.SetDebug, value);
             }
         }
@@ -52,7 +47,7 @@ namespace Chartboost.Core.Android
         {
             get
             {
-                using var sdk = AndroidUtils.GetNativeSDK();
+                using var sdk = AndroidUtils.NativeSDK();
                 return sdk.CallStatic<string>(AndroidConstants.GetSDKVersion);
             }
         }
@@ -77,7 +72,7 @@ namespace Chartboost.Core.Android
                 using var moduleFactory = new AndroidJavaClass(AndroidConstants.ModuleFactory);
                 moduleFactory.CallStatic(AndroidConstants.FuncMakeUnityModule, module.ModuleId, module.ModuleVersion, initCallback);
             }
-            using var androidBridge = AndroidUtils.GetAndroidBridge();
+            using var androidBridge = AndroidUtils.AndroidBridge();
             androidBridge.CallStatic(AndroidConstants.InitializeSDK, nativeChartboostCoreSdkConfiguration, _observer);
         }
     }

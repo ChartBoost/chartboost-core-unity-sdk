@@ -9,6 +9,9 @@ typedef void (*ChartboostCoreOnModuleInitializeCallback)(const char* moduleIdent
 typedef void (*ChartboostCoreOnConsentStatusChangeCallback)(int status);
 typedef void (*ChartboostCoreOnConsentChangeCallback)(const char* standard, const char* value);
 typedef void (*ChartboostCoreAction)();
+typedef void (*ChartbosotCoreResultString)(int hashCode, const char* result);
+typedef void (*ChartboostCoreResultBoolean)(int hashCode, bool completion);
+
 typedef void (^block)(void);
 
 /// Allocates a C string from a NSString.

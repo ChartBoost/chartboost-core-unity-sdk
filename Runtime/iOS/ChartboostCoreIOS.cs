@@ -60,6 +60,8 @@ namespace Chartboost.Core.iOS
                 coreError = JsonConvert.DeserializeObject<ChartboostCoreError>(jsonError);
             var result = new ModuleInitializationResult(start, end, duration, coreError, module!);
             OnModuleInitializationCompleted(result);
+            if (coreError == null)
+                module.OnModuleReady();
         }
         
         [MonoPInvokeCallback(typeof(ChartboostCoreOnModuleInitializeDelegate))]
@@ -67,16 +69,31 @@ namespace Chartboost.Core.iOS
         {
             Task.Run(async () =>
             {
-                var module = PendingModuleCache.GetInitializableModule(moduleIdentifier);
-                if (module == null)
+                ChartboostCoreError? error = null;
+                try
                 {
-                    ChartboostCoreLogger.Log($"Unable to find module! Cannot initialize: {moduleIdentifier}");
-                    return;
+                    var module = PendingModuleCache.GetInitializableModule(moduleIdentifier);
+                    error = await await MainThreadDispatcher.MainThreadTask(module!.OnInitialize);
                 }
-                
-                var result = await await MainThreadDispatcher.MainThreadTask(module.OnInitialize);
-                var json = result.HasValue? JsonConvert.SerializeObject(result.Value) : null;
-                _completeModuleInitialization(moduleIdentifier, json);
+                catch (Exception e)
+                {
+                    ChartboostCoreLogger.LogException(e);
+                    error = new ChartboostCoreError(-1, e.Message);
+                }
+                finally
+                {
+                    try
+                    {
+                        var json = error.HasValue ? JsonConvert.SerializeObject(error.Value) : null;
+                        _completeModuleInitialization(moduleIdentifier, json);
+                    }
+                    catch (Exception e)
+                    {
+                        ChartboostCoreLogger.LogException(e);
+                        var json = error.HasValue ? JsonConvert.SerializeObject(new ChartboostCoreError(-1, e.Message)) : null;
+                        _completeModuleInitialization(moduleIdentifier, json);
+                    }
+                }
             });
         }
 

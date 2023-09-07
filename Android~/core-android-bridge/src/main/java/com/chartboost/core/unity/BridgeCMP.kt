@@ -8,12 +8,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
+@Suppress("unused")
 class BridgeCMP {
-    @Suppress("unused")
+
     companion object
     {
         @JvmStatic
-        fun grantConsentStatus(statusSource: ConsentStatusSource, booleanResultAwaiter: AwaiterBooleanResult){
+        fun grantConsentStatus(statusSource: ConsentStatusSource, booleanResultAwaiter: ResultBoolean){
             CoroutineScope(Dispatchers.Main).launch {
                 UnityPlayer.currentActivity.let {
                     val result = ChartboostCore.consent.grantConsent(it, statusSource)
@@ -23,7 +24,7 @@ class BridgeCMP {
         }
 
         @JvmStatic
-        fun denyConsentStatus(statusSource: ConsentStatusSource, booleanResultAwaiter: AwaiterBooleanResult){
+        fun denyConsentStatus(statusSource: ConsentStatusSource, booleanResultAwaiter: ResultBoolean){
             CoroutineScope(Dispatchers.Main).launch {
                 UnityPlayer.currentActivity.let {
                     val result = ChartboostCore.consent.denyConsent(it, statusSource)
@@ -33,7 +34,7 @@ class BridgeCMP {
         }
 
         @JvmStatic
-        fun resetConsentStatus(booleanResultAwaiter: AwaiterBooleanResult){
+        fun resetConsentStatus(booleanResultAwaiter: ResultBoolean){
             CoroutineScope(Dispatchers.Main).launch {
                 UnityPlayer.currentActivity.let {
                     val result = ChartboostCore.consent.resetConsent(it)
@@ -43,7 +44,7 @@ class BridgeCMP {
         }
 
         @JvmStatic
-        fun showConsentDialog(dialogType: ConsentDialogType, booleanResultAwaiter: AwaiterBooleanResult)
+        fun showConsentDialog(dialogType: ConsentDialogType, booleanResultAwaiter: ResultBoolean)
         {
             CoroutineScope(Dispatchers.Main).launch {
                 UnityPlayer.currentActivity.let {

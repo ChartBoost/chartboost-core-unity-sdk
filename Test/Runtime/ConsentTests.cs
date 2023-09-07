@@ -18,7 +18,7 @@ namespace Chartboost.Core.Tests
         }
         
         [Test, Order(2)]
-        public void GetConsentStatus()
+        public void ConsentStatus()
         {
             var status = ChartboostCore.Consent.ConsentStatus;
             ChartboostCoreLogger.Log($"ConsentStatus: {Enum.GetName(typeof(ConsentStatus), status)}");
@@ -26,7 +26,7 @@ namespace Chartboost.Core.Tests
         }
 
         [Test, Order(3)]
-        public void GetConsents()
+        public void Consents()
         {
             var contents = ChartboostCore.Consent.Consents;
             Assert.IsNotNull(contents);
@@ -69,7 +69,7 @@ namespace Chartboost.Core.Tests
            Assert.IsFalse(result.Result);
         }
 
-        private IEnumerator TestConsent(Func<ConsentStatusSource, Task<bool>> func, ConsentStatusSource source)
+        private static IEnumerator TestConsent(Func<ConsentStatusSource, Task<bool>> func, ConsentStatusSource source)
         {
             var task = func(source);
             yield return new WaitUntil(() => task.IsCompleted);

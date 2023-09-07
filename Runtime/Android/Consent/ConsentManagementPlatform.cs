@@ -9,24 +9,30 @@ using UnityEngine;
 
 namespace Chartboost.Core.Android.Consent
 {
+    /// <summary>
+    /// <inheritdoc cref="IConsentManagementPlatform"/>
+    /// <br/>
+    /// <para>Android implementation.</para>
+    /// </summary>
     public class ConsentManagementPlatform : IConsentManagementPlatform
     {
         internal ConsentManagementPlatform()
         {
-            using var consentManagementPlatform = AndroidUtils.GetConsentManagementPlatform();
+            using var consentManagementPlatform = AndroidUtils.ConsentManagementPlatform();
             consentManagementPlatform.Call(AndroidConstants.ConsentAddObserver,
                 new ConsentObserver(OnConsentChangeForStandard, OnConsentStatusChange, OnInitialConsentInfoAvailable));
         }
 
+        /// <inheritdoc cref="IConsentManagementPlatform.ConsentStatus"/>
         public ConsentStatus ConsentStatus =>
-            AndroidUtils.GetEnumProperty(AndroidConstants.Consent, AndroidConstants.GetConsentStatus)
-                .GetConsentStatus();
+            AndroidUtils.EnumProperty(AndroidConstants.Consent, AndroidConstants.GetConsentStatus).ConsentStatus();
 
+        /// <inheritdoc cref="IConsentManagementPlatform.Consents"/>
         public Dictionary<ConsentStandard, ConsentValue> Consents
         {
             get
             {
-                using var consentManagementPlatform = AndroidUtils.GetConsentManagementPlatform();
+                using var consentManagementPlatform = AndroidUtils.ConsentManagementPlatform();
                 using var consents = consentManagementPlatform.Call<AndroidJavaObject>(AndroidConstants.GetConsents);
 
                 var ret = new Dictionary<ConsentStandard, ConsentValue>();
@@ -55,41 +61,56 @@ namespace Chartboost.Core.Android.Consent
             }
         }
 
+        /// <inheritdoc cref="IConsentManagementPlatform.ShouldCollectConsent"/>
         public bool ShouldCollectConsent
         {
             get
             {
-                using var consentManagementPlatform = AndroidUtils.GetConsentManagementPlatform();
+                using var consentManagementPlatform = AndroidUtils.ConsentManagementPlatform();
                 return consentManagementPlatform.Call<bool>(AndroidConstants.GetConsentShouldCollect);
             }
         }
 
+        /// <inheritdoc cref="IConsentManagementPlatform.GrantConsent"/>
         public async Task<bool> GrantConsent(ConsentStatusSource source)
             => await ChangeConsentStatus(AndroidConstants.GrantConsentStatus, source);
 
+        /// <inheritdoc cref="IConsentManagementPlatform.DenyConsent"/>
         public async Task<bool> DenyConsent(ConsentStatusSource source)
             => await ChangeConsentStatus(AndroidConstants.DenyConsentStatus, source);
 
+        /// <inheritdoc cref="IConsentManagementPlatform.ResetConsent"/>
         public async Task<bool> ResetConsent()
         {
-            using var nativeCmpBridge = AndroidUtils.GetConsentManagementPlatformBridge();
-            var setConsentStatusAwaiter = new AwaiterBooleanResult();
+            using var nativeCmpBridge = AndroidUtils.ConsentManagementPlatformBridge();
+            var setConsentStatusAwaiter = new ResultBoolean();
             nativeCmpBridge.CallStatic(AndroidConstants.ResetConsentStatus, setConsentStatusAwaiter);
             return await setConsentStatusAwaiter;
         }
-
-        private static AwaiterBooleanResult ChangeConsentStatus(string method, ConsentStatusSource source)
+        
+        /// <summary>
+        /// Requests a change for consent status.
+        /// </summary>
+        /// <param name="method">CMP Bridge method to be called.</param>
+        /// <param name="source"><see cref="ConsentStatusSource"/> requesting the change.</param>
+        /// <returns>Awaitable <see cref="ResultBoolean"/>.</returns>
+        private static ResultBoolean ChangeConsentStatus(string method, ConsentStatusSource source)
         {
-            using var nativeCmpBridge = AndroidUtils.GetConsentManagementPlatformBridge();
-            using var nativeStatusSource = source.GetConsentSource();
-            var setConsentStatusAwaiter = new AwaiterBooleanResult();
+            using var nativeCmpBridge = AndroidUtils.ConsentManagementPlatformBridge();
+            using var nativeStatusSource = source.ConsentSource();
+            var setConsentStatusAwaiter = new ResultBoolean();
             nativeCmpBridge.CallStatic(method, nativeStatusSource, setConsentStatusAwaiter);
             return setConsentStatusAwaiter;
         }
-
+        
+       /// <summary>
+       /// <inheritdoc cref="IConsentManagementPlatform.ShowConsentDialog"/>
+       /// </summary>
+       /// <param name="dialogType"><inheritdoc cref="IConsentManagementPlatform.ShowConsentDialog"/></param>
+       /// <returns><inheritdoc cref="IConsentManagementPlatform.ShowConsentDialog"/></returns>
         public async Task<bool> ShowConsentDialog(ConsentDialogType dialogType)
         {
-            using var nativeCmpBridge = AndroidUtils.GetConsentManagementPlatformBridge();
+            using var nativeCmpBridge = AndroidUtils.ConsentManagementPlatformBridge();
             using var enumClass = new AndroidJavaClass(AndroidConstants.ConsentDialogTypeEnum);
             using var value = dialogType switch
             {
@@ -100,28 +121,39 @@ namespace Chartboost.Core.Android.Consent
                 _ => enumClass.GetStatic<AndroidJavaObject>(AndroidConstants.ConsentDialogTypeEnumDetailed)
             };
 
-            var showConsentDialogAwaiter = new AwaiterBooleanResult();
+            var showConsentDialogAwaiter = new ResultBoolean();
             nativeCmpBridge.CallStatic(AndroidConstants.ConsentShowConsentDialog, value, showConsentDialogAwaiter);
             return await showConsentDialogAwaiter;
         }
 
+        /// <inheritdoc cref="IConsentManagementPlatform.ConsentChangeForStandard"/>
         public event ChartboostConsentChangeForStandard ConsentChangeForStandard;
+        
+        /// <inheritdoc cref="IConsentManagementPlatform.ConsentStatusChange"/>
         public event ChartboostConsentStatusChange ConsentStatusChange;
+        
+        /// <inheritdoc cref="IConsentManagementPlatform.ConsentModuleReady"/>
         public event Action ConsentModuleReady;
 
+        /// <inheritdoc cref="IConsentManagementPlatform.ConsentChangeForStandard"/>
+        /// <param name="standard">The <see cref="ConsentStandard"/> obtained from the observer.</param>
+        /// <param name="value">The <see cref="ConsentValue"/> obtained from the observer.</param>
         private void OnConsentChangeForStandard(ConsentStandard standard, ConsentValue value)
             => ConsentChangeForStandard?.Invoke(standard, value);
 
+        /// <inheritdoc cref="IConsentManagementPlatform.ConsentStatusChange"/>
+        /// <param name="status">The <see cref="ConsentStatus"/> value.</param>
         private void OnConsentStatusChange(ConsentStatus status)
             => ConsentStatusChange?.Invoke(status);
 
+        /// <inheritdoc cref="IConsentManagementPlatform.ConsentModuleReady"/>
         private void OnInitialConsentInfoAvailable()
             => ConsentModuleReady?.Invoke();
 
         ~ConsentManagementPlatform()
         {
             AndroidJNI.AttachCurrentThread();
-            using var consentManagementPlatform = AndroidUtils.GetConsentManagementPlatform();
+            using var consentManagementPlatform = AndroidUtils.ConsentManagementPlatform();
             consentManagementPlatform.Call(AndroidConstants.ConsentRemoveObserver, ConsentObserver.Instance);
             AndroidJNI.DetachCurrentThread();
         }

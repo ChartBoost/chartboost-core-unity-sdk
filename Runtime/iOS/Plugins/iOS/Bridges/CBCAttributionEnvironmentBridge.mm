@@ -5,7 +5,9 @@ extern "C" {
         return getCStringOrNull([[ChartboostCore attributionEnvironment] advertisingID]);
     }
 
-    const char* _attributionEnvironmentGetUserAgent(){
-        return getCStringOrNull([[ChartboostCore attributionEnvironment] userAgent]);
+    void _attributionEnvironmentGetUserAgent(int hashCode, ChartbosotCoreResultString onResult){
+        [[ChartboostCore attributionEnvironment] userAgentWithCompletion:^(NSString * _Nonnull userAgent) {
+            onResult(hashCode, getCStringOrNull(userAgent));
+        }];
     }
 }
