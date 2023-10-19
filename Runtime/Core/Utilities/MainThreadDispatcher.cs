@@ -1,8 +1,10 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Chartboost.Core.Initialization;
 using UnityEditor;
 using UnityEngine;
+using Object = System.Object;
 
 namespace Chartboost.Core.Utilities
 {
@@ -28,11 +30,17 @@ namespace Chartboost.Core.Utilities
         /// <param name="task"><see cref="Task{T}"/> to be dispatched.</param>
         /// <typeparam name="T">Result type.</typeparam>
         /// <returns>The result form the Unity task.</returns>
-        public static Task<T> MainThreadTask<T>(Func<T> task)
+        public static void MainThreadTask<T>(Func<T> task)
         {
             var ret = Task.Factory.StartNew(task, CancellationToken.None, TaskCreationOptions.None, _unityScheduler);
             ret.ContinueWith(faultedTask => ChartboostCoreLogger.LogException(faultedTask.Exception), TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
-           return ret;
+        }
+
+        public static Task<TResult> MainThreadTask<T, TResult>(Func<object, TResult> task, T parameter)
+        {
+            var ret = Task.Factory.StartNew(task, parameter, CancellationToken.None, TaskCreationOptions.None, _unityScheduler);
+            ret.ContinueWith(faultedTask => ChartboostCoreLogger.LogException(faultedTask.Exception), TaskContinuationOptions.OnlyOnFaulted | TaskContinuationOptions.ExecuteSynchronously);
+            return ret;
         }
 
         private static SynchronizationContext _context;

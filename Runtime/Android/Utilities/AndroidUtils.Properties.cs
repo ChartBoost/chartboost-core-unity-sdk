@@ -35,7 +35,10 @@ namespace Chartboost.Core.Android.Utilities
         /// <param name="field">Target field.</param>
         /// <returns><see cref="bool"/> value for target property.</returns>
         public static bool? BoolProperty(string environment, string field)
-            => NullableProperty<bool>(environment, field, AndroidConstants.FunctionBooleanValue);
+        {
+            using var property = Property(environment, field);
+            return property == null ? (bool?)null : property.Call<bool>(AndroidConstants.FunctionBooleanValue);
+        }
 
         /// <summary>
         /// Gets an <see cref="double"/> property from a Chartboost Core Environment.
@@ -121,7 +124,7 @@ namespace Chartboost.Core.Android.Utilities
         /// <returns><see cref="bool"/> value or null.</returns>
         public static async Task<bool?> AwaitableBoolean(Func<AndroidJavaObject> environment, string getMethod)
         {
-            var awaiter = new ResultBoolean();
+            var awaiter = new ResultNullableBoolean();
             try
             {
                 using var env = environment();

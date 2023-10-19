@@ -46,11 +46,4 @@ extern "C" {
             callback(hashCode, result);
         }];
     }
-
-    void _chartboostCoreSetConsentCallbacks(ChartboostCoreOnConsentStatusChangeCallback onConsentStatusChange, ChartboostCoreOnConsentChangeCallback onConsentChangeForStandard, ChartboostCoreAction onConsentModuleReady){
-        [[CBCUnityObserver sharedObserver] setOnConsentStatusChange:onConsentStatusChange];
-        [[CBCUnityObserver sharedObserver] setOnConsentChangeForStandard:onConsentChangeForStandard];
-        [[CBCUnityObserver sharedObserver] setOnConsentReady:onConsentModuleReady];
-        [[ChartboostCore consent] addObserver:[CBCUnityObserver sharedObserver]];
-    }
 }

@@ -42,6 +42,13 @@ namespace Chartboost.Core.Utilities
 
         private const string Application = "application";
 
+        private const string IsUserUnderage = "IS_USER_UNDERAGE"; 
+        private const string PublisherAppIdentifier = "PUBLISHER_APP_IDENTIFIER"; 
+        private const string PublisherSessionIdentifier = "PUBLISHER_SESSION_IDENTIFIER"; 
+        private const string FrameworkName = "FRAMEWORK_NAME"; 
+        private const string FrameworkVersion = "FRAMEWORK_VERSION"; 
+        private const string PlayerIdentifier = "PLAYER_IDENTIFIER"; 
+
         /// <summary>
         /// Converts a string to a <see cref="ConsentDialogType"/> enum value.
         /// </summary>
@@ -142,6 +149,23 @@ namespace Chartboost.Core.Utilities
                 Application => Environment.VendorIdentifierScope.Application,
                 Developer => Environment.VendorIdentifierScope.Developer,
                 _ => Environment.VendorIdentifierScope.Unknown
+            };
+        }
+
+        internal static PublisherMetadataProperty? PublisherMetadataProperty(this string source)
+        {
+            if (string.IsNullOrEmpty(source))
+                return null;
+
+            return source switch
+            {
+                FrameworkName => Environment.PublisherMetadataProperty.FrameworkName,
+                FrameworkVersion => Environment.PublisherMetadataProperty.FrameworkVersion,
+                IsUserUnderage => Environment.PublisherMetadataProperty.IsUserUnderage,
+                PlayerIdentifier => Environment.PublisherMetadataProperty.PlayerIdentifier,
+                PublisherAppIdentifier => Environment.PublisherMetadataProperty.PublisherAppIdentifier,
+                PublisherSessionIdentifier => Environment.PublisherMetadataProperty.PublisherSessionIdentifier,
+                _ => null
             };
         }
     }

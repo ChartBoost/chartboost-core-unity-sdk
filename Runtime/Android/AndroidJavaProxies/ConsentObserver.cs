@@ -1,4 +1,4 @@
-using System;
+using Chartboost.Core.Android.Consent;
 using Chartboost.Core.Android.Utilities;
 using Chartboost.Core.Consent;
 using Chartboost.Core.Utilities;
@@ -15,25 +15,21 @@ namespace Chartboost.Core.Android.AndroidJavaProxies
     {
         internal static ConsentObserver? Instance { get; private set; }
 
-        private readonly ChartboostConsentChangeForStandard _consentStatusChangeForStandard;
-        private readonly ChartboostConsentStatusChange _consentStatusChange;
-        private readonly Action _onConsentModuleReady;
+        private readonly ConsentManagementPlatform _environment;
         
-        public ConsentObserver(ChartboostConsentChangeForStandard changeForStandard, ChartboostConsentStatusChange consentStatusChange, Action onConsentModuleReady) : base(AndroidConstants.ConsentObserver)
+        public ConsentObserver(ConsentManagementPlatform environment) : base(AndroidConstants.ConsentObserver)
         {
-            _consentStatusChangeForStandard = changeForStandard;
-            _consentStatusChange = consentStatusChange;
-            _onConsentModuleReady = onConsentModuleReady;
+            _environment = environment;
             Instance = this;
         }
-        
+
         /// <inheritdoc cref="IConsentManagementPlatform.ConsentChangeForStandard"/>
         /// <param name="standard">The <see cref="ConsentStandard"/> obtained from the observer.</param>
         /// <param name="value">The <see cref="ConsentValue"/> obtained from the observer.</param>
         [Preserve]
         // ReSharper disable once InconsistentNaming
         private void onConsentChangeForStandard(string standard, string value) =>
-            MainThreadDispatcher.Post(o => _consentStatusChangeForStandard?.Invoke(standard, value));
+            MainThreadDispatcher.Post(o => _environment.OnConsentChangeForStandard(standard, value));
 
         /// <inheritdoc cref="IConsentManagementPlatform.ConsentChangeForStandard"/>
         /// <param name="standard">The <see cref="ConsentStandard"/> obtained from the observer.</param>s
@@ -44,7 +40,7 @@ namespace Chartboost.Core.Android.AndroidJavaProxies
             MainThreadDispatcher.Post(o =>
             {
                 ConsentValue? consentValue = value?.Call<string>(AndroidConstants.FunctionToString);
-                _consentStatusChangeForStandard(standard, consentValue);
+                _environment.OnConsentChangeForStandard(standard, consentValue);
             });
 
         /// <inheritdoc cref="IConsentManagementPlatform.ConsentStatusChange"/>
@@ -52,13 +48,13 @@ namespace Chartboost.Core.Android.AndroidJavaProxies
         [Preserve]
         // ReSharper disable once InconsistentNaming
         private void onConsentStatusChange(AndroidJavaObject nativeStatus) 
-            => MainThreadDispatcher.Post(o => _consentStatusChange(AndroidUtils.ToString(nativeStatus).ConsentStatus()));
+            => MainThreadDispatcher.Post(o => _environment.OnConsentStatusChange(AndroidUtils.ToString(nativeStatus).ConsentStatus()));
 
         /// <inheritdoc cref="IConsentManagementPlatform.ConsentModuleReady"/>
         [Preserve]
         // ReSharper disable once InconsistentNaming
         private void onConsentModuleReady() 
-            => MainThreadDispatcher.Post(o => _onConsentModuleReady());
+            => MainThreadDispatcher.Post(o => _environment.OnConsentModuleReady());
     }
     #nullable disable
 }

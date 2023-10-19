@@ -93,7 +93,7 @@ namespace Chartboost.Core.iOS.Consent
 
         /// <inheritdoc cref="IConsentManagementPlatform.ConsentStatusChange"/>
         /// <param name="status">The <see cref="ConsentStatus"/> native value.</param>
-        [MonoPInvokeCallback(typeof(ChartboostCoreOnConsentStatusChange))]
+        [MonoPInvokeCallback(typeof(ChartboostCoreOnEnumStatusChange))]
         private static void OnConsentStatusChange(int status) 
             => MainThreadDispatcher.Post(o => _instance?.ConsentStatusChange?.Invoke((ConsentStatus)status));
 
@@ -111,9 +111,6 @@ namespace Chartboost.Core.iOS.Consent
         private static void OnConsentActionCompletion(int hashCode, bool completion)
             => MainThreadDispatcher.Post(o => AwaitableProxies.ResolveCallbackProxy(hashCode, completion));
 
-        private delegate void ChartboostCoreOnConsentChangeForStandard(string standard, string value);
-        private delegate void ChartboostCoreOnConsentStatusChange(int statusChange);
-        
         [DllImport(IOSConstants.DLLImport)] private static extern int _chartboostCoreGetConsentStatus();
         [DllImport(IOSConstants.DLLImport)] private static extern string _chartboostCoreGetConsents();
         [DllImport(IOSConstants.DLLImport)] private static extern bool _chartboostCoreShouldCollectConsent();
@@ -121,6 +118,6 @@ namespace Chartboost.Core.iOS.Consent
         [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreDenyConsent(int statusSource, int hashCode, ChartboostCoreOnResultBoolean callback);
         [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreResetConsent(int hashCode, ChartboostCoreOnResultBoolean callback);
         [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreShowConsentDialog(int dialogType, int hashCode, ChartboostCoreOnResultBoolean callback);
-        [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreSetConsentCallbacks(ChartboostCoreOnConsentStatusChange onConsentStatusChange, ChartboostCoreOnConsentChangeForStandard onConsentChangeForStandard, Action onInitialConsentInfoAvailable);
+        [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreSetConsentCallbacks(ChartboostCoreOnEnumStatusChange onEnumStatusChange, ChartboostCoreOnConsentChangeForStandard onConsentChangeForStandard, Action onInitialConsentInfoAvailable);
     }
 }

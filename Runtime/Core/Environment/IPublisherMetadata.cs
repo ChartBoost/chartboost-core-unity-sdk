@@ -1,3 +1,5 @@
+using System;
+
 namespace Chartboost.Core.Environment
 {
     #nullable enable
@@ -6,6 +8,13 @@ namespace Chartboost.Core.Environment
     /// </summary>
     public interface IPublisherMetadata
     {
+        event Action IsUserUnderageChanged;
+        event Action PublisherSessionIdentifierChanged;
+        event Action PublisherAppIdentifierChanged;
+        event Action FrameworkNameChanged;
+        event Action FrameworkVersionChanged;
+        event Action PlayerIdentifierChanged;
+        
         /// <summary>
         /// Indicates if the user is underage as determined by the publisher.
         /// </summary>

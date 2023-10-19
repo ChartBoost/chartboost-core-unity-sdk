@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Chartboost.Core.Android.AndroidJavaProxies;
 using Chartboost.Core.Android.Consent;
 using Chartboost.Core.Android.Environment;
@@ -52,12 +53,14 @@ namespace Chartboost.Core.Android
             }
         }
 
-        protected override void _initialize(SDKConfiguration sdkConfiguration, InitializableModule[] modules)
+        protected override void _initialize(SDKConfiguration sdkConfiguration, IEnumerable<InitializableModule> modules)
         {
             if (string.IsNullOrEmpty(sdkConfiguration.ChartboostApplicationIdentifier))
                 return;
             
             using var nativeChartboostCoreSdkConfiguration = new AndroidJavaObject(AndroidConstants.SdkConfiguration, sdkConfiguration.ChartboostApplicationIdentifier);
+            using var bridge = AndroidUtils.AndroidBridge();
+            bridge.CallStatic(AndroidConstants.FunctionClearModules);
             
             foreach (var module in modules)
             {

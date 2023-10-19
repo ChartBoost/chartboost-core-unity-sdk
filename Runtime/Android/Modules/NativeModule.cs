@@ -31,7 +31,7 @@ namespace Chartboost.Core.Android.Modules
         /// Native modules do not initialized by Unity C#, they are handled natively.
         /// </summary>
         /// <exception cref="System.NotImplementedException">Thrown when attempting to initialize in Unity C#</exception>
-        protected override Task<ChartboostCoreError?> Initialize()
+        protected override Task<ChartboostCoreError?> Initialize(ModuleInitializationConfiguration configuration)
         {
             throw new System.NotImplementedException();
         }

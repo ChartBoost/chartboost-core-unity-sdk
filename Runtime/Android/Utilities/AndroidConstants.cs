@@ -17,6 +17,7 @@ namespace Chartboost.Core.Android.Utilities
         internal const string FunctionFloatValue = "floatValue";
         internal const string FunctionIntValue = "intValue";
         internal const string FunctionAddModule = "addModule";
+        internal const string FunctionClearModules = "clearModules";
         internal const string FunctionCompleted = "completed";
         #endregion
 
@@ -40,6 +41,7 @@ namespace Chartboost.Core.Android.Utilities
         internal const string SdkConfiguration = "com.chartboost.core.initialization.SdkConfiguration";
         internal const string ConsentObserver = "com.chartboost.core.consent.ConsentObserver";
         internal const string InitializableModuleObserver = "com.chartboost.core.initialization.InitializableModuleObserver";
+        internal const string PublisherMetadataObserver = "com.chartboost.core.environment.PublisherMetadataObserver";
 
         internal const string ModuleConfigurationJson = "json";
         internal const string Module = "module";
@@ -48,11 +50,11 @@ namespace Chartboost.Core.Android.Utilities
         internal const string ModuleInitializationResultDuration = "duration";
         internal const string ModuleInitializationResultException = "exception";
         internal const string InitializableModuleModuleId = "moduleId";
+        internal const string AddObserver = "addObserver";
+        internal const string RemoveObserver = "removeObserver";
         
         #region Consent
         internal const string Consent = "getConsent";
-        internal const string ConsentAddObserver = "addObserver";
-        internal const string ConsentRemoveObserver = "removeObserver";
         internal const string GetConsentShouldCollect = "getShouldCollectConsent";
         internal const string GetConsents = "getConsents";
         internal const string GetConsentStatus = "getConsentStatus";

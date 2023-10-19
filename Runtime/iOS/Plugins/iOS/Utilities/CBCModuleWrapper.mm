@@ -5,7 +5,7 @@
 
 - (instancetype)initWithModuleID:(NSString * _Nonnull)moduleID
                             moduleVersion:(NSString * _Nonnull)moduleVersion
-                              initializeCallback:(_Nullable ChartboostCoreOnModuleInitializeCallback)initializeCallback {
+                              initializeCallback:(_Nullable ChartboostCoreOnModuleInitializeDelegate)initializeCallback {
     self = [super init];
     if (self) {
         _moduleID = moduleID;
@@ -19,11 +19,11 @@
     return [self init];
 }
 
-- (void)initializeWithCompletion:(void (^)(NSError * _Nullable))completion {
+- (void)initializeWithConfiguration:(CBCModuleInitializationConfiguration * _Nonnull)configuration completion:(void (^ _Nonnull)(NSError * _Nullable))completion {
     _completer = ^(NSError * error){
         completion(error);
     };
-    _initializeCallback(getCStringOrNull(_moduleID));
+    _initializeCallback(getCStringOrNull(_moduleID), getCStringOrNull([configuration  chartboostAppID]));
 }
 
 - (void)completeInitializationWithError:(NSError* _Nullable)error; {

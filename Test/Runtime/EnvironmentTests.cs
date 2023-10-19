@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Threading.Tasks;
 using Chartboost.Core.Environment;
@@ -399,12 +400,23 @@ namespace Chartboost.Core.Tests
                 Assert.Pass();
         }
         
-        [Test, Order(1)]
-        public void FrameworkName()
+        [UnityTest, Order(1)]
+        public IEnumerator FrameworkName()
         {
             Assert.IsNull(ChartboostCore.AnalyticsEnvironment.FrameworkName);
             ChartboostCore.PublisherMetadata.SetFrameworkName(ConstFrameworkName);
+            var fired = false;
+            ChartboostCore.PublisherMetadata.FrameworkNameChanged += WaitForChange;
+            void WaitForChange()
+            {
+                ChartboostCore.PublisherMetadata.FrameworkNameChanged -= WaitForChange;
+                fired = true;
+                ChartboostCoreLogger.Log("FrameworkName Changed");
+            }
+            
             var frameworkName = ChartboostCore.AnalyticsEnvironment.FrameworkName;
+            yield return new WaitUntil(() => fired);
+            
             ChartboostCoreLogger.Log($"FrameworkName Analytics: {frameworkName}, Expected: {ConstFrameworkName}");
             Assert.IsNotNull(frameworkName);
             Assert.AreEqual(frameworkName, ConstFrameworkName);
@@ -413,11 +425,22 @@ namespace Chartboost.Core.Tests
             Assert.IsNull(ChartboostCore.AnalyticsEnvironment.FrameworkName);
         }
 
-        [Test, Order(1)]
-        public void FrameworkVersion()
+        [UnityTest, Order(1)]
+        public IEnumerator FrameworkVersion()
         {
             Assert.IsNull(ChartboostCore.AnalyticsEnvironment.FrameworkVersion);
+            var fired = false;
+            ChartboostCore.PublisherMetadata.FrameworkVersionChanged += WaitForChange;
+            void WaitForChange()
+            {
+                ChartboostCore.PublisherMetadata.FrameworkVersionChanged -= WaitForChange;
+                fired = true;
+                ChartboostCoreLogger.Log("FrameworkVersion Changed");
+            }
+            
             ChartboostCore.PublisherMetadata.SetFrameworkVersion(ConstFrameworkVersion);
+            yield return new WaitUntil(() => fired);
+            
             var frameworkVersion = ChartboostCore.AnalyticsEnvironment.FrameworkVersion;
             ChartboostCoreLogger.Log($"FrameworkVersion Analytics: {frameworkVersion}, Expected: {ConstFrameworkVersion}");
             Assert.IsNotNull(frameworkVersion);
@@ -427,11 +450,22 @@ namespace Chartboost.Core.Tests
             Assert.IsNull(ChartboostCore.AnalyticsEnvironment.FrameworkVersion);
         }
 
-        [Test, Order(1)]
-        public void IsUserUnderage()
+        [UnityTest, Order(1)]
+        public IEnumerator IsUserUnderage()
         {
             Assert.IsFalse(ChartboostCore.AnalyticsEnvironment.IsUserUnderage);
+            var fired = false;
+            ChartboostCore.PublisherMetadata.IsUserUnderageChanged += WaitForChange;
+            void WaitForChange()
+            {
+                ChartboostCore.PublisherMetadata.IsUserUnderageChanged -= WaitForChange;
+                fired = true;
+                ChartboostCoreLogger.Log("IsUserUnderage Changed");
+            }
+            
             ChartboostCore.PublisherMetadata.SetIsUserUnderage(ConstIsUserUnderage);
+            yield return new WaitUntil(() => fired);
+            
             var isUserUnderage = ChartboostCore.AnalyticsEnvironment.IsUserUnderage;
             ChartboostCoreLogger.Log($"IsUserUnderage Analytics: {isUserUnderage}, Expected: {ConstIsUserUnderage}");
             Assert.IsNotNull(isUserUnderage);
@@ -441,11 +475,22 @@ namespace Chartboost.Core.Tests
             Assert.IsFalse(ChartboostCore.AnalyticsEnvironment.IsUserUnderage);
         }
 
-        [Test, Order(1)]
-        public void PlayerIdentifier()
+        [UnityTest, Order(1)]
+        public IEnumerator PlayerIdentifier()
         {
             Assert.IsNull(ChartboostCore.AnalyticsEnvironment.PlayerIdentifier);
+            var fired = false;
+            ChartboostCore.PublisherMetadata.PlayerIdentifierChanged += WaitForChange;
+            void WaitForChange()
+            {
+                ChartboostCore.PublisherMetadata.PlayerIdentifierChanged -= WaitForChange;
+                fired = true;
+                ChartboostCoreLogger.Log("PlayerIdentifier Changed");
+            }
+            
             ChartboostCore.PublisherMetadata.SetPlayerIdentifier(ConstPlayerIdentifier);
+            yield return new WaitUntil(() => fired);
+            
             var playerIdentifier = ChartboostCore.AnalyticsEnvironment.PlayerIdentifier;
             ChartboostCoreLogger.Log($"PlayerIdentifier Analytics: {playerIdentifier}, Expected: {ConstPlayerIdentifier}");
             Assert.IsNotNull(playerIdentifier);
@@ -455,11 +500,22 @@ namespace Chartboost.Core.Tests
             Assert.IsNull(ChartboostCore.AnalyticsEnvironment.PlayerIdentifier);
         }
 
-        [Test, Order(1)]
-        public void PublisherApplicationIdentifier()
+        [UnityTest, Order(1)]
+        public IEnumerator PublisherApplicationIdentifier()
         {
             Assert.IsNull(ChartboostCore.AnalyticsEnvironment.PublisherAppIdentifier);
+            var fired = false;
+            ChartboostCore.PublisherMetadata.PublisherAppIdentifierChanged += WaitForChange;
+            void WaitForChange()
+            {
+                ChartboostCore.PublisherMetadata.PublisherAppIdentifierChanged -= WaitForChange;
+                fired = true;
+                ChartboostCoreLogger.Log("PublisherAppIdentifier Changed");
+            }
+            
             ChartboostCore.PublisherMetadata.SetPublisherAppIdentifier(Application.identifier);
+            yield return new WaitUntil(() => fired);
+            
             var publisherAppIdentifier = ChartboostCore.AnalyticsEnvironment.PublisherAppIdentifier;
             ChartboostCoreLogger.Log($"PublisherAppIdentifier Analytics: {publisherAppIdentifier}, Expected: {Application.identifier}");
             Assert.IsNotNull(publisherAppIdentifier);
@@ -469,11 +525,22 @@ namespace Chartboost.Core.Tests
             Assert.IsNull(ChartboostCore.AnalyticsEnvironment.PublisherAppIdentifier);
         }
 
-        [Test, Order(1)]
-        public void PublisherSessionIdentifier()
+        [UnityTest, Order(1)]
+        public IEnumerator PublisherSessionIdentifier()
         {
             Assert.IsNull(ChartboostCore.AnalyticsEnvironment.PublisherSessionIdentifier);
+            var fired = false;
+            ChartboostCore.PublisherMetadata.PublisherSessionIdentifierChanged += WaitForChange;
+            void WaitForChange()
+            {
+                ChartboostCore.PublisherMetadata.PublisherSessionIdentifierChanged -= WaitForChange;
+                fired = true;
+                ChartboostCoreLogger.Log("PublisherSessionIdentifier Changed");
+            }
+            
             ChartboostCore.PublisherMetadata.SetPublisherSessionIdentifier(ConstPublisherSessionIdentifier);
+            yield return new WaitUntil(() => fired);
+            
             var publisherSessionIdentifier = ChartboostCore.AnalyticsEnvironment.PublisherSessionIdentifier;
             ChartboostCoreLogger.Log($"PublisherSessionIdentifier Analytics: {publisherSessionIdentifier}, Expected: {ConstPublisherSessionIdentifier}");
             Assert.IsNotNull(publisherSessionIdentifier);

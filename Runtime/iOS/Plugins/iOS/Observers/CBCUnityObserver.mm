@@ -44,6 +44,7 @@ static NSMutableDictionary* _nativeModuleStore;
     [[self nativeModuleStore] setObject:nativeModule forKey:[nativeModule moduleID]];
 }
 
+#pragma mark CBCInitializableModuleObserver
 - (void)onModuleInitializationCompleted:(CBCModuleInitializationResult * _Nonnull)result {
     if (_onModuleInitializationCompleted == nil)
         return;
@@ -77,6 +78,7 @@ static NSMutableDictionary* _nativeModuleStore;
     [self removeModule:[[result module] moduleID]];
 }
 
+#pragma mark CBCConsentObserver
 - (void)onConsentChangeWithStandard:(CBCConsentStandard * _Nonnull)standard value:(CBCConsentValue * _Nullable)value {
     if (_onConsentChangeForStandard != nil)
         _onConsentChangeForStandard([[standard value] UTF8String], [[value value] UTF8String]);
@@ -91,27 +93,29 @@ static NSMutableDictionary* _nativeModuleStore;
     if (_onConsentReady != nil)
         _onConsentReady();
 }
+
+#pragma mark CBCPublisherMetadataObserver
+- (void)onChange:(enum CBCPublisherMetadataProperty)property {
+    if (_onPublisherMetadataPropertyChange != nil)
+        _onPublisherMetadataPropertyChange((int)property);
+}
+
 @end
 
 extern "C" {
-    void _chartboostCoreAddUnityModule(const char* moduleIdentifier, const char* moduleVersion, ChartboostCoreOnModuleInitializeCallback initializeCallback){
-                
-        id<CBCInitializableModule> chartboostCoreModule  = [[CBCModuleWrapper alloc] initWithModuleID:getNSStringOrEmpty(moduleIdentifier) moduleVersion:getNSStringOrEmpty(moduleVersion) initializeCallback:initializeCallback];
-        [[CBCUnityObserver sharedObserver] addModule:chartboostCoreModule];
+    void _chartboostCoreSetModuleInitializationCallback(ChartboostCoreOnModuleInitializationResult onModuleInitializationResult){
+        [[CBCUnityObserver sharedObserver] setOnModuleInitializationCompleted:onModuleInitializationResult];
     }
 
-    void _chartboostCoreAddNativeModule(const void* uniqueId){
-        id<CBCInitializableModule> chartboostCoreModule = (__bridge id<CBCInitializableModule>)uniqueId;
-        [[CBCUnityObserver sharedObserver] addModule:chartboostCoreModule];
+    void _chartboostCoreSetConsentCallbacks(ChartboostCoreOnEnumStatusChange onConsentStatusChange, ChartboostCoreOnConsentChangeForStandard onConsentChangeForStandard, ChartboostCoreAction onConsentModuleReady){
+        [[CBCUnityObserver sharedObserver] setOnConsentStatusChange:onConsentStatusChange];
+        [[CBCUnityObserver sharedObserver] setOnConsentChangeForStandard:onConsentChangeForStandard];
+        [[CBCUnityObserver sharedObserver] setOnConsentReady:onConsentModuleReady];
+        [[ChartboostCore consent] addObserver:[CBCUnityObserver sharedObserver]];
     }
 
-    const char* _chartboostCoreGetNativeModuleId(const void* uniqueId) {
-        id<CBCInitializableModule> chartboostCoreModule = (__bridge id<CBCInitializableModule>)uniqueId;
-        return getCStringOrNull([chartboostCoreModule moduleID]);
-    }
-
-    const char* _chartboostCoreGetNativeModuleVersion(const void* uniqueId) {
-        id<CBCInitializableModule> chartboostCoreModule = (__bridge id<CBCInitializableModule>)uniqueId;
-        return getCStringOrNull([chartboostCoreModule moduleVersion]);
+    void _chartboostCoreSetPublisherMetadataCallbacks(ChartboostCoreOnEnumStatusChange onPublisherMetadataPropertyChange){
+        [[CBCUnityObserver sharedObserver] setOnPublisherMetadataPropertyChange:onPublisherMetadataPropertyChange];
+        [[ChartboostCore publisherMetadata] addObserver:[CBCUnityObserver sharedObserver]];
     }
 }

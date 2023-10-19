@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Chartboost.Core.Consent;
 using Chartboost.Core.Environment;
 using Chartboost.Core.Initialization;
@@ -57,9 +58,9 @@ namespace Chartboost.Core
         /// <summary>
         /// The version of the Unity Core SDK.
         /// </summary>
-        public static string UnitySDKVersion => "0.2.0";
+        public static string UnitySDKVersion => "0.3.0";
 
-        public static void Initialize(SDKConfiguration sdkConfiguration, InitializableModule[] modules) => Instance._initialize(sdkConfiguration, modules);
+        public static void Initialize(SDKConfiguration sdkConfiguration, IEnumerable<InitializableModule> modules) => Instance._initialize(sdkConfiguration, modules);
         
         protected abstract IConsentManagementPlatform _consent { get; }
         protected abstract IPublisherMetadata _publisherMetadata { get; }
@@ -68,7 +69,7 @@ namespace Chartboost.Core
         protected abstract IAttributionEnvironment _attributionEnvironment { get; }
         protected abstract bool _debug { get; set; }
         protected abstract string _version { get; }
-        protected abstract void _initialize(SDKConfiguration sdkConfiguration, InitializableModule[] modules);
+        protected abstract void _initialize(SDKConfiguration sdkConfiguration, IEnumerable<InitializableModule> modules);
 
         protected static void OnModuleInitializationCompleted(ModuleInitializationResult result)
         {

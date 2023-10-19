@@ -20,11 +20,15 @@ class BridgeCBC {
         }
 
         @JvmStatic
+        fun clearModules(){
+            modules.clear()
+        }
+
+        @JvmStatic
         fun initializeSdk(sdkConfiguration: SdkConfiguration, observer: InitializableModuleObserver) {
             CoroutineScope(Main).launch {
                 UnityPlayer.currentActivity.let {
                     ChartboostCore.initializeSdk(it, sdkConfiguration, modules, observer)
-                    modules.clear()
                 }
             }
         }

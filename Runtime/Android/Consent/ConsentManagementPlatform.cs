@@ -19,8 +19,8 @@ namespace Chartboost.Core.Android.Consent
         internal ConsentManagementPlatform()
         {
             using var consentManagementPlatform = AndroidUtils.ConsentManagementPlatform();
-            consentManagementPlatform.Call(AndroidConstants.ConsentAddObserver,
-                new ConsentObserver(OnConsentChangeForStandard, OnConsentStatusChange, OnInitialConsentInfoAvailable));
+            consentManagementPlatform.Call(AndroidConstants.AddObserver,
+                new ConsentObserver(this));
         }
 
         /// <inheritdoc cref="IConsentManagementPlatform.ConsentStatus"/>
@@ -138,23 +138,23 @@ namespace Chartboost.Core.Android.Consent
         /// <inheritdoc cref="IConsentManagementPlatform.ConsentChangeForStandard"/>
         /// <param name="standard">The <see cref="ConsentStandard"/> obtained from the observer.</param>
         /// <param name="value">The <see cref="ConsentValue"/> obtained from the observer.</param>
-        private void OnConsentChangeForStandard(ConsentStandard standard, ConsentValue value)
+        internal void OnConsentChangeForStandard(ConsentStandard standard, ConsentValue value)
             => ConsentChangeForStandard?.Invoke(standard, value);
 
         /// <inheritdoc cref="IConsentManagementPlatform.ConsentStatusChange"/>
         /// <param name="status">The <see cref="ConsentStatus"/> value.</param>
-        private void OnConsentStatusChange(ConsentStatus status)
+        internal void OnConsentStatusChange(ConsentStatus status)
             => ConsentStatusChange?.Invoke(status);
 
         /// <inheritdoc cref="IConsentManagementPlatform.ConsentModuleReady"/>
-        private void OnInitialConsentInfoAvailable()
+        internal void OnConsentModuleReady()
             => ConsentModuleReady?.Invoke();
 
         ~ConsentManagementPlatform()
         {
             AndroidJNI.AttachCurrentThread();
             using var consentManagementPlatform = AndroidUtils.ConsentManagementPlatform();
-            consentManagementPlatform.Call(AndroidConstants.ConsentRemoveObserver, ConsentObserver.Instance);
+            consentManagementPlatform.Call(AndroidConstants.RemoveObserver, ConsentObserver.Instance);
             AndroidJNI.DetachCurrentThread();
         }
     }
