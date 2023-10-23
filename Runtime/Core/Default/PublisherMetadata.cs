@@ -1,3 +1,4 @@
+using System;
 using Chartboost.Core.Environment;
 
 namespace Chartboost.Core.Default
@@ -9,35 +10,55 @@ namespace Chartboost.Core.Default
     /// </summary>
     internal class PublisherMetadata : IPublisherMetadata
     {
-        internal static bool IsUserUnderAge;
+        internal static bool? IsUserUnderAge = false;
         internal static string PublisherSessionIdentifier;
         internal static string PublisherAppIdentifier;
         internal static string FrameworkName;
         internal static string FrameworkVersion;
         internal static string PlayerIdentifier;
 
+        public event Action IsUserUnderageChanged;
+        public event Action PublisherSessionIdentifierChanged;
+        public event Action PublisherAppIdentifierChanged;
+        public event Action FrameworkNameChanged;
+        public event Action FrameworkVersionChanged;
+        public event Action PlayerIdentifierChanged;
+
         /// <inheritdoc cref="IPublisherMetadata.SetIsUserUnderage"/>
-        public void SetIsUserUnderage(bool isUserUnderage) 
-            => IsUserUnderAge = isUserUnderage;
+        public void SetIsUserUnderage(bool isUserUnderage)
+        {
+            if (isUserUnderage == IsUserUnderAge)
+                return;
+            IsUserUnderAge = isUserUnderage;
+            IsUserUnderageChanged?.Invoke();
+        }
 
         /// <inheritdoc cref="IPublisherMetadata.SetPublisherSessionIdentifier"/>
-        public void SetPublisherSessionIdentifier(string publisherSessionIdentifier)
-            => PublisherSessionIdentifier = publisherSessionIdentifier;
+        public void SetPublisherSessionIdentifier(string publisherSessionIdentifier) 
+            => SetProperty(ref PublisherSessionIdentifier, publisherSessionIdentifier, PublisherSessionIdentifierChanged);
 
         /// <inheritdoc cref="IPublisherMetadata.SetPublisherAppIdentifier"/>
         public void SetPublisherAppIdentifier(string publisherAppIdentifier) 
-            => PublisherAppIdentifier = publisherAppIdentifier;
+            => SetProperty(ref PublisherAppIdentifier, publisherAppIdentifier, PublisherAppIdentifierChanged);
 
         /// <inheritdoc cref="IPublisherMetadata.SetFrameworkName"/>
         public void SetFrameworkName(string frameworkName)
-            => FrameworkName = frameworkName;
+            => SetProperty(ref FrameworkName, frameworkName, FrameworkNameChanged);
 
         /// <inheritdoc cref="IPublisherMetadata.SetFrameworkVersion"/>
         public void SetFrameworkVersion(string frameworkVersion) 
-            => FrameworkVersion = frameworkVersion;
+            => SetProperty(ref FrameworkVersion, frameworkVersion, FrameworkVersionChanged);
 
         /// <inheritdoc cref="IPublisherMetadata.SetPlayerIdentifier"/>
         public void SetPlayerIdentifier(string playerIdentifier) 
-            => PlayerIdentifier = playerIdentifier;
+            => SetProperty(ref PlayerIdentifier, playerIdentifier, PlayerIdentifierChanged);
+
+        private static void SetProperty(ref string property, string value, Action onChanged)
+        {
+            if (property == value)
+                return;
+            property = value;
+            onChanged?.Invoke();
+        }
     }
 }

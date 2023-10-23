@@ -1,9 +1,9 @@
 package com.chartboost.core.unity
 
 import android.content.Context
-import com.chartboost.core.error.ChartboostCoreError
 import com.chartboost.core.error.ChartboostCoreException
 import com.chartboost.core.initialization.InitializableModule
+import com.chartboost.core.initialization.ModuleInitializationConfiguration
 import org.json.JSONObject
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -17,8 +17,9 @@ class ModuleFactory {
             val unityModule = object : InitializableModule {
                 override val moduleId = id
                 override val moduleVersion = version
-                override suspend fun initialize(context: Context): Result<Unit> {
-                    val exception = awaitInitialization(initializer)
+
+                override suspend fun initialize(context: Context, moduleInitializationConfiguration: ModuleInitializationConfiguration): Result<Unit> {
+                    val exception = awaitInitialization(moduleInitializationConfiguration, initializer)
                     return if (exception == null)
                         Result.success(Unit)
                     else
@@ -29,9 +30,9 @@ class ModuleFactory {
                     TODO("Not yet implemented")
                 }
 
-                private suspend fun awaitInitialization(initializer: ModuleInitializerConsumer) : Exception? {
+                private suspend fun awaitInitialization(moduleInitializationConfiguration: ModuleInitializationConfiguration, initializer: ModuleInitializerConsumer) : Exception? {
                     return suspendCoroutine { continuation ->
-                        initializer.initialize(object : ModuleInitializeCompletion {
+                        initializer.initialize(moduleInitializationConfiguration, object : ModuleInitializeCompletion {
                             override fun completed(error: CoreErrorUnity?) {
                                 error?.let {
                                     continuation.resume(ChartboostCoreException(it))

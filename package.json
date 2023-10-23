@@ -1,7 +1,7 @@
 {
   "name": "com.chartboost.core",
   "displayName": "Chartboost Core",
-  "version": "0.2.0",
+  "version": "0.3.1",
   "unity": "2020.3",
   "dependencies": {
     "com.unity.nuget.newtonsoft-json": "3.2.1"

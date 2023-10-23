@@ -1,10 +1,12 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Chartboost.Core.Consent;
 using Chartboost.Core.Environment;
 using Chartboost.Core.Error;
 using Chartboost.Core.Initialization;
 using Chartboost.Core.Utilities;
+using UnityEngine;
 
 namespace Chartboost.Core.Default
 {
@@ -21,8 +23,8 @@ namespace Chartboost.Core.Default
         protected override IAnalyticsEnvironment _analyticsEnvironment { get; } = new AnalyticsEnvironment();
         protected override IAttributionEnvironment _attributionEnvironment { get; } = new AttributionEnvironment();
         protected override bool _debug { get; set; }
-        protected override string _version => "0.2.0";
-        protected override void _initialize(SDKConfiguration sdkConfiguration, InitializableModule[] modules)
+        protected override string _version => "0.3.0";
+        protected override void _initialize(SDKConfiguration sdkConfiguration, IEnumerable<InitializableModule> modules)
         {
             foreach (var module in modules)
             {
@@ -35,12 +37,12 @@ namespace Chartboost.Core.Default
                     continue;
                 }
 
-                Task.Run(async () =>
+                MainThreadDispatcher.MainThreadTask(async () =>
                 {
                     ChartboostCoreError? error = null;
                     try
                     {
-                        error = await await MainThreadDispatcher.MainThreadTask(module.OnInitialize);
+                        error = await module.OnInitialize(new ModuleInitializationConfiguration(Application.identifier));
                     }
                     catch (Exception e)
                     {

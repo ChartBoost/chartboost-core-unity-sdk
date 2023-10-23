@@ -54,7 +54,7 @@ namespace Chartboost.Core.Initialization
         public override string ModuleVersion 
             => _instance?.ModuleVersion ?? DefaultModuleVersion;
 
-        protected override Task<ChartboostCoreError?> Initialize()
+        protected override Task<ChartboostCoreError?> Initialize(ModuleInitializationConfiguration configuration)
         {
             throw new NotImplementedException();
         }

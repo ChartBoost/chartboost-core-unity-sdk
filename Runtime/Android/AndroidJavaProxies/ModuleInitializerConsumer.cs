@@ -2,7 +2,9 @@ using System;
 using System.Threading.Tasks;
 using Chartboost.Core.Android.Utilities;
 using Chartboost.Core.Error;
+using Chartboost.Core.Initialization;
 using Chartboost.Core.Utilities;
+using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Scripting;
 
@@ -13,24 +15,27 @@ namespace Chartboost.Core.Android.AndroidJavaProxies
     /// </summary>
     internal class ModuleInitializerConsumer : AndroidJavaProxy
     {
-        private readonly Func<Task<ChartboostCoreError?>> _initCallback;
-        public ModuleInitializerConsumer(Func<Task<ChartboostCoreError?>> initCallback) : base(AndroidConstants.ModuleInitializerConsumer) 
+        private readonly Func<object, Task<ChartboostCoreError?>> _initCallback;
+        public ModuleInitializerConsumer(Func<object, Task<ChartboostCoreError?>> initCallback) : base(AndroidConstants.ModuleInitializerConsumer) 
             => _initCallback = initCallback;
 
         /// <summary>
         /// Initializes the previously retained module init.
         /// </summary>
+        /// <param name="moduleConfiguration"></param>
         /// <param name="completion">Completion object to notify the native layer of Unity modules initialization completion.</param>
         [Preserve]
         // ReSharper disable once InconsistentNaming
-        private void initialize(AndroidJavaObject completion)
+        private void initialize(AndroidJavaObject moduleConfiguration, AndroidJavaObject completion)
         {
-            Task.Run(async () =>
+            MainThreadDispatcher.MainThreadTask(async () =>
             {
                 ChartboostCoreError? error = null; 
                 try
                 {
-                    error = await await MainThreadDispatcher.MainThreadTask(_initCallback);
+                    var identifier = moduleConfiguration.Get<string>("chartboostApplicationIdentifier");
+                    ModuleInitializationConfiguration? configuration = new ModuleInitializationConfiguration(identifier);
+                    error = await _initCallback(configuration);
                 }
                 catch (Exception e)
                 {
@@ -40,9 +45,7 @@ namespace Chartboost.Core.Android.AndroidJavaProxies
                 {
                     try
                     {
-                        AndroidJNI.AttachCurrentThread();
                         completion.Call(AndroidConstants.FunctionCompleted, error?.ToNativeCoreError());
-                        AndroidJNI.DetachCurrentThread();
                     }
                     catch (Exception e)
                     {

@@ -3,14 +3,13 @@
 #import <AppTrackingTransparency/AppTrackingTransparency.h>
 #import <ChartboostcoreSDK/ChartboostCoreSDK-Swift.h>
 
-typedef void (*ChartboostCoreOnModuleInitializationResultCallback)(const char* moduleIdentifier, long start, long end, long duration, const char* exception);
-typedef void (*ChartboostCoreOnModuleInitializeCompletion)(const char* errorJson);
-typedef void (*ChartboostCoreOnModuleInitializeCallback)(const char* moduleIdentifier);
-typedef void (*ChartboostCoreOnConsentStatusChangeCallback)(int status);
-typedef void (*ChartboostCoreOnConsentChangeCallback)(const char* standard, const char* value);
-typedef void (*ChartboostCoreAction)();
+typedef void (*ChartboostCoreOnModuleInitializationResult)(const char* moduleIdentifier, long start, long end, long duration, const char* exception);
+typedef void (*ChartboostCoreOnModuleInitializeDelegate)(const char* moduleIdentifier, const char* chartboostAppIdentifier);
+typedef void (*ChartboostCoreOnConsentChangeForStandard)(const char* standard, const char* value);
+typedef void (*ChartboostCoreOnEnumStatusChange)(int value);
 typedef void (*ChartbosotCoreResultString)(int hashCode, const char* result);
 typedef void (*ChartboostCoreResultBoolean)(int hashCode, bool completion);
+typedef void (*ChartboostCoreAction)();
 
 typedef void (^block)(void);
 

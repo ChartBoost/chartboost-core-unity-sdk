@@ -7,12 +7,30 @@ extern "C" {
         return getCStringOrNull([ChartboostCore sdkVersion]);
     }
 
-    void _chartboostCoreInitialize(const char* chartboostAppIdentifier, ChartboostCoreOnModuleInitializationResultCallback moduleInitializationCallback)
+    void _chartboostCoreInitialize(const char* chartboostAppIdentifier)
     {
         CBCSDKConfiguration* configuration = [[CBCSDKConfiguration alloc] initWithChartboostAppID:getNSStringOrEmpty(chartboostAppIdentifier)];
-        
-        [[CBCUnityObserver sharedObserver] setOnModuleInitializationCompleted:moduleInitializationCallback];
-                
         [ChartboostCore initializeSDKWithConfiguration:configuration modules:[[[CBCUnityObserver sharedObserver] initializableModules] allValues] moduleObserver:[CBCUnityObserver sharedObserver]];
+    }
+
+    void _chartboostCoreAddUnityModule(const char* moduleIdentifier, const char* moduleVersion, ChartboostCoreOnModuleInitializeDelegate initializeCallback){
+
+        id<CBCInitializableModule> chartboostCoreModule  = [[CBCModuleWrapper alloc] initWithModuleID:getNSStringOrEmpty(moduleIdentifier) moduleVersion:getNSStringOrEmpty(moduleVersion) initializeCallback:initializeCallback];
+        [[CBCUnityObserver sharedObserver] addModule:chartboostCoreModule];
+    }
+
+    void _chartboostCoreAddNativeModule(const void* uniqueId){
+        id<CBCInitializableModule> chartboostCoreModule = (__bridge id<CBCInitializableModule>)uniqueId;
+        [[CBCUnityObserver sharedObserver] addModule:chartboostCoreModule];
+    }
+
+    const char* _chartboostCoreGetNativeModuleId(const void* uniqueId) {
+        id<CBCInitializableModule> chartboostCoreModule = (__bridge id<CBCInitializableModule>)uniqueId;
+        return getCStringOrNull([chartboostCoreModule moduleID]);
+    }
+
+    const char* _chartboostCoreGetNativeModuleVersion(const void* uniqueId) {
+        id<CBCInitializableModule> chartboostCoreModule = (__bridge id<CBCInitializableModule>)uniqueId;
+        return getCStringOrNull([chartboostCoreModule moduleVersion]);
     }
 }

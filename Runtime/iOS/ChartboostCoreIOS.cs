@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using AOT;
@@ -25,6 +26,9 @@ namespace Chartboost.Core.iOS
             Instance = new ChartboostCoreIOS();
         }
 
+        public ChartboostCoreIOS() 
+            => _chartboostCoreSetModuleInitializationCallback(OnModuleInitializationResult);
+
         protected override IConsentManagementPlatform _consent { get; } = new ConsentManagementPlatform();
 
         protected override IPublisherMetadata _publisherMetadata { get; } = new PublisherMetadata();
@@ -37,7 +41,7 @@ namespace Chartboost.Core.iOS
         protected override bool _debug { get; set; }
         protected override string _version => _getChartboostCoreVersion();
 
-        protected override void _initialize(SDKConfiguration sdkConfiguration, InitializableModule[] modules)
+        protected override void _initialize(SDKConfiguration sdkConfiguration, IEnumerable<InitializableModule> modules)
         {
             foreach (var module in modules)
             {
@@ -45,35 +49,39 @@ namespace Chartboost.Core.iOS
                 if (module.NativeModule)
                     module.AddNativeInstance();
                 else
-                   _chartboostCoreAddUnityModule(module.ModuleId, module.ModuleVersion, OnModuleInitializeCallback);
+                   _chartboostCoreAddUnityModule(module.ModuleId, module.ModuleVersion, OnModuleInitialize);
             }
 
-            _chartboostCoreInitialize(sdkConfiguration.ChartboostApplicationIdentifier, OnModuleInitializationResultCallback);
+            _chartboostCoreInitialize(sdkConfiguration.ChartboostApplicationIdentifier, OnModuleInitializationResult);
         }
 
-        [MonoPInvokeCallback(typeof(ChartboostCoreOnModuleInitializationResultCallback))]
-        private static void OnModuleInitializationResultCallback(string moduleIdentifier, long start, long end, long duration, string jsonError)
+        [MonoPInvokeCallback(typeof(ChartboostCoreOnModuleInitializationResult))]
+        private static void OnModuleInitializationResult(string moduleIdentifier, long start, long end, long duration, string jsonError)
         {
-            var module = PendingModuleCache.GetInitializableModule(moduleIdentifier);
-            ChartboostCoreError? coreError = null;
-            if (!string.IsNullOrEmpty(jsonError))
-                coreError = JsonConvert.DeserializeObject<ChartboostCoreError>(jsonError);
-            var result = new ModuleInitializationResult(start, end, duration, coreError, module!);
-            OnModuleInitializationCompleted(result);
-            if (coreError == null)
-                module.OnModuleReady();
+            MainThreadDispatcher.Post(o =>
+            {
+                var module = PendingModuleCache.GetInitializableModule(moduleIdentifier);
+                ChartboostCoreError? coreError = null;
+                if (!string.IsNullOrEmpty(jsonError))
+                    coreError = JsonConvert.DeserializeObject<ChartboostCoreError>(jsonError);
+                var result = new ModuleInitializationResult(start, end, duration, coreError, module!);
+                OnModuleInitializationCompleted(result);
+                if (coreError == null)
+                    module.OnModuleReady();
+            });
         }
         
         [MonoPInvokeCallback(typeof(ChartboostCoreOnModuleInitializeDelegate))]
-        private static void OnModuleInitializeCallback(string moduleIdentifier)
+        private static void OnModuleInitialize(string moduleIdentifier, string chartboostAppIdentifier)
         {
-            Task.Run(async () =>
+            MainThreadDispatcher.MainThreadTask(async () =>
             {
                 ChartboostCoreError? error = null;
                 try
                 {
                     var module = PendingModuleCache.GetInitializableModule(moduleIdentifier);
-                    error = await await MainThreadDispatcher.MainThreadTask(module!.OnInitialize);
+                    var moduleConfiguration = new ModuleInitializationConfiguration(chartboostAppIdentifier);
+                    error = await module!.OnInitialize(moduleConfiguration);
                 }
                 catch (Exception e)
                 {
@@ -97,14 +105,12 @@ namespace Chartboost.Core.iOS
             });
         }
 
-        private delegate void ChartboostCoreOnModuleInitializationResultCallback(string moduleIdentifier, long start, long end, long duration, string exception);
-        private delegate void ChartboostCoreOnModuleInitializeDelegate(string moduleIdentifier);
-
         #nullable enable
-        [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreInitialize(string chartboostAppIdentifier, ChartboostCoreOnModuleInitializationResultCallback moduleInitializationCallback);
+        [DllImport(IOSConstants.DLLImport)] private static extern string _getChartboostCoreVersion();
+        [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreInitialize(string chartboostAppIdentifier, ChartboostCoreOnModuleInitializationResult moduleInitialization);
         [DllImport(IOSConstants.DLLImport)] private static extern void _completeModuleInitialization(string moduleIdentifier, string? jsonError);
         [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreAddUnityModule(string moduleIdentifier, string moduleVersion, ChartboostCoreOnModuleInitializeDelegate moduleInitializer);
-        [DllImport(IOSConstants.DLLImport)] private static extern string _getChartboostCoreVersion();
+        [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreSetModuleInitializationCallback(ChartboostCoreOnModuleInitializationResult onModuleInitializationResult);
         #nullable disable
     }
 }

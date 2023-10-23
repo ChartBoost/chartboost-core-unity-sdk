@@ -28,13 +28,14 @@ namespace Chartboost.Core.Initialization
         /// <summary>
         /// The designated initializer for the module. Sets up the module to make it ready to be used.
         /// </summary>
+        /// <param name="configuration"></param>
         /// <returns> An error should be passed if the initialization failed, whereas null should be passed if it succeeded.</returns>
-        protected abstract Task<ChartboostCoreError?> Initialize();
+        protected abstract Task<ChartboostCoreError?> Initialize(ModuleInitializationConfiguration configuration);
 
         /// <summary>
         /// Event invocation for <see cref="InitializableModule.Initialize"/>, called internally.
         /// </summary>
-        internal async Task<ChartboostCoreError?> OnInitialize() => await Initialize();
+        internal async Task<ChartboostCoreError?> OnInitialize(object configuration) => await Initialize((ModuleInitializationConfiguration)configuration);
 
         /// <summary>
         /// Event invocation for <see cref="InitializableModule.ModuleReady"/>, called internally.

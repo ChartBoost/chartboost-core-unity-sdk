@@ -1,6 +1,19 @@
 # Changelog
 All notable changes to this project will be documented in this file using the standards as defined at [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0).
 
+## Version 0.3.1 *(2023-10-19)*
+Bug Fixes:
+- Fix Android dependencies for Chartboost Core Unity SDK 0.3.1.
+
+## Version 0.3.0 *(2023-10-19)*
+Improvements:
+- Added support for observing changes to `IPublisherMetadata` properties via events.
+- Propagated Chartboost app ID to modules on initialization via `ModuleInitializationConfiguration.ChartboostApplicationIdentifier`.
+- Optimized `InitializableModule.Initialize` calls for Android and iOS platforms.
+
+Bug Fixes:
+- Fixed an error where Exceptions would be raised when calling nullable boolean values before initializing the SDK.
+
 ### Version 0.2.0 *(2023-09-07)*
 Improvements:
 - Added Unity Editor API coverage.
