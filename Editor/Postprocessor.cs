@@ -1,12 +1,14 @@
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using UnityEditor;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
+#if UNITY_IOS
 using UnityEditor.iOS.Xcode;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+#endif
 
-namespace Editor
+namespace Chartboost.Core.Editor
 {
     public class Postprocessor : IPostprocessBuildWithReport
     {

@@ -14,19 +14,24 @@ namespace Chartboost.Core.Consent
         /// <summary>
         /// The current consent status determined by the CMP. Returns <see cref="Chartboost.Core.Consent.ConsentStatus.Unknown"/> if no consent adapter module is available.
         /// </summary>
-        abstract ConsentStatus ConsentStatus { get; }
+        ConsentStatus ConsentStatus { get; }
 
         /// <summary>
         /// Detailed consent status for each consent standard, as determined by the CMP.
         /// Returns an empty dictionary if no consent adapter module is available.
         /// </summary>
-        abstract Dictionary<ConsentStandard, ConsentValue?> Consents { get; }
+        Dictionary<ConsentStandard, ConsentValue?> Consents { get; }
+
+        /// <summary>
+        /// A map of partner identifiers to their respective consent status.
+        /// </summary>
+        Dictionary<string, ConsentStatus> PartnerConsentStatus { get; }
 
         /// <summary>
         /// Indicates whether the CMP has determined that consent should be collected from the user.
         /// Returns false if no consent adapter module is available.
         /// </summary>
-        abstract bool ShouldCollectConsent { get; }
+        bool ShouldCollectConsent { get; }
 
         /// <summary>
         /// Informs the CMP that the user has granted consent.
@@ -64,17 +69,22 @@ namespace Chartboost.Core.Consent
         /// <summary>
         /// Called whenever the <see cref="IConsentManagementPlatform.Consents"/> value changed.
         /// </summary>
-        abstract event ChartboostConsentChangeForStandard ConsentChangeForStandard;
+        event ChartboostConsentChangeForStandard ConsentChangeForStandard;
         
         /// <summary>
         /// Called whenever the <see cref="IConsentManagementPlatform.ConsentStatus"/> value changed.
         /// </summary>
-        abstract event ChartboostConsentStatusChange ConsentStatusChange;
+        event ChartboostConsentStatusChange ConsentStatusChange;
+
+        /// <summary>
+        /// Called whenever the <see cref="IConsentManagementPlatform.PartnerConsentStatus"/> values changed.
+        /// </summary>
+        event ChartboostPartnerConsentStatusChange PartnerConsentStatusChange;
         
         /// <summary>
         /// Called when the initial values for <see cref="IConsentManagementPlatform.ConsentStatus"/> and <see cref="IConsentManagementPlatform.Consents"/> first become available for the current session.
         /// </summary>
-        abstract event Action ConsentModuleReady;
+        event Action ConsentModuleReady;
     }
     #nullable disable
 }

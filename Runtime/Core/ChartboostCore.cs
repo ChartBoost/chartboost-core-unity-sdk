@@ -58,7 +58,7 @@ namespace Chartboost.Core
         /// <summary>
         /// The version of the Unity Core SDK.
         /// </summary>
-        public static string UnitySDKVersion => "0.3.0";
+        public static string UnitySDKVersion => "0.4.0";
 
         public static void Initialize(SDKConfiguration sdkConfiguration, IEnumerable<InitializableModule> modules) => Instance._initialize(sdkConfiguration, modules);
         

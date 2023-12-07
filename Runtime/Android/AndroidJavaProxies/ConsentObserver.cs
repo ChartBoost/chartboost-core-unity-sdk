@@ -48,8 +48,14 @@ namespace Chartboost.Core.Android.AndroidJavaProxies
         [Preserve]
         // ReSharper disable once InconsistentNaming
         private void onConsentStatusChange(AndroidJavaObject nativeStatus) 
-            => MainThreadDispatcher.Post(o => _environment.OnConsentStatusChange(AndroidUtils.ToString(nativeStatus).ConsentStatus()));
+            => MainThreadDispatcher.Post(o => _environment.OnConsentStatusChange(nativeStatus.ToCSharpString().ConsentStatus()));
 
+        /// <inheritdoc cref="IConsentManagementPlatform.PartnerConsentStatusChange"/>
+        [Preserve]
+        // ReSharper disable once InconsistentNaming
+        private void onPartnerConsentStatusChange(string partnerIdentifier, AndroidJavaObject consentStatus)
+            => MainThreadDispatcher.Post(o => _environment.OnPartnerConsentStatusChange(partnerIdentifier, consentStatus.ToCSharpString().ConsentStatus()));
+        
         /// <inheritdoc cref="IConsentManagementPlatform.ConsentModuleReady"/>
         [Preserve]
         // ReSharper disable once InconsistentNaming

@@ -5,6 +5,13 @@ namespace Chartboost.Core.Android.Utilities
     internal class AndroidConstants
     {
         #region Native Java/Kotlin Classes
+
+        internal const string ClassString = "java.lang.String";
+        internal const string ClassBoolean = "java.lang.Boolean";
+        internal const string ClassHashMap = "java.util.HashMap";
+
+        internal const string FunctionPut = "put";
+        internal const string FunctionSize = "size";
         internal const string FunctionToString = "toString";
         internal const string FunctionGetValue = "getValue";
         internal const string FunctionNext = "next";
@@ -57,6 +64,7 @@ namespace Chartboost.Core.Android.Utilities
         internal const string Consent = "getConsent";
         internal const string GetConsentShouldCollect = "getShouldCollectConsent";
         internal const string GetConsents = "getConsents";
+        internal const string GetPartnerConsentStatus = "getPartnerConsentStatus";
         internal const string GetConsentStatus = "getConsentStatus";
         internal const string GrantConsentStatus = "grantConsentStatus";
         internal const string DenyConsentStatus = "denyConsentStatus";
