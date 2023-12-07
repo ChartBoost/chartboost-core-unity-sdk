@@ -20,7 +20,7 @@ namespace Chartboost.Core.iOS.Consent
         private static ConsentManagementPlatform _instance;
 
         static ConsentManagementPlatform()
-            => _chartboostCoreSetConsentCallbacks(OnConsentStatusChange, OnConsentChangeForStandard, OnConsentModuleReady);
+            => _chartboostCoreSetConsentCallbacks(OnConsentStatusChange, OnConsentChangeForStandard, OnPartnerConsentChange, OnConsentModuleReady);
 
         internal ConsentManagementPlatform() 
             => _instance ??= this;
@@ -36,6 +36,15 @@ namespace Chartboost.Core.iOS.Consent
             {
                 var json = _chartboostCoreGetConsents();
                 return JsonConvert.DeserializeObject<Dictionary<ConsentStandard, ConsentValue>>(json);
+            }
+        }
+
+        /// <inheritdoc cref="IConsentManagementPlatform.PartnerConsentStatus"/>
+        public Dictionary<string, ConsentStatus> PartnerConsentStatus {
+            get
+            {
+                var json = _chartboostCoreGetPartnerConsents();
+                return JsonConvert.DeserializeObject<Dictionary<string, ConsentStatus>>(json);
             }
         }
 
@@ -80,7 +89,10 @@ namespace Chartboost.Core.iOS.Consent
         
         /// <inheritdoc cref="IConsentManagementPlatform.ConsentStatusChange"/>
         public event ChartboostConsentStatusChange ConsentStatusChange;
-        
+
+        /// <inheritdoc cref="IConsentManagementPlatform.PartnerConsentStatusChange"/>
+        public event ChartboostPartnerConsentStatusChange PartnerConsentStatusChange;
+
         /// <inheritdoc cref="IConsentManagementPlatform.ConsentModuleReady"/>
         public event Action ConsentModuleReady;
 
@@ -96,6 +108,11 @@ namespace Chartboost.Core.iOS.Consent
         [MonoPInvokeCallback(typeof(ChartboostCoreOnEnumStatusChange))]
         private static void OnConsentStatusChange(int status) 
             => MainThreadDispatcher.Post(o => _instance?.ConsentStatusChange?.Invoke((ConsentStatus)status));
+
+        /// <inheritdoc cref="IConsentManagementPlatform.PartnerConsentStatusChange"/>
+        [MonoPInvokeCallback(typeof(ChartboostCoreOnPartnerConsentChange))]
+        private static void OnPartnerConsentChange(string partnerIdentifier, int value)
+            => MainThreadDispatcher.Post(o => _instance?.PartnerConsentStatusChange?.Invoke(partnerIdentifier, (ConsentStatus)value));
 
         /// <inheritdoc cref="IConsentManagementPlatform.ConsentModuleReady"/>
         [MonoPInvokeCallback(typeof(Action))]
@@ -113,11 +130,12 @@ namespace Chartboost.Core.iOS.Consent
 
         [DllImport(IOSConstants.DLLImport)] private static extern int _chartboostCoreGetConsentStatus();
         [DllImport(IOSConstants.DLLImport)] private static extern string _chartboostCoreGetConsents();
+        [DllImport(IOSConstants.DLLImport)] private static extern string _chartboostCoreGetPartnerConsents();
         [DllImport(IOSConstants.DLLImport)] private static extern bool _chartboostCoreShouldCollectConsent();
         [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreGrantConsent(int statusSource, int hashCode, ChartboostCoreOnResultBoolean callback);
         [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreDenyConsent(int statusSource, int hashCode, ChartboostCoreOnResultBoolean callback);
         [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreResetConsent(int hashCode, ChartboostCoreOnResultBoolean callback);
         [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreShowConsentDialog(int dialogType, int hashCode, ChartboostCoreOnResultBoolean callback);
-        [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreSetConsentCallbacks(ChartboostCoreOnEnumStatusChange onEnumStatusChange, ChartboostCoreOnConsentChangeForStandard onConsentChangeForStandard, Action onInitialConsentInfoAvailable);
+        [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreSetConsentCallbacks(ChartboostCoreOnEnumStatusChange onEnumStatusChange, ChartboostCoreOnConsentChangeForStandard onConsentChangeForStandard, ChartboostCoreOnPartnerConsentChange onPartnerConsentChange, Action onInitialConsentInfoAvailable);
     }
 }

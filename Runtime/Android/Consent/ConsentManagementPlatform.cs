@@ -61,6 +61,31 @@ namespace Chartboost.Core.Android.Consent
             }
         }
 
+        /// <inheritdoc cref="IConsentManagementPlatform.PartnerConsentStatus"/>
+        public Dictionary<string, ConsentStatus> PartnerConsentStatus {
+            get
+            {
+                var ret = new Dictionary<string, ConsentStatus>();
+                using var consentManagementPlatform = AndroidUtils.ConsentManagementPlatform();
+                using var partnerConsentStatus = consentManagementPlatform.Call<AndroidJavaObject>(AndroidConstants.GetPartnerConsentStatus);
+               
+                var size = partnerConsentStatus.Call<int>(AndroidConstants.FunctionSize);
+                if (size == 0)
+                    return ret;
+
+                using var entrySet = partnerConsentStatus.Call<AndroidJavaObject>(AndroidConstants.FunctionEntrySet);
+                using var iterator = entrySet.Call<AndroidJavaObject>(AndroidConstants.FunctionIterator);
+                do
+                {
+                    using var entry = iterator.Call<AndroidJavaObject>(AndroidConstants.FunctionNext);
+                    var key = entry.Call<string>(AndroidConstants.FunctionGetKey);
+                    var value = entry.Call<AndroidJavaObject>(AndroidConstants.FunctionGetValue).ToCSharpString().ConsentStatus();
+                    ret[key] = value;
+                } while (iterator.Call<bool>(AndroidConstants.FunctionHasNext));
+                return ret;
+            }
+        }
+
         /// <inheritdoc cref="IConsentManagementPlatform.ShouldCollectConsent"/>
         public bool ShouldCollectConsent
         {
@@ -128,9 +153,12 @@ namespace Chartboost.Core.Android.Consent
 
         /// <inheritdoc cref="IConsentManagementPlatform.ConsentChangeForStandard"/>
         public event ChartboostConsentChangeForStandard ConsentChangeForStandard;
-        
+
         /// <inheritdoc cref="IConsentManagementPlatform.ConsentStatusChange"/>
         public event ChartboostConsentStatusChange ConsentStatusChange;
+        
+        /// <inheritdoc cref="IConsentManagementPlatform.PartnerConsentStatusChange"/>
+        public event ChartboostPartnerConsentStatusChange PartnerConsentStatusChange;
         
         /// <inheritdoc cref="IConsentManagementPlatform.ConsentModuleReady"/>
         public event Action ConsentModuleReady;
@@ -145,6 +173,10 @@ namespace Chartboost.Core.Android.Consent
         /// <param name="status">The <see cref="ConsentStatus"/> value.</param>
         internal void OnConsentStatusChange(ConsentStatus status)
             => ConsentStatusChange?.Invoke(status);
+
+        /// <inheritdoc cref="IConsentManagementPlatform.PartnerConsentStatusChange"/>
+        internal void OnPartnerConsentStatusChange(string partnerIdentifier, ConsentStatus consentStatus)
+            => PartnerConsentStatusChange?.Invoke(partnerIdentifier, consentStatus);
 
         /// <inheritdoc cref="IConsentManagementPlatform.ConsentModuleReady"/>
         internal void OnConsentModuleReady()

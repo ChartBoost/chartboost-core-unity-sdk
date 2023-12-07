@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file using the standards as defined at [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0).
 
+### Version 0.4.0 *(2023-12-7)*
+Improvements:
+- Added `PartnerConsentStatus: Dictionary<String, ConsentStatus>` to `IConsentManagementPlatform`. This is to facilitate per-partner consent for Mediation.
+- Added `delegate void ChartboostPartnerConsentStatusChange(string partnerIdentifier, ConsentStatus status) PartnerConsentStatusChange` to `IConsentManagementPlatform`.
+- Added a `IPostGenerateGradleAndroidProject` build processor to automate Gradle modifications.
+- Added `ChartboostCore.androidlib` to unify Chartboost Core Gradle modifications and automations.
+
 ## Version 0.3.1 *(2023-10-19)*
 Bug Fixes:
 - Fix Android dependencies for Chartboost Core Unity SDK 0.3.1.

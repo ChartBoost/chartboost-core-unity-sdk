@@ -17,7 +17,10 @@ namespace Chartboost.Core.Default
         
         /// <inheritdoc cref="IConsentManagementPlatform.Consents"/>
         public Dictionary<ConsentStandard, ConsentValue> Consents { get; } = new Dictionary<ConsentStandard, ConsentValue>();
-        
+
+        /// <inheritdoc cref="IConsentManagementPlatform.PartnerConsentStatus"/>
+        public Dictionary<string, ConsentStatus> PartnerConsentStatus { get; } = new Dictionary<string, ConsentStatus>();
+
         /// <inheritdoc cref="IConsentManagementPlatform.ShouldCollectConsent"/>
         public bool ShouldCollectConsent => false;
         
@@ -43,7 +46,10 @@ namespace Chartboost.Core.Default
         
         /// <inheritdoc cref="IConsentManagementPlatform.ConsentStatusChange"/>
         public event ChartboostConsentStatusChange ConsentStatusChange;
-        
+
+        /// <inheritdoc cref="IConsentManagementPlatform.PartnerConsentStatusChange"/>
+        public event ChartboostPartnerConsentStatusChange PartnerConsentStatusChange;
+
         /// <inheritdoc cref="IConsentManagementPlatform.ConsentModuleReady"/>
         public event Action ConsentModuleReady;
         #pragma warning restore 0067

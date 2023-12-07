@@ -18,6 +18,11 @@ extern "C" {
         return dictToJson(retConsents);
     }
 
+    const char* _chartboostCoreGetPartnerConsents(){
+        NSDictionary<NSString*, NSNumber*>* partnerConsents = [[ChartboostCore consent] objc_partnerConsentStatus];
+        return dictToJson(partnerConsents);
+    }
+
     bool _chartboostCoreShouldCollectConsent(){
         return [[ChartboostCore consent] shouldCollectConsent];
     }

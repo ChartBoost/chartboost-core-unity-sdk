@@ -94,6 +94,11 @@ static NSMutableDictionary* _nativeModuleStore;
         _onConsentReady();
 }
 
+- (void)onPartnerConsentStatusChangeWithPartnerID:(NSString * _Nonnull)partnerID status:(enum CBCConsentStatus)status {
+    if (_onPartnerConsentChange != nil)
+        _onPartnerConsentChange([partnerID UTF8String], (int)status);
+}
+
 #pragma mark CBCPublisherMetadataObserver
 - (void)onChange:(enum CBCPublisherMetadataProperty)property {
     if (_onPublisherMetadataPropertyChange != nil)
@@ -107,9 +112,10 @@ extern "C" {
         [[CBCUnityObserver sharedObserver] setOnModuleInitializationCompleted:onModuleInitializationResult];
     }
 
-    void _chartboostCoreSetConsentCallbacks(ChartboostCoreOnEnumStatusChange onConsentStatusChange, ChartboostCoreOnConsentChangeForStandard onConsentChangeForStandard, ChartboostCoreAction onConsentModuleReady){
+    void _chartboostCoreSetConsentCallbacks(ChartboostCoreOnEnumStatusChange onConsentStatusChange, ChartboostCoreOnConsentChangeForStandard onConsentChangeForStandard, ChartboostCoreOnPartnerConsentChange onPartnerConsentChange, ChartboostCoreAction onConsentModuleReady){
         [[CBCUnityObserver sharedObserver] setOnConsentStatusChange:onConsentStatusChange];
         [[CBCUnityObserver sharedObserver] setOnConsentChangeForStandard:onConsentChangeForStandard];
+        [[CBCUnityObserver sharedObserver] setOnPartnerConsentChange:onPartnerConsentChange];
         [[CBCUnityObserver sharedObserver] setOnConsentReady:onConsentModuleReady];
         [[ChartboostCore consent] addObserver:[CBCUnityObserver sharedObserver]];
     }

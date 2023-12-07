@@ -16,6 +16,7 @@
 #pragma mark CBCConsentObserver
 @property ChartboostCoreOnEnumStatusChange onConsentStatusChange;
 @property ChartboostCoreOnConsentChangeForStandard onConsentChangeForStandard;
+@property ChartboostCoreOnPartnerConsentChange onPartnerConsentChange;
 @property ChartboostCoreAction onConsentReady;
 
 #pragma mark CBCPublisherMetadataObserver

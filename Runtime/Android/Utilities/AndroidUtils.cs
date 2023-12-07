@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Chartboost.Core.Consent;
 using Chartboost.Core.Error;
 using Chartboost.Core.Initialization;
@@ -107,6 +108,31 @@ namespace Chartboost.Core.Android.Utilities
                 ConsentStatusSource.Developer => statusSourceEnumClass.GetStatic<AndroidJavaObject>(AndroidConstants.ConsentStatusSourceEnumDeveloper),
                 _ => statusSourceEnumClass.GetStatic<AndroidJavaObject>(AndroidConstants.ConsentStatusSourceEnumDeveloper)
             };
+        }
+
+        public static AndroidJavaObject DictionaryToMap(this IDictionary<string, string> source)
+            => DictionaryToMap(source, AndroidConstants.ClassString);
+        
+        public static AndroidJavaObject DictionaryToMap(this IDictionary<string, bool> source)
+            => DictionaryToMap(source, AndroidConstants.ClassBoolean);
+
+        private static AndroidJavaObject DictionaryToMap<TValue>(IDictionary<string, TValue> source, string valueFunc)
+        {
+            var map = new AndroidJavaObject(AndroidConstants.ClassHashMap);
+            
+            if (source == null || source.Count == 0)
+                return map;
+            
+            foreach (var kv in source)
+            {
+                var partnerId = kv.Key;
+                if (string.IsNullOrEmpty(partnerId))
+                    continue;
+                using var key = new AndroidJavaObject(AndroidConstants.ClassString, partnerId);
+                using var value = new AndroidJavaObject(valueFunc, kv.Value);
+                map.Call<AndroidJavaClass>(AndroidConstants.FunctionPut, partnerId, value);
+            }
+            return map;
         }
     }
 }

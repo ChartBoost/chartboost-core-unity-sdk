@@ -12,7 +12,7 @@ namespace Chartboost.Core.Android.Utilities
         /// </summary>
         /// <param name="nativeEnum">A <see cref="AndroidJavaObject"/> instance.</param>
         /// <returns>String representing object.</returns>
-        public static string ToString(this AndroidJavaObject nativeEnum) 
+        public static string ToCSharpString(this AndroidJavaObject nativeEnum) 
             => nativeEnum.Call<string>(AndroidConstants.FunctionToString);
 
         /// <summary>
@@ -24,7 +24,7 @@ namespace Chartboost.Core.Android.Utilities
         public static string EnumProperty(string environment, string field) 
         {
             using var property = Property(environment, field);
-            return ToString(property);
+            return ToCSharpString(property);
         }
 
         #nullable enable
