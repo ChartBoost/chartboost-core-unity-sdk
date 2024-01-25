@@ -28,11 +28,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+
+      - name: Get Package Version
+        id: get-version
+        run: |
+          VERSION=$(jq -r '.version' ./package.json)
+          echo "Package version: $VERSION"
+          echo "::set-output name=package-version::$VERSION"
       
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: 'docs/0.4.0'
+          path: 'docs/${{ steps.get-version.outputs.package-version }}'
       
       - name : Deploy to Github Pages
         id: deployment
