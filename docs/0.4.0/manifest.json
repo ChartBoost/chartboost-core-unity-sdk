@@ -1,0 +1,658 @@
+{
+  "source_base_path": "/Users/cbx/actions-runner/_work/chartboost-core-unity-sdk-private/chartboost-core-unity-sdk-private/com.chartboost.core/Documentation",
+  "xrefmap": "xrefmap.yml",
+  "files": [
+    {
+      "type": "Resource",
+      "output": {
+        "resource": {
+          "relative_path": "index.json"
+        }
+      }
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Android.Modules.NativeModule.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Android.Modules.NativeModule.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Android.Modules.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Android.Modules.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.ChartboostConsentChangeForStandard.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.ChartboostConsentChangeForStandard.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.ChartboostConsentStatusChange.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.ChartboostConsentStatusChange.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.ChartboostCore.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.ChartboostCore.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.ChartboostCoreLogger.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.ChartboostCoreLogger.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.ChartboostCoreModuleInitializationDelegate.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.ChartboostCoreModuleInitializationDelegate.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.ChartboostPartnerConsentStatusChange.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.ChartboostPartnerConsentStatusChange.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Consent.ConsentDialogType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Consent.ConsentDialogType.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Consent.ConsentStandard.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Consent.ConsentStandard.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Consent.ConsentStatus.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Consent.ConsentStatus.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Consent.ConsentStatusSource.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Consent.ConsentStatusSource.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Consent.ConsentValue.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Consent.ConsentValue.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Consent.IConsentManagementPlatform.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Consent.IConsentManagementPlatform.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Consent.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Consent.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Default.AttributionEnvironment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Default.AttributionEnvironment.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Default.ChartboostCoreDefault.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Default.ChartboostCoreDefault.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Default.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Default.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Editor.GradleProcessor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Editor.GradleProcessor.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Editor.Postprocessor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Editor.Postprocessor.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Editor.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Editor.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Environment.AuthorizationStatus.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Environment.AuthorizationStatus.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Environment.IAdvertisingEnvironment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Environment.IAdvertisingEnvironment.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Environment.IAnalyticsEnvironment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Environment.IAnalyticsEnvironment.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Environment.IAttributionEnvironment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Environment.IAttributionEnvironment.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Environment.IPublisherMetadata.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Environment.IPublisherMetadata.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Environment.NetworkConnectionType.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Environment.NetworkConnectionType.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Environment.VendorIdentifierScope.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Environment.VendorIdentifierScope.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Environment.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Environment.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Error.ChartboostCoreError.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Error.ChartboostCoreError.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Error.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Error.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Initialization.ChartboostCoreResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Initialization.ChartboostCoreResult.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Initialization.InitializableModule.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Initialization.InitializableModule.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Initialization.ModuleInitializationConfiguration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Initialization.ModuleInitializationConfiguration.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Initialization.ModuleInitializationResult.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Initialization.ModuleInitializationResult.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Initialization.NativeInitializableModule-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Initialization.NativeInitializableModule-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Initialization.SDKConfiguration.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Initialization.SDKConfiguration.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Initialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Initialization.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Modules.TestUnityModuleFailure.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Modules.TestUnityModuleFailure.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Modules.TestUnityModuleSuccess.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Modules.TestUnityModuleSuccess.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Modules.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Modules.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Utilities.AwaitableAndroidJavaProxy-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Utilities.AwaitableAndroidJavaProxy-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Utilities.BaseLater-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Utilities.BaseLater-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Utilities.EnvironmentSerialization.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Utilities.EnvironmentSerialization.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Utilities.ILater-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Utilities.ILater-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Utilities.ILater.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Utilities.ILater.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Utilities.IStronglyTyped-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Utilities.IStronglyTyped-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Utilities.Later-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Utilities.Later-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Utilities.MainThreadDispatcher.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Utilities.MainThreadDispatcher.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Utilities.StringTypeConverter-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Utilities.StringTypeConverter-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Utilities.StronglyTyped-1.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Utilities.StronglyTyped-1.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.Utilities.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.Utilities.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.iOS.Modules.NativeModule.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.iOS.Modules.NativeModule.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.iOS.Modules.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.iOS.Modules.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.iOS.Utilities.IOSConstants.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.iOS.Utilities.IOSConstants.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.iOS.Utilities.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.iOS.Utilities.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "api/Chartboost.Core.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/Chartboost.Core.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "api/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "api/toc.html"
+        },
+        ".json": {
+          "relative_path": "api/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "index.md",
+      "output": {
+        ".html": {
+          "relative_path": "index.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "manual/getting-started.md",
+      "output": {
+        ".html": {
+          "relative_path": "manual/getting-started.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Conceptual",
+      "source_relative_path": "manual/introduction.md",
+      "output": {
+        ".html": {
+          "relative_path": "manual/introduction.html"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "manual/toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "manual/toc.html"
+        },
+        ".json": {
+          "relative_path": "manual/toc.json"
+        }
+      },
+      "version": ""
+    },
+    {
+      "type": "Toc",
+      "source_relative_path": "toc.yml",
+      "output": {
+        ".html": {
+          "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
+        }
+      },
+      "version": ""
+    }
+  ],
+  "groups": [
+    {
+      "xrefmap": "xrefmap.yml"
+    }
+  ]
+}
