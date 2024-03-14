@@ -1,0 +1,7 @@
+apiRules:
+- include:
+  uidRegex: .*
+  type: Namespace
+- exclude:
+  uidRegex: ^Chartboost\.Core.\Canary\.
+  type: Namespace

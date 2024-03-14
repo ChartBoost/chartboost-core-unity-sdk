@@ -1,7 +1,10 @@
 {
     "name": "com.chartboost.core",
     "rootNamespace": "Chartboost.Core",
-    "references": [],
+    "references": [
+        "Chartboost.Threading",
+        "Chartboost.Utilities"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,

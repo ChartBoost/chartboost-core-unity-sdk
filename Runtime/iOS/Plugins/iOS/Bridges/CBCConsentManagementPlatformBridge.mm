@@ -1,4 +1,4 @@
-#import "CBCUnityUtilities.h"
+#import "CBCDelegates.h"
 #import "UnityAppController.h"
 #import "CBCUnityObserver.h"
 
@@ -15,12 +15,12 @@ extern "C" {
             CBCConsentValue* consentValue = consents[standard];
             retConsents[[standard value]] = [consentValue value];
         }
-        return dictToJson(retConsents);
+        return toJSON(retConsents);
     }
 
     const char* _chartboostCoreGetPartnerConsents(){
         NSDictionary<NSString*, NSNumber*>* partnerConsents = [[ChartboostCore consent] objc_partnerConsentStatus];
-        return dictToJson(partnerConsents);
+        return toJSON(partnerConsents);
     }
 
     bool _chartboostCoreShouldCollectConsent(){

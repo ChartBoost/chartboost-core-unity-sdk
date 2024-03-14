@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using Chartboost.Core.Consent;
 using Chartboost.Core.Environment;
 using Chartboost.Core.Error;
@@ -23,7 +22,7 @@ namespace Chartboost.Core.Default
         protected override IAnalyticsEnvironment _analyticsEnvironment { get; } = new AnalyticsEnvironment();
         protected override IAttributionEnvironment _attributionEnvironment { get; } = new AttributionEnvironment();
         protected override bool _debug { get; set; }
-        protected override string _version => "0.3.0";
+        protected override string _version => "0.4.0";
         protected override void _initialize(SDKConfiguration sdkConfiguration, IEnumerable<InitializableModule> modules)
         {
             foreach (var module in modules)

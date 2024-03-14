@@ -70,7 +70,7 @@ static NSMutableDictionary* _nativeModuleStore;
                                 @"message" : message ?: [NSNull null],
                                 @"cause" : cause ?: [NSNull null],
                                 @"resolution" : resolution ?: [NSNull null] };
-        exception = dictToJson(dict);
+        exception = toJSON(dict);
     }
     
     if (_onModuleInitializationCompleted != nil)

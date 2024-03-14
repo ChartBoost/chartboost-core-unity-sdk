@@ -15,7 +15,7 @@ namespace Chartboost.Core.iOS.Consent
     /// <br/>
     /// <para>iOS implementation.</para>
     /// </summary>
-    public class ConsentManagementPlatform : IConsentManagementPlatform
+    internal class ConsentManagementPlatform : IConsentManagementPlatform
     {
         private static ConsentManagementPlatform _instance;
 

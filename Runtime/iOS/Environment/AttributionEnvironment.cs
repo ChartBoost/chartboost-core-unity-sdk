@@ -10,7 +10,7 @@ namespace Chartboost.Core.iOS.Environment
     /// <para>iOS Implementation of <see cref="IAttributionEnvironment"/>.</para>
     /// <inheritdoc cref="IAttributionEnvironment"/>
     /// </summary>
-    public class AttributionEnvironment : BaseIOSEnvironment, IAttributionEnvironment
+    internal class AttributionEnvironment : BaseIOSEnvironment, IAttributionEnvironment
     {
         /// <inheritdoc cref="IAttributionEnvironment.AdvertisingIdentifier"/>
         public Task<string?> AdvertisingIdentifier => Task.FromResult(_attributionEnvironmentGetAdvertisingIdentifier());

@@ -1,24 +1,24 @@
-#import "CBCUnityUtilities.h"
+#import "CBCDelegates.h"
 
 extern "C" {
     const char* _analyticsEnvironmentGetOsName(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] osName]);
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] osName]);
     }
 
     const char* _analyticsEnvironmentGetOsVersion(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] osVersion]);
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] osVersion]);
     }
 
     const char* _analyticsEnvironmentGetDeviceMake(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] deviceMake]);
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] deviceMake]);
     }
 
     const char* _analyticsEnvironmentGetDeviceModel(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] deviceModel]);
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] deviceModel]);
     }
 
     const char* _analyticsEnvironmentGetDeviceLocale(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] deviceLocale]);
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] deviceLocale]);
     }
 
     double _analyticsEnvironmentGetScreenHeight(){
@@ -34,7 +34,7 @@ extern "C" {
     }
 
     const char * _analyticsEnvironmentGetBundleIdentifier(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] bundleID]);
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] bundleID]);
     }
 
     bool _analyticsEnvironmentGetLimitAdTrackingEnabled(){
@@ -50,7 +50,7 @@ extern "C" {
     }
 
     const char* _analyticsEnvironmentGetVendorIdentifier(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] vendorID]);
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] vendorID]);
     }
 
     int _analyticsEnvironmentGetVendorIdentifierScope(){
@@ -64,7 +64,7 @@ extern "C" {
     }
 
     const char* _analyticsEnvironmentGetAppVersion(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] appVersion]);
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] appVersion]);
     }
 
     double _analyticsEnvironmentGetAppSessionDuration(){
@@ -72,7 +72,7 @@ extern "C" {
     }
 
     const char* _analyticsEnvironmentGetAppSessionIdentifier(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] appSessionID]);
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] appSessionID]);
     }
 
     bool _analyticsEnvironmentGetIsUserUnderage(){
@@ -80,32 +80,32 @@ extern "C" {
     }
 
     const char* _analyticsEnvironmentGetPublisherSessionIdentifier(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] publisherSessionID]);
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] publisherSessionID]);
     }
 
     const char* _analyticsEnvironmentGetPublisherAppIdentifier(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] publisherAppID]);
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] publisherAppID]);
     }
 
     const char* _analyticsEnvironmentGetFrameworkName(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] frameworkName]);
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] frameworkName]);
     }
 
     const char* _analyticsEnvironmentGetFrameworkVersion(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] frameworkVersion]);
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] frameworkVersion]);
     }
 
     const char* _analyticsEnvironmentGetPlayerIdentifier(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] playerID]);
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] playerID]);
     }
 
     void _analyticsEnvironmentGetUserAgent(int hashCode, ChartbosotCoreResultString onResult){
         [[ChartboostCore analyticsEnvironment] userAgentWithCompletion:^(NSString * _Nonnull userAgent) {
-            onResult(hashCode, getCStringOrNull(userAgent));
+            onResult(hashCode, toCStringOrNull(userAgent));
         }];
     }
 
     const char* _analyticsEnvironmentGetAdvertisingIdentifier(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] advertisingID]);
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] advertisingID]);
     }
 }

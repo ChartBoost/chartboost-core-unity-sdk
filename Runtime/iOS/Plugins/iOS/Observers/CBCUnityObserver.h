@@ -1,4 +1,4 @@
-#import "CBCUnityUtilities.h"
+#import "CBCDelegates.h"
 
 @interface CBCUnityObserver : NSObject<CBCInitializableModuleObserver, CBCConsentObserver, CBCPublisherMetadataObserver>
 

@@ -10,7 +10,7 @@ namespace Chartboost.Core.iOS.Environment
     /// <para>iOS Implementation of <see cref="IAdvertisingEnvironment"/>.</para>
     /// <inheritdoc cref="IAdvertisingEnvironment"/>
     /// </summary>
-    public class AdvertisingEnvironment : BaseIOSEnvironment, IAdvertisingEnvironment
+    internal class AdvertisingEnvironment : BaseIOSEnvironment, IAdvertisingEnvironment
     {
         /// <inheritdoc cref="IAdvertisingEnvironment.OSName"/>
         public string OSName => _advertisingEnvironmentGetOsName();

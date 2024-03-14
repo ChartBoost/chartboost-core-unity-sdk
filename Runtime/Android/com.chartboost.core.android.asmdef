@@ -2,7 +2,8 @@
     "name": "com.chartboost.core.android",
     "rootNamespace": "Chartboost.Core.Android",
     "references": [
-        "com.chartboost.core"
+        "com.chartboost.core",
+        "Chartboost.Threading"
     ],
     "includePlatforms": [
         "Android",

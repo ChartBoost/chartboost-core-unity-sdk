@@ -135,10 +135,8 @@ namespace Chartboost.Core.Tests
             Assert.AreEqual(attributionResult, advertisingResult);
             Assert.AreEqual(advertisingResult, analyticsResult);
 
-            if (!string.IsNullOrEmpty(analyticsResult)) 
-                yield break;
-            ChartboostCoreLogger.Log($"AdvertisingIdentifier can be null");
-            Assert.Inconclusive();
+            if (string.IsNullOrEmpty(analyticsResult)) 
+                Assert.Pass("AdvertisingIdentifier can be null");
         }
 
         [UnityTest, Order(1)]
@@ -158,9 +156,7 @@ namespace Chartboost.Core.Tests
             Assert.AreEqual(attributionResult, analyticsResult);
             
             if (string.IsNullOrEmpty(analyticsResult))
-                Assert.Inconclusive("UserAgent can be null");
-            else
-                Assert.Pass();
+                Assert.Pass("UserAgent can be null");
         }
         
         [Test, Order(1)]
@@ -326,7 +322,7 @@ namespace Chartboost.Core.Tests
             var volume = ChartboostCore.AnalyticsEnvironment.Volume;
             ChartboostCoreLogger.Log($"Volume Analytics: {volume}");
             if (volume == null)
-                Assert.Inconclusive();
+                Assert.Pass("Volume can be null");
             Assert.GreaterOrEqual(volume, 0);
             Assert.IsNotNull(volume);
         }
@@ -339,11 +335,9 @@ namespace Chartboost.Core.Tests
 
             var vendorIdentifier = vendorIdentifierTask.Result;
             ChartboostCoreLogger.Log($"VendorIdentifier Analytics: {vendorIdentifier}");
-            
-            if (!string.IsNullOrEmpty(vendorIdentifier)) 
-                yield break;
-            ChartboostCoreLogger.Log($"VendorIdentifier can be null");
-            Assert.Inconclusive();
+
+            if (string.IsNullOrEmpty(vendorIdentifier)) 
+                Assert.Pass("VendorIdentifier can be null");
         }
         
         [Test, Order(1)]
@@ -384,9 +378,7 @@ namespace Chartboost.Core.Tests
             Assert.IsNotNull(appSessionDuration);
             
             if (appSessionDuration <= 0)
-                Assert.Inconclusive("AppSessionDuration can be 0, it only increases after initialization");
-            else
-                Assert.Pass();
+                Assert.Pass("AppSessionDuration can be 0, it only increases after initialization");
         }
         
         [Test, Order(1)]
@@ -394,17 +386,15 @@ namespace Chartboost.Core.Tests
         {
             var appSessionIdentifier = ChartboostCore.AnalyticsEnvironment.AppSessionIdentifier;
             ChartboostCoreLogger.Log($"AppSessionIdentifier Analytics: {appSessionIdentifier}");
+            
             if (string.IsNullOrEmpty(appSessionIdentifier))
-                Assert.Inconclusive("AppSessionIdentifier can be null");
-            else
-                Assert.Pass();
+                Assert.Pass("AppSessionIdentifier can be null");
         }
         
         [UnityTest, Order(1)]
         public IEnumerator FrameworkName()
         {
             Assert.IsNull(ChartboostCore.AnalyticsEnvironment.FrameworkName);
-            ChartboostCore.PublisherMetadata.SetFrameworkName(ConstFrameworkName);
             var fired = false;
             ChartboostCore.PublisherMetadata.FrameworkNameChanged += WaitForChange;
             void WaitForChange()
@@ -414,9 +404,10 @@ namespace Chartboost.Core.Tests
                 ChartboostCoreLogger.Log("FrameworkName Changed");
             }
             
-            var frameworkName = ChartboostCore.AnalyticsEnvironment.FrameworkName;
+            ChartboostCore.PublisherMetadata.SetFrameworkName(ConstFrameworkName);
             yield return new WaitUntil(() => fired);
-            
+
+            var frameworkName = ChartboostCore.AnalyticsEnvironment.FrameworkName;
             ChartboostCoreLogger.Log($"FrameworkName Analytics: {frameworkName}, Expected: {ConstFrameworkName}");
             Assert.IsNotNull(frameworkName);
             Assert.AreEqual(frameworkName, ConstFrameworkName);

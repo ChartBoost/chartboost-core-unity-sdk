@@ -11,7 +11,7 @@ namespace Chartboost.Core.iOS.Environment
     /// <para>iOS Implementation of <see cref="IPublisherMetadata"/>.</para>
     /// <inheritdoc cref="IPublisherMetadata"/>
     /// </summary>
-    public class PublisherMetadata : IPublisherMetadata
+    internal class PublisherMetadata : IPublisherMetadata
     {
         private static PublisherMetadata _instance;
         internal PublisherMetadata()

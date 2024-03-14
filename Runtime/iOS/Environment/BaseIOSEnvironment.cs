@@ -10,7 +10,7 @@ namespace Chartboost.Core.iOS.Environment
     /// <summary>
     /// Base iOS class for all Chartboost Core environments. 
     /// </summary>
-    public class BaseIOSEnvironment
+    internal class BaseIOSEnvironment
     {
         /// <summary>
         /// Gets an awaitable nullable <see cref="string"/> from a native environment bridge.

@@ -2,7 +2,8 @@
     "name": "com.chartboost.core.ios",
     "rootNamespace": "Chartboost.Core.iOS",
     "references": [
-        "com.chartboost.core"
+        "com.chartboost.core",
+        "Chartboost.Threading"
     ],
     "includePlatforms": [
         "Editor",

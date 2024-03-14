@@ -3,8 +3,6 @@ using System.Threading.Tasks;
 using Chartboost.Core.Android.Utilities;
 using Chartboost.Core.Error;
 using Chartboost.Core.Initialization;
-using Chartboost.Core.Utilities;
-using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.Scripting;
 

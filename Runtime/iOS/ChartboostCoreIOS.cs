@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using AOT;
 using Chartboost.Core.Consent;
 using Chartboost.Core.Environment;
@@ -52,7 +51,7 @@ namespace Chartboost.Core.iOS
                    _chartboostCoreAddUnityModule(module.ModuleId, module.ModuleVersion, OnModuleInitialize);
             }
 
-            _chartboostCoreInitialize(sdkConfiguration.ChartboostApplicationIdentifier, OnModuleInitializationResult);
+            _chartboostCoreInitialize(sdkConfiguration.ChartboostApplicationIdentifier);
         }
 
         [MonoPInvokeCallback(typeof(ChartboostCoreOnModuleInitializationResult))]
@@ -107,7 +106,7 @@ namespace Chartboost.Core.iOS
 
         #nullable enable
         [DllImport(IOSConstants.DLLImport)] private static extern string _getChartboostCoreVersion();
-        [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreInitialize(string chartboostAppIdentifier, ChartboostCoreOnModuleInitializationResult moduleInitialization);
+        [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreInitialize(string chartboostAppIdentifier);
         [DllImport(IOSConstants.DLLImport)] private static extern void _completeModuleInitialization(string moduleIdentifier, string? jsonError);
         [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreAddUnityModule(string moduleIdentifier, string moduleVersion, ChartboostCoreOnModuleInitializeDelegate moduleInitializer);
         [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreSetModuleInitializationCallback(ChartboostCoreOnModuleInitializationResult onModuleInitializationResult);

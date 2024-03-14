@@ -1,21 +1,21 @@
-#import "CBCUnityUtilities.h"
+#import "CBCDelegates.h"
 #import "CBCUnityObserver.h"
 #import "CBCModuleWrapper.h"
 
 extern "C" {
     const char* _getChartboostCoreVersion(){
-        return getCStringOrNull([ChartboostCore sdkVersion]);
+        return toCStringOrNull([ChartboostCore sdkVersion]);
     }
 
     void _chartboostCoreInitialize(const char* chartboostAppIdentifier)
     {
-        CBCSDKConfiguration* configuration = [[CBCSDKConfiguration alloc] initWithChartboostAppID:getNSStringOrEmpty(chartboostAppIdentifier)];
+        CBCSDKConfiguration* configuration = [[CBCSDKConfiguration alloc] initWithChartboostAppID:toNSStringOrEmpty(chartboostAppIdentifier)];
         [ChartboostCore initializeSDKWithConfiguration:configuration modules:[[[CBCUnityObserver sharedObserver] initializableModules] allValues] moduleObserver:[CBCUnityObserver sharedObserver]];
     }
 
     void _chartboostCoreAddUnityModule(const char* moduleIdentifier, const char* moduleVersion, ChartboostCoreOnModuleInitializeDelegate initializeCallback){
 
-        id<CBCInitializableModule> chartboostCoreModule  = [[CBCModuleWrapper alloc] initWithModuleID:getNSStringOrEmpty(moduleIdentifier) moduleVersion:getNSStringOrEmpty(moduleVersion) initializeCallback:initializeCallback];
+        id<CBCInitializableModule> chartboostCoreModule  = [[CBCModuleWrapper alloc] initWithModuleID:toNSStringOrEmpty(moduleIdentifier) moduleVersion:toNSStringOrEmpty(moduleVersion) initializeCallback:initializeCallback];
         [[CBCUnityObserver sharedObserver] addModule:chartboostCoreModule];
     }
 
@@ -26,11 +26,11 @@ extern "C" {
 
     const char* _chartboostCoreGetNativeModuleId(const void* uniqueId) {
         id<CBCInitializableModule> chartboostCoreModule = (__bridge id<CBCInitializableModule>)uniqueId;
-        return getCStringOrNull([chartboostCoreModule moduleID]);
+        return toCStringOrNull([chartboostCoreModule moduleID]);
     }
 
     const char* _chartboostCoreGetNativeModuleVersion(const void* uniqueId) {
         id<CBCInitializableModule> chartboostCoreModule = (__bridge id<CBCInitializableModule>)uniqueId;
-        return getCStringOrNull([chartboostCoreModule moduleVersion]);
+        return toCStringOrNull([chartboostCoreModule moduleVersion]);
     }
 }

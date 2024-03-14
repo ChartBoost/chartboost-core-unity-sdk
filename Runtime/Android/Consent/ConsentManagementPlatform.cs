@@ -14,7 +14,7 @@ namespace Chartboost.Core.Android.Consent
     /// <br/>
     /// <para>Android implementation.</para>
     /// </summary>
-    public class ConsentManagementPlatform : IConsentManagementPlatform
+    internal class ConsentManagementPlatform : IConsentManagementPlatform
     {
         internal ConsentManagementPlatform()
         {

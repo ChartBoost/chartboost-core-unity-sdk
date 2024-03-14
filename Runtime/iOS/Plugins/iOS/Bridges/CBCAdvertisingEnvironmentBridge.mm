@@ -1,24 +1,24 @@
-#import "CBCUnityUtilities.h"
+#import "CBCDelegates.h"
 
 extern "C" {
     const char* _advertisingEnvironmentGetOsName(){
-        return getCStringOrNull([[ChartboostCore advertisingEnvironment] osName]);
+        return toCStringOrNull([[ChartboostCore advertisingEnvironment] osName]);
     }
 
     const char* _advertisingEnvironmentGetOsVersion(){
-        return getCStringOrNull([[ChartboostCore advertisingEnvironment] osVersion]);
+        return toCStringOrNull([[ChartboostCore advertisingEnvironment] osVersion]);
     }
 
     const char* _advertisingEnvironmentGetDeviceMake(){
-        return getCStringOrNull([[ChartboostCore advertisingEnvironment] deviceMake]);
+        return toCStringOrNull([[ChartboostCore advertisingEnvironment] deviceMake]);
     }
 
     const char* _advertisingEnvironmentGetDeviceModel(){
-        return getCStringOrNull([[ChartboostCore advertisingEnvironment] deviceModel]);
+        return toCStringOrNull([[ChartboostCore advertisingEnvironment] deviceModel]);
     }
 
     const char* _advertisingEnvironmentGetDeviceLocale(){
-        return getCStringOrNull([[ChartboostCore advertisingEnvironment] deviceLocale]);
+        return toCStringOrNull([[ChartboostCore advertisingEnvironment] deviceLocale]);
     }
 
     double _advertisingEnvironmentGetScreenHeight(){
@@ -34,7 +34,7 @@ extern "C" {
     }
 
     const char* _advertisingEnvironmentGetBundleIdentifier(){
-        return getCStringOrNull([[ChartboostCore advertisingEnvironment] bundleID]);
+        return toCStringOrNull([[ChartboostCore advertisingEnvironment] bundleID]);
     }
 
     bool _advertisingEnvironmentGetLimitAdTrackingEnabled(){
@@ -42,6 +42,6 @@ extern "C" {
     }
 
     const char* _advertisingEnvironmentGetAdvertisingIdentifier(){
-        return getCStringOrNull([[ChartboostCore advertisingEnvironment] advertisingID]);
+        return toCStringOrNull([[ChartboostCore advertisingEnvironment] advertisingID]);
     }
 }

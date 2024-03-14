@@ -4,7 +4,9 @@
   "version": "0.4.0",
   "unity": "2020.3",
   "dependencies": {
-    "com.unity.nuget.newtonsoft-json": "3.2.1"
+    "com.unity.nuget.newtonsoft-json": "3.2.1",
+    "com.chartboost.unity.threading": "1.0.0",
+    "com.chartboost.unity.utilities": "1.0.0"
   },
   "keywords": [],
   "license": "",

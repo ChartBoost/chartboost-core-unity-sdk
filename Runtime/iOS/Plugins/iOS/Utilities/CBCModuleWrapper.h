@@ -1,4 +1,4 @@
-#import "CBCUnityUtilities.h"
+#import "CBCDelegates.h"
 
 @interface CBCModuleWrapper : NSObject <CBCInitializableModule>
 @property (nonnull, nonatomic, copy) NSString *moduleID;

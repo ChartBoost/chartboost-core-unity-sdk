@@ -23,7 +23,7 @@
     _completer = ^(NSError * error){
         completion(error);
     };
-    _initializeCallback(getCStringOrNull(_moduleID), getCStringOrNull([configuration  chartboostAppID]));
+    _initializeCallback(toCStringOrNull(_moduleID), toCStringOrNull([configuration  chartboostAppID]));
 }
 
 - (void)completeInitializationWithError:(NSError* _Nullable)error; {
@@ -35,15 +35,15 @@
 extern "C" {
     void _completeModuleInitialization(const char* moduleIdentifier, const char* _Nullable jsonError)
     {
-        CBCModuleWrapper* targetModule = [[[CBCUnityObserver sharedObserver] initializableModules] valueForKey:getNSStringOrEmpty(moduleIdentifier)];
-        
+        CBCModuleWrapper* targetModule = [[[CBCUnityObserver sharedObserver] initializableModules] valueForKey:toNSStringOrEmpty(moduleIdentifier)];
+
         if (targetModule == nil)
             return;
         
         if (jsonError != NULL)
         {
             NSError* error = nil;
-            NSDictionary* errorAsDictionary= stringToNSDictionary(jsonError);
+            NSDictionary* errorAsDictionary= toNSDictionary(jsonError);
             NSString* domain = [errorAsDictionary objectForKey:@"domain"];
             int code = [errorAsDictionary objectForKey:@"code"] ? [[errorAsDictionary objectForKey:@"code"] intValue] : -1;
             NSString* message = [errorAsDictionary valueForKey:@"message"];

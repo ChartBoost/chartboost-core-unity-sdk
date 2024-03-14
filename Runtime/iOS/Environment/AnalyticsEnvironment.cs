@@ -10,7 +10,7 @@ namespace Chartboost.Core.iOS.Environment
     /// <para>iOS Implementation of <see cref="IAnalyticsEnvironment"/>.</para>
     /// <inheritdoc cref="IAnalyticsEnvironment"/>
     /// </summary>
-    public class AnalyticsEnvironment : BaseIOSEnvironment, IAnalyticsEnvironment
+    internal class AnalyticsEnvironment : BaseIOSEnvironment, IAnalyticsEnvironment
     {
         /// <inheritdoc cref="IAnalyticsEnvironment.OSName"/>
         public string OSName => _analyticsEnvironmentGetOsName();
