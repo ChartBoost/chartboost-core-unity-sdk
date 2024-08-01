@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Chartboost.Constants;
 using Chartboost.Core.Environment;
-using Chartboost.Core.iOS.Utilities;
 
 namespace Chartboost.Core.iOS.Environment
 {
@@ -10,112 +10,113 @@ namespace Chartboost.Core.iOS.Environment
     /// <para>iOS Implementation of <see cref="IAnalyticsEnvironment"/>.</para>
     /// <inheritdoc cref="IAnalyticsEnvironment"/>
     /// </summary>
-    public class AnalyticsEnvironment : BaseIOSEnvironment, IAnalyticsEnvironment
+    internal partial class AnalyticsEnvironment : BaseIOSEnvironment, IAnalyticsEnvironment
     {
         /// <inheritdoc cref="IAnalyticsEnvironment.OSName"/>
-        public string OSName => _analyticsEnvironmentGetOsName();
+        public string OSName => _CBCAnalyticsGetOsName();
         
         /// <inheritdoc cref="IAnalyticsEnvironment.OSVersion"/>
-        public string OSVersion => _analyticsEnvironmentGetOsVersion();
+        public string OSVersion => _CBCAnalyticsGetOsVersion();
         
         /// <inheritdoc cref="IAnalyticsEnvironment.DeviceMake"/>
-        public string DeviceMake => _analyticsEnvironmentGetDeviceMake();
+        public string DeviceMake => _CBCAnalyticsGetDeviceMake();
         
         /// <inheritdoc cref="IAnalyticsEnvironment.DeviceModel"/>
-        public string DeviceModel => _analyticsEnvironmentGetDeviceModel();
+        public string DeviceModel => _CBCAnalyticsGetDeviceModel();
         
         /// <inheritdoc cref="IAnalyticsEnvironment.DeviceLocale"/>
-        public string? DeviceLocale => _analyticsEnvironmentGetDeviceLocale();
+        public string? DeviceLocale => _CBCAnalyticsGetDeviceLocale();
         
-        /// <inheritdoc cref="IAnalyticsEnvironment.ScreenHeight"/>
-        public double? ScreenHeight => _analyticsEnvironmentGetScreenHeight();
+        /// <inheritdoc cref="IAdvertisingEnvironment.ScreenHeightPixels"/>
+        public double? ScreenHeightPixels => _CBCAnalyticsGetScreenHeight();
         
         /// <inheritdoc cref="IAnalyticsEnvironment.ScreenScale"/>
-        public double? ScreenScale => _analyticsEnvironmentGetScreenScale();
+        public double? ScreenScale => _CBCAnalyticsGetScreenScale();
         
-        /// <inheritdoc cref="IAnalyticsEnvironment.ScreenWidth"/>
-        public double? ScreenWidth => _analyticsEnvironmentGetScreenWidth();
+        /// <inheritdoc cref="IAdvertisingEnvironment.ScreenWidthPixels"/>
+        public double? ScreenWidthPixels => _CBCAnalyticsGetScreenWidth();
         
         /// <inheritdoc cref="IAnalyticsEnvironment.BundleIdentifier"/>
-        public string? BundleIdentifier => _analyticsEnvironmentGetBundleIdentifier();
+        public string? BundleIdentifier => _CBCAnalyticsGetBundleIdentifier();
         
         /// <inheritdoc cref="IAnalyticsEnvironment.LimitAdTrackingEnabled"/>
-        public Task<bool?> LimitAdTrackingEnabled => Task.FromResult<bool?>(_analyticsEnvironmentGetLimitAdTrackingEnabled());
+        public Task<bool?> LimitAdTrackingEnabled => Task.FromResult<bool?>(_CBCAnalyticsGetLimitAdTrackingEnabled());
        
         /// <inheritdoc cref="IAnalyticsEnvironment.NetworkConnectionType"/>
-        public NetworkConnectionType NetworkConnectionType => (NetworkConnectionType)_analyticsEnvironmentGetNetworkConnectionType();
+        public NetworkConnectionType NetworkConnectionType => (NetworkConnectionType)_CBCAnalyticsGetNetworkConnectionType();
         
         /// <inheritdoc cref="IAnalyticsEnvironment.Volume"/>
-        public double? Volume => _analyticsEnvironmentGetVolume();
+        public double? Volume => _CBCAnalyticsGetVolume();
                 
         /// <inheritdoc cref="IAnalyticsEnvironment.VendorIdentifier"/>
-        public Task<string?> VendorIdentifier => Task.FromResult(_analyticsEnvironmentGetVendorIdentifier());
+        public Task<string?> VendorIdentifier => Task.FromResult(_CBCAnalyticsGetVendorIdentifier());
         
         /// <inheritdoc cref="IAnalyticsEnvironment.VendorIdentifierScope"/>
-        public Task<VendorIdentifierScope> VendorIdentifierScope => Task.FromResult((VendorIdentifierScope)_analyticsEnvironmentGetVendorIdentifierScope());
+        public Task<VendorIdentifierScope> VendorIdentifierScope => Task.FromResult((VendorIdentifierScope)_CBCAnalyticsGetVendorIdentifierScope());
         
         /// <inheritdoc cref="IAnalyticsEnvironment.AppTrackingTransparencyStatus"/>
-        public AuthorizationStatus AppTrackingTransparencyStatus => (AuthorizationStatus)_analyticsEnvironmentGetAuthorizationStatus();
+        public AuthorizationStatus AppTrackingTransparencyStatus => (AuthorizationStatus)_CBCAnalyticsGetAuthorizationStatus();
         
         /// <inheritdoc cref="IAnalyticsEnvironment.AppVersion"/>
-        public string? AppVersion => _analyticsEnvironmentGetAppVersion();
+        public string? AppVersion => _CBCAnalyticsGetAppVersion();
         
         /// <inheritdoc cref="IAnalyticsEnvironment.AppSessionDuration"/>
-        public double AppSessionDuration => _analyticsEnvironmentGetAppSessionDuration();
+        public double AppSessionDuration => _CBCAnalyticsGetAppSessionDuration();
         
         /// <inheritdoc cref="IAnalyticsEnvironment.AppSessionIdentifier"/>
-        public string? AppSessionIdentifier => _analyticsEnvironmentGetAppSessionIdentifier();
+        public string? AppSessionIdentifier => _CBCAnalyticsGetAppSessionIdentifier();
         
         /// <inheritdoc cref="IAnalyticsEnvironment.IsUserUnderage"/>
-        public bool? IsUserUnderage => _analyticsEnvironmentGetIsUserUnderage();
+        public bool? IsUserUnderage => _CBCAnalyticsGetIsUserUnderage();
         
         /// <inheritdoc cref="IAnalyticsEnvironment.PublisherSessionIdentifier"/>
-        public string? PublisherSessionIdentifier => _analyticsEnvironmentGetPublisherSessionIdentifier();
+        public string? PublisherSessionIdentifier => _CBCAnalyticsGetPublisherSessionIdentifier();
         
         /// <inheritdoc cref="IAnalyticsEnvironment.PublisherAppIdentifier"/>
-        public string? PublisherAppIdentifier => _analyticsEnvironmentGetPublisherAppIdentifier();
+        public string? PublisherAppIdentifier => _CBCAnalyticsGetPublisherAppIdentifier();
         
         /// <inheritdoc cref="IAnalyticsEnvironment.FrameworkName"/>
-        public string? FrameworkName => _analyticsEnvironmentGetFrameworkName();
+        public string? FrameworkName => _CBCAnalyticsGetFrameworkName();
         
         /// <inheritdoc cref="IAnalyticsEnvironment.FrameworkVersion"/>
-        public string? FrameworkVersion => _analyticsEnvironmentGetFrameworkVersion();
+        public string? FrameworkVersion => _CBCAnalyticsGetFrameworkVersion();
         
         /// <inheritdoc cref="IAnalyticsEnvironment.PlayerIdentifier"/>
-        public string? PlayerIdentifier => _analyticsEnvironmentGetPlayerIdentifier();
+        public string? PlayerIdentifier => _CBCAnalyticsGetPlayerIdentifier();
         
         /// <inheritdoc cref="IAnalyticsEnvironment.AdvertisingIdentifier"/>
-        public Task<string?> AdvertisingIdentifier => Task.FromResult(_analyticsEnvironmentGetAdvertisingIdentifier());
-        
+        public Task<string?> AdvertisingIdentifier => Task.FromResult(_CBCAnalyticsGetAdvertisingIdentifier());
+
         /// <inheritdoc cref="IAnalyticsEnvironment.UserAgent"/>
-        public Task<string?> UserAgent => AwaitableString(_analyticsEnvironmentGetUserAgent);
+        public Task<string?> UserAgent => AwaitableString(_CBCAnalyticsGetUserAgent);
         
-        [DllImport(IOSConstants.DLLImport)] private static extern string _analyticsEnvironmentGetOsName();
-        [DllImport(IOSConstants.DLLImport)] private static extern string _analyticsEnvironmentGetOsVersion();
-        [DllImport(IOSConstants.DLLImport)] private static extern string _analyticsEnvironmentGetDeviceMake();
-        [DllImport(IOSConstants.DLLImport)] private static extern string _analyticsEnvironmentGetDeviceModel();
-        [DllImport(IOSConstants.DLLImport)] private static extern string? _analyticsEnvironmentGetDeviceLocale();
-        [DllImport(IOSConstants.DLLImport)] private static extern double _analyticsEnvironmentGetScreenHeight();
-        [DllImport(IOSConstants.DLLImport)] private static extern double _analyticsEnvironmentGetScreenScale();
-        [DllImport(IOSConstants.DLLImport)] private static extern double _analyticsEnvironmentGetScreenWidth();
-        [DllImport(IOSConstants.DLLImport)] private static extern string? _analyticsEnvironmentGetBundleIdentifier();
-        [DllImport(IOSConstants.DLLImport)] private static extern bool _analyticsEnvironmentGetLimitAdTrackingEnabled();
-        [DllImport(IOSConstants.DLLImport)] private static extern int _analyticsEnvironmentGetNetworkConnectionType();
-        [DllImport(IOSConstants.DLLImport)] private static extern double _analyticsEnvironmentGetVolume();
-        [DllImport(IOSConstants.DLLImport)] private static extern string? _analyticsEnvironmentGetVendorIdentifier();
-        [DllImport(IOSConstants.DLLImport)] private static extern int _analyticsEnvironmentGetVendorIdentifierScope();
-        [DllImport(IOSConstants.DLLImport)] private static extern int _analyticsEnvironmentGetAuthorizationStatus();
-        [DllImport(IOSConstants.DLLImport)] private static extern string? _analyticsEnvironmentGetAppVersion();
-        [DllImport(IOSConstants.DLLImport)] private static extern double _analyticsEnvironmentGetAppSessionDuration();
-        [DllImport(IOSConstants.DLLImport)] private static extern string? _analyticsEnvironmentGetAppSessionIdentifier();
-        [DllImport(IOSConstants.DLLImport)] private static extern bool _analyticsEnvironmentGetIsUserUnderage();
-        [DllImport(IOSConstants.DLLImport)] private static extern string? _analyticsEnvironmentGetPublisherSessionIdentifier();
-        [DllImport(IOSConstants.DLLImport)] private static extern string? _analyticsEnvironmentGetPublisherAppIdentifier();
-        [DllImport(IOSConstants.DLLImport)] private static extern string? _analyticsEnvironmentGetFrameworkName();
-        [DllImport(IOSConstants.DLLImport)] private static extern string? _analyticsEnvironmentGetFrameworkVersion();
-        [DllImport(IOSConstants.DLLImport)] private static extern string? _analyticsEnvironmentGetPlayerIdentifier();
-        [DllImport(IOSConstants.DLLImport)] private static extern void _analyticsEnvironmentGetUserAgent(int hashCode, ChartboostCoreOnResultString callback);
-        [DllImport(IOSConstants.DLLImport)] private static extern string? _analyticsEnvironmentGetAdvertisingIdentifier();
+        
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string _CBCAnalyticsGetOsName();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string _CBCAnalyticsGetOsVersion();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string _CBCAnalyticsGetDeviceMake();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string _CBCAnalyticsGetDeviceModel();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string? _CBCAnalyticsGetDeviceLocale();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern double _CBCAnalyticsGetScreenHeight();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern double _CBCAnalyticsGetScreenScale();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern double _CBCAnalyticsGetScreenWidth();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string? _CBCAnalyticsGetBundleIdentifier();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern bool _CBCAnalyticsGetLimitAdTrackingEnabled();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern int _CBCAnalyticsGetNetworkConnectionType();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern double _CBCAnalyticsGetVolume();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string? _CBCAnalyticsGetVendorIdentifier();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern int _CBCAnalyticsGetVendorIdentifierScope();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern int _CBCAnalyticsGetAuthorizationStatus();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string? _CBCAnalyticsGetAppVersion();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern double _CBCAnalyticsGetAppSessionDuration();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string? _CBCAnalyticsGetAppSessionIdentifier();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern bool _CBCAnalyticsGetIsUserUnderage();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string? _CBCAnalyticsGetPublisherSessionIdentifier();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string? _CBCAnalyticsGetPublisherAppIdentifier();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string? _CBCAnalyticsGetFrameworkName();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string? _CBCAnalyticsGetFrameworkVersion();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string? _CBCAnalyticsGetPlayerIdentifier();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern void _CBCAnalyticsGetUserAgent(int hashCode, ExternChartboostCoreOnResultString callback);
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string? _CBCAnalyticsGetAdvertisingIdentifier();
     }
     #nullable disable
 }

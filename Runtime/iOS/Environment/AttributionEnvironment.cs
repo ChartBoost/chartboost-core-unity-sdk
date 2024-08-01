@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Chartboost.Constants;
 using Chartboost.Core.Environment;
-using Chartboost.Core.iOS.Utilities;
 
 namespace Chartboost.Core.iOS.Environment
 {
@@ -10,16 +10,16 @@ namespace Chartboost.Core.iOS.Environment
     /// <para>iOS Implementation of <see cref="IAttributionEnvironment"/>.</para>
     /// <inheritdoc cref="IAttributionEnvironment"/>
     /// </summary>
-    public class AttributionEnvironment : BaseIOSEnvironment, IAttributionEnvironment
+    internal class AttributionEnvironment : BaseIOSEnvironment, IAttributionEnvironment
     {
         /// <inheritdoc cref="IAttributionEnvironment.AdvertisingIdentifier"/>
-        public Task<string?> AdvertisingIdentifier => Task.FromResult(_attributionEnvironmentGetAdvertisingIdentifier());
+        public Task<string?> AdvertisingIdentifier => Task.FromResult(_CBCAttributionGetAdvertisingIdentifier());
         
         /// <inheritdoc cref="IAttributionEnvironment.UserAgent"/>
-        public Task<string?> UserAgent => AwaitableString(_attributionEnvironmentGetUserAgent);
+        public Task<string?> UserAgent => AwaitableString(_CBCAttributionGetUserAgent);
         
-        [DllImport(IOSConstants.DLLImport)] private static extern string? _attributionEnvironmentGetAdvertisingIdentifier();
-        [DllImport(IOSConstants.DLLImport)] private static extern void _attributionEnvironmentGetUserAgent(int hashCode, ChartboostCoreOnResultString callback);
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string? _CBCAttributionGetAdvertisingIdentifier();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern void _CBCAttributionGetUserAgent(int hashCode, ExternChartboostCoreOnResultString callback);
     }
     #nullable disable
 }

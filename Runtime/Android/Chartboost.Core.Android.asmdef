@@ -1,0 +1,23 @@
+{
+    "name": "Chartboost.Core.Android",
+    "rootNamespace": "Chartboost.Core.Android",
+    "references": [
+        "Chartboost.Core",
+        "Chartboost.Threading",
+        "Chartboost.Utilities.Android",
+        "Chartboost.Logging",
+        "Chartboost.Utilities"
+    ],
+    "includePlatforms": [
+        "Android",
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,39 +1,37 @@
 using System;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Chartboost.Core.Error;
 using Chartboost.Core.Initialization;
-using Chartboost.Core.iOS.Utilities;
 
 namespace Chartboost.Core.iOS.Modules
 {
     /// <summary>
-    /// <see cref="InitializableModule"/> implementation for iOS Native Modules.
+    /// <see cref="Module"/> implementation for iOS Native Modules.
     /// </summary>
-    public abstract class NativeModule : InitializableModule
+    public abstract class NativeModule : Module
     {
         private readonly IntPtr _nativeInstance;
 
         /// <summary>
-        /// Create a Unity representation of <see cref="InitializableModule"/>.
+        /// Create a Unity representation of <see cref="Module"/>.
         /// </summary>
-        /// <param name="instance">Native <see cref="InitializableModule"/> reference.</param>
+        /// <param name="instance">Native <see cref="Module"/> reference.</param>
         public NativeModule(IntPtr instance)
         {
             _nativeInstance = instance;
         }
 
-        /// <inheritdoc cref="InitializableModule.ModuleId"/>
-        public override string ModuleId => _chartboostCoreGetNativeModuleId(_nativeInstance);
+        /// <inheritdoc cref="Module.ModuleId"/>
+        public override string ModuleId => ModuleWrapper.GetModuleId(_nativeInstance);
        
-        /// <inheritdoc cref="InitializableModule.ModuleVersion"/>
-        public override string ModuleVersion => _chartboostCoreGetNativeModuleVersion(_nativeInstance);
+        /// <inheritdoc cref="Module.ModuleVersion"/>
+        public override string ModuleVersion => ModuleWrapper.GetModuleVersion(_nativeInstance);
 
         /// <summary>
         /// Native modules do not initialized by Unity C#, they are handled natively.
         /// </summary>
         /// <exception cref="System.NotImplementedException">Thrown when attempting to initialize in Unity C#</exception>
-        protected override Task<ChartboostCoreError?> Initialize(ModuleInitializationConfiguration configuration)
+        protected override Task<ChartboostCoreError?> Initialize(ModuleConfiguration configuration)
         {
             throw new NotImplementedException();
         }
@@ -43,11 +41,7 @@ namespace Chartboost.Core.iOS.Modules
         /// </summary>
         internal override void AddNativeInstance()
         {
-            _chartboostCoreAddNativeModule(_nativeInstance);
+            ModuleWrapper.AddModule(_nativeInstance);
         }
-
-        [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreAddNativeModule(IntPtr uniqueId);
-        [DllImport(IOSConstants.DLLImport)] private static extern string _chartboostCoreGetNativeModuleId(IntPtr uniqueId);
-        [DllImport(IOSConstants.DLLImport)] private static extern string _chartboostCoreGetNativeModuleVersion(IntPtr uniqueId);
     }
 }

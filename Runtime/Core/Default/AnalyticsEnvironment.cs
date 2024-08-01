@@ -11,10 +11,13 @@ namespace Chartboost.Core.Default
     /// <br/>
     /// <para> Default class implementation for unsupported platforms.</para>
     /// </summary>
-    internal class AnalyticsEnvironment : IAnalyticsEnvironment
+    internal partial class AnalyticsEnvironment : IAnalyticsEnvironment
     {
+        private static AnalyticsEnvironment? _instance;
+        
         public AnalyticsEnvironment()
         {
+            _instance = this;
             var (osName, osVersion) = AdvertisingEnvironment.FetchOSInfo();
             OSName = osName;
             OSVersion = osVersion;
@@ -36,14 +39,14 @@ namespace Chartboost.Core.Default
         /// <inheritdoc cref="IAnalyticsEnvironment.DeviceLocale"/>
         public string DeviceLocale => System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
         
-        /// <inheritdoc cref="IAnalyticsEnvironment.ScreenHeight"/>
-        public double? ScreenHeight => Screen.height; 
+        /// <inheritdoc cref="IAdvertisingEnvironment.ScreenHeightPixels"/>
+        public double? ScreenHeightPixels => Screen.height; 
         
         /// <inheritdoc cref="IAnalyticsEnvironment.ScreenScale"/>
         public double? ScreenScale => Screen.dpi;
         
-        /// <inheritdoc cref="IAnalyticsEnvironment.ScreenWidth"/>
-        public double? ScreenWidth => Screen.width;
+        /// <inheritdoc cref="IAdvertisingEnvironment.ScreenWidthPixels"/>
+        public double? ScreenWidthPixels => Screen.width;
         
         /// <inheritdoc cref="IAnalyticsEnvironment.BundleIdentifier"/>
         public string BundleIdentifier => Application.identifier;
@@ -99,5 +102,4 @@ namespace Chartboost.Core.Default
         /// <inheritdoc cref="IAnalyticsEnvironment.UserAgent"/>
         public Task<string?> UserAgent => Task.FromResult<string?>(null);
     }
-    #nullable disable
 }

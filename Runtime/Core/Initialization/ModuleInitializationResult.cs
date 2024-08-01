@@ -1,5 +1,6 @@
 using System;
 using Chartboost.Core.Error;
+using Chartboost.Json;
 using Newtonsoft.Json;
 
 namespace Chartboost.Core.Initialization
@@ -9,33 +10,74 @@ namespace Chartboost.Core.Initialization
     /// A result object with the information regarding a module initialization operation.
     /// </summary>
     [Serializable]
-    public class ModuleInitializationResult : ChartboostCoreResult
+    public struct ModuleInitializationResult : IChartboostCoreResult
     {
-        [JsonProperty("moduleName")]
-        private readonly string _moduleName;
-        [JsonProperty("moduleVersion")]
-        private readonly string _moduleVersion;
+        /// <inheritdoc/>
+        public DateTime Start => _start;
+        
+        /// <inheritdoc/>
+        public DateTime End => _end;
+        
+        /// <inheritdoc/>
+        public long Duration => _duration;
+        
+        /// <inheritdoc/>
+        public ChartboostCoreError? Error => _error;
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string ModuleId => _moduleId;
         
         /// <summary>
-        /// The module that was initialized. Note that the initialization operation may have failed.
-        /// Use the <see cref="ChartboostCoreResult.Error"/> property to determine this.
+        /// 
         /// </summary>
-        [NonSerialized]
-        public readonly InitializableModule Module;
+        public string ModuleVersion => _moduleVersion;
+        
 
-        public ModuleInitializationResult(DateTime start, DateTime end, ChartboostCoreError? error, InitializableModule module) : base(start, end, error)
+        private static readonly DateTime BaseDate = new(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+
+        [JsonProperty("start")]
+        private readonly DateTime _start;
+        
+        [JsonProperty("end")]
+        private readonly DateTime _end;
+        
+        [JsonProperty("duration")]
+        private readonly long _duration;
+
+        [JsonProperty("exception")]
+        private readonly ChartboostCoreError? _error;
+        
+        [JsonProperty("moduleId")]
+        private readonly string _moduleId;
+        
+        [JsonProperty("moduleVersion")]
+        private readonly string _moduleVersion;
+
+        public ModuleInitializationResult(DateTime start, DateTime end, string moduleId, string moduleVersion, ChartboostCoreError? error) 
         {
-            Module = module;
-            _moduleName = module.ModuleId;
-            _moduleVersion = module.ModuleVersion;
+            _start = start;
+            _end = end;
+            var duration = end - start;
+            _duration = (long)duration.TotalMilliseconds;
+            _moduleId = moduleId;
+            _moduleVersion = moduleVersion;
+            _error = error;
         }
 
-        public ModuleInitializationResult(long start, long end, long duration, ChartboostCoreError? error, InitializableModule module) : base(start, end, duration, error)
+        public ModuleInitializationResult(long start, long end, long duration, string moduleId, string moduleVersion, ChartboostCoreError? error)
         {
-            Module = module;
-            _moduleName = module.ModuleId;
-            _moduleVersion = module.ModuleVersion;
+            _start = BaseDate.AddMilliseconds(start);
+            _end = BaseDate.AddMilliseconds(end);
+            _duration = duration;
+            _moduleId = moduleId;
+            _moduleVersion = moduleVersion;
+            _error = error;
         }
+        
+        public string ToJson()
+            => JsonTools.SerializeObject(this);
     }
-    #nullable disable
 }

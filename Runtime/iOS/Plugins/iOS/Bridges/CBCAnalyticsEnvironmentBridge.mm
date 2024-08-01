@@ -1,111 +1,118 @@
-#import "CBCUnityUtilities.h"
+#import "CBCDelegates.h"
+#import "CBCUnityObserver.h"
 
 extern "C" {
-    const char* _analyticsEnvironmentGetOsName(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] osName]);
+    void _CBCSetEnvironmentCallbacks(ChartboostCoreOnEnumStatusChange onEnvironmentPropertyChanged){
+        [[CBCUnityObserver sharedObserver] setOnEnvironmentPropertyChanged:onEnvironmentPropertyChanged];
+
+        [[ChartboostCore analyticsEnvironment] addObserver:[CBCUnityObserver sharedObserver]];
     }
 
-    const char* _analyticsEnvironmentGetOsVersion(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] osVersion]);
+    const char* _CBCAnalyticsGetOsName(){
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] osName]);
     }
 
-    const char* _analyticsEnvironmentGetDeviceMake(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] deviceMake]);
+    const char* _CBCAnalyticsGetOsVersion(){
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] osVersion]);
     }
 
-    const char* _analyticsEnvironmentGetDeviceModel(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] deviceModel]);
+    const char* _CBCAnalyticsGetDeviceMake(){
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] deviceMake]);
     }
 
-    const char* _analyticsEnvironmentGetDeviceLocale(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] deviceLocale]);
+    const char* _CBCAnalyticsGetDeviceModel(){
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] deviceModel]);
     }
 
-    double _analyticsEnvironmentGetScreenHeight(){
-        return [[ChartboostCore analyticsEnvironment] screenHeight];
+    const char* _CBCAnalyticsGetDeviceLocale(){
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] deviceLocale]);
     }
 
-    double _analyticsEnvironmentGetScreenScale(){
+    double _CBCAnalyticsGetScreenHeight(){
+        return [[ChartboostCore analyticsEnvironment] screenHeightPixels];
+    }
+
+    double _CBCAnalyticsGetScreenScale(){
         return [[ChartboostCore analyticsEnvironment] screenScale];
     }
 
-    double _analyticsEnvironmentGetScreenWidth(){
-        return [[ChartboostCore analyticsEnvironment] screenWidth];
+    double _CBCAnalyticsGetScreenWidth(){
+        return [[ChartboostCore analyticsEnvironment] screenWidthPixels];
     }
 
-    const char * _analyticsEnvironmentGetBundleIdentifier(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] bundleID]);
+    const char * _CBCAnalyticsGetBundleIdentifier(){
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] bundleID]);
     }
 
-    bool _analyticsEnvironmentGetLimitAdTrackingEnabled(){
+    bool _CBCAnalyticsGetLimitAdTrackingEnabled(){
         return [[ChartboostCore analyticsEnvironment] isLimitAdTrackingEnabled];
     }
 
-    int _analyticsEnvironmentGetNetworkConnectionType() {
+    int _CBCAnalyticsGetNetworkConnectionType() {
         return (int)[[ChartboostCore analyticsEnvironment] networkConnectionType];
     }
 
-    double _analyticsEnvironmentGetVolume(){
+    double _CBCAnalyticsGetVolume(){
         return [[ChartboostCore analyticsEnvironment] volume];
     }
 
-    const char* _analyticsEnvironmentGetVendorIdentifier(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] vendorID]);
+    const char* _CBCAnalyticsGetVendorIdentifier(){
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] vendorID]);
     }
 
-    int _analyticsEnvironmentGetVendorIdentifierScope(){
+    int _CBCAnalyticsGetVendorIdentifierScope(){
         return (int)[[ChartboostCore analyticsEnvironment] vendorIDScope];
     }
 
-    int _analyticsEnvironmentGetAuthorizationStatus(){
+    int _CBCAnalyticsGetAuthorizationStatus(){
         if (@available(iOS 14.0, *))
             return (int)[[ChartboostCore analyticsEnvironment] appTrackingTransparencyStatus];
         return 3; // 3 == ATTrackingManagerAuthorizationStatusAuthorized
     }
 
-    const char* _analyticsEnvironmentGetAppVersion(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] appVersion]);
+    const char* _CBCAnalyticsGetAppVersion(){
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] appVersion]);
     }
 
-    double _analyticsEnvironmentGetAppSessionDuration(){
+    double _CBCAnalyticsGetAppSessionDuration(){
         return (double)[[ChartboostCore analyticsEnvironment] appSessionDuration];
     }
 
-    const char* _analyticsEnvironmentGetAppSessionIdentifier(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] appSessionID]);
+    const char* _CBCAnalyticsGetAppSessionIdentifier(){
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] appSessionID]);
     }
 
-    bool _analyticsEnvironmentGetIsUserUnderage(){
+    bool _CBCAnalyticsGetIsUserUnderage(){
         return [[ChartboostCore analyticsEnvironment] isUserUnderage];
     }
 
-    const char* _analyticsEnvironmentGetPublisherSessionIdentifier(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] publisherSessionID]);
+    const char* _CBCAnalyticsGetPublisherSessionIdentifier(){
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] publisherSessionID]);
     }
 
-    const char* _analyticsEnvironmentGetPublisherAppIdentifier(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] publisherAppID]);
+    const char* _CBCAnalyticsGetPublisherAppIdentifier(){
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] publisherAppID]);
     }
 
-    const char* _analyticsEnvironmentGetFrameworkName(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] frameworkName]);
+    const char* _CBCAnalyticsGetFrameworkName(){
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] frameworkName]);
     }
 
-    const char* _analyticsEnvironmentGetFrameworkVersion(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] frameworkVersion]);
+    const char* _CBCAnalyticsGetFrameworkVersion(){
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] frameworkVersion]);
     }
 
-    const char* _analyticsEnvironmentGetPlayerIdentifier(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] playerID]);
+    const char* _CBCAnalyticsGetPlayerIdentifier(){
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] playerID]);
     }
 
-    void _analyticsEnvironmentGetUserAgent(int hashCode, ChartbosotCoreResultString onResult){
+    void _CBCAnalyticsGetUserAgent(int hashCode, ChartbosotCoreResultString onResult){
         [[ChartboostCore analyticsEnvironment] userAgentWithCompletion:^(NSString * _Nonnull userAgent) {
-            onResult(hashCode, getCStringOrNull(userAgent));
+            onResult(hashCode, toCStringOrNull(userAgent));
         }];
     }
 
-    const char* _analyticsEnvironmentGetAdvertisingIdentifier(){
-        return getCStringOrNull([[ChartboostCore analyticsEnvironment] advertisingID]);
+    const char* _CBCAnalyticsGetAdvertisingIdentifier(){
+        return toCStringOrNull([[ChartboostCore analyticsEnvironment] advertisingID]);
     }
 }

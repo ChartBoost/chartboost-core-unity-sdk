@@ -11,7 +11,7 @@ namespace Chartboost.Core.Android.AndroidJavaProxies
     #nullable enable
     internal class ResultString : AwaitableAndroidJavaProxy<string?>
     {
-        public ResultString() : base(AndroidConstants.ResultString) { }
+        public ResultString() : base(AndroidConstants.InterfaceResultString) { }
 
         /// <summary>
         /// Posts a string result from the native layer.
@@ -19,15 +19,7 @@ namespace Chartboost.Core.Android.AndroidJavaProxies
         /// <param name="result">String value.</param>
         [Preserve]
         // ReSharper disable once InconsistentNaming
-        private void onResult(string result) => MainThreadDispatcher.Post(o => _complete(result));
-        
-        /// <summary>
-        /// Posts a null result from the native layer.
-        /// </summary>
-        /// <param name="result">Null value.</param>
-        [Preserve]
-        // ReSharper disable once InconsistentNaming
-        private void onResult(AndroidJavaObject result) => MainThreadDispatcher.Post(o => _complete(null));
+        private void onResult(string result) => MainThreadDispatcher.Post(_ => _complete(result));
     }
     #nullable disable
 }

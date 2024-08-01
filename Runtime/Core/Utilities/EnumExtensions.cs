@@ -1,5 +1,3 @@
-using System;
-using Chartboost.Core.Consent;
 using Chartboost.Core.Environment;
 
 namespace Chartboost.Core.Utilities
@@ -9,23 +7,9 @@ namespace Chartboost.Core.Utilities
     /// </summary>
     internal static class EnumExtensions
     {
-        private const string DialogTypeConcise = "concise";
-        private const string DialogTypeDetailed = "detailed";
-
-        private const string GPP = "gpp";
-        private const string GDPRConsentGiven = "gdpr_consent_given";
-        private const string CCPAOptIn = "ccpa_opt_in";
-        private const string TCF = "tcf";
-        private const string USP = "usp";
-
-        private const string Granted = "granted";
-        private const string Denied = "denied";
         private const string Unknown = "unknown";
 
-        private const string User = "user";
         private const string Developer = "developer";
-
-        private const string DoesNotApply = "does_not_apply";
         
         private const string Wired = "wired";
         private const string Wifi = "wifi";
@@ -47,62 +31,7 @@ namespace Chartboost.Core.Utilities
         private const string PublisherSessionIdentifier = "PUBLISHER_SESSION_IDENTIFIER"; 
         private const string FrameworkName = "FRAMEWORK_NAME"; 
         private const string FrameworkVersion = "FRAMEWORK_VERSION"; 
-        private const string PlayerIdentifier = "PLAYER_IDENTIFIER"; 
-
-        /// <summary>
-        /// Converts a string to a <see cref="ConsentDialogType"/> enum value.
-        /// </summary>
-        /// <param name="source">The string value to convert.</param>
-        /// <returns>The <see cref="ConsentDialogType"/> matching value or <see cref="ConsentDialogType.Detailed"/> if null or empty.</returns>
-        public static ConsentDialogType DialogType(this string source)
-        {
-            if (string.IsNullOrEmpty(source))
-                return ConsentDialogType.Detailed;
-
-            return source.ToLower() switch
-            {
-                DialogTypeConcise => ConsentDialogType.Concise,
-                DialogTypeDetailed => ConsentDialogType.Detailed,
-                _ => ConsentDialogType.Detailed
-            };
-        }
-
-        /// <summary>
-        /// Converts a string to a <see cref="ConsentStatus"/> enum value.
-        /// </summary>
-        /// <param name="source">The string value to convert.</param>
-        /// <returns>The <see cref="ConsentStatus"/> matching value or <see cref="ConsentStatus.Unknown"/> if null or empty.</returns>
-        public static ConsentStatus ConsentStatus(this string source)
-        {
-            if (string.IsNullOrEmpty(source))
-                return Consent.ConsentStatus.Unknown;
-
-            return source.ToLower() switch
-            {
-                Granted => Consent.ConsentStatus.Granted,
-                Denied => Consent.ConsentStatus.Denied,
-                Unknown => Consent.ConsentStatus.Unknown,
-                _ => Consent.ConsentStatus.Unknown
-            };
-        }
-
-        /// <summary>
-        /// Converts a string to a <see cref="ConsentStatusSource"/> enum value.
-        /// </summary>
-        /// <param name="source">The string value to convert.</param>
-        /// <returns>The <see cref="ConsentStatusSource"/> matching value or <see cref="ConsentStatusSource.Developer"/> if null or empty.</returns>
-        public static ConsentStatusSource ConsentStatusSource(this string source)
-        {
-            if (string.IsNullOrEmpty(source))
-                return Consent.ConsentStatusSource.Developer;
-
-            return source.ToLower() switch
-            {
-                User => Consent.ConsentStatusSource.User,
-                Developer => Consent.ConsentStatusSource.Developer,
-                _ => Consent.ConsentStatusSource.Developer
-            };
-        }
+        private const string PlayerIdentifier = "PLAYER_IDENTIFIER";
 
         /// <summary>
         /// Converts a string to a <see cref="NetworkConnectionType"/> enum value.
@@ -152,19 +81,19 @@ namespace Chartboost.Core.Utilities
             };
         }
 
-        internal static PublisherMetadataProperty? PublisherMetadataProperty(this string source)
+        internal static ObservableEnvironmentProperty? ToObservableProperty(this string source)
         {
             if (string.IsNullOrEmpty(source))
                 return null;
 
             return source switch
             {
-                FrameworkName => Environment.PublisherMetadataProperty.FrameworkName,
-                FrameworkVersion => Environment.PublisherMetadataProperty.FrameworkVersion,
-                IsUserUnderage => Environment.PublisherMetadataProperty.IsUserUnderage,
-                PlayerIdentifier => Environment.PublisherMetadataProperty.PlayerIdentifier,
-                PublisherAppIdentifier => Environment.PublisherMetadataProperty.PublisherAppIdentifier,
-                PublisherSessionIdentifier => Environment.PublisherMetadataProperty.PublisherSessionIdentifier,
+                FrameworkName => ObservableEnvironmentProperty.FrameworkName,
+                FrameworkVersion => ObservableEnvironmentProperty.FrameworkVersion,
+                IsUserUnderage => ObservableEnvironmentProperty.IsUserUnderage,
+                PlayerIdentifier => ObservableEnvironmentProperty.PlayerIdentifier,
+                PublisherAppIdentifier => ObservableEnvironmentProperty.PublisherAppIdentifier,
+                PublisherSessionIdentifier => ObservableEnvironmentProperty.PublisherSessionIdentifier,
                 _ => null
             };
         }

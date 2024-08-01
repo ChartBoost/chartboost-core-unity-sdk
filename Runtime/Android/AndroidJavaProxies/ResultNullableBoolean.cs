@@ -11,7 +11,7 @@ namespace Chartboost.Core.Android.AndroidJavaProxies
     #nullable enable
     internal class ResultNullableBoolean : AwaitableAndroidJavaProxy<bool?>
     {
-        public ResultNullableBoolean() : base(AndroidConstants.ResultBoolean) { }
+        public ResultNullableBoolean() : base(AndroidConstants.InterfaceResultBoolean) { }
 
         /// <summary>
         /// Posts a boolean result from the native layer.
@@ -19,7 +19,7 @@ namespace Chartboost.Core.Android.AndroidJavaProxies
         /// <param name="result">Boolean value.</param>
         [Preserve]
         // ReSharper disable once InconsistentNaming
-        private void onResult(bool result) => MainThreadDispatcher.Post(o => _complete(result));
+        private void onResult(bool result) => MainThreadDispatcher.Post(_ => _complete(result));
 
         /// <summary>
         /// Posts a null result from the native layer.
@@ -27,7 +27,7 @@ namespace Chartboost.Core.Android.AndroidJavaProxies
         /// <param name="result">Null value.</param>
         [Preserve]
         // ReSharper disable once InconsistentNaming
-        private void onResult(AndroidJavaObject result) => MainThreadDispatcher.Post(o => _complete(null));
+        private void onResult(AndroidJavaObject result) => MainThreadDispatcher.Post(_ => _complete(null));
     }
 
     /// <summary>
@@ -35,7 +35,7 @@ namespace Chartboost.Core.Android.AndroidJavaProxies
     /// </summary>
     internal class ResultBoolean : AwaitableAndroidJavaProxy<bool>
     {
-        public ResultBoolean() : base(AndroidConstants.ResultBoolean) { }
+        public ResultBoolean() : base(AndroidConstants.InterfaceResultBoolean) { }
         
         /// <summary>
         /// Posts a boolean result from the native layer.
@@ -43,7 +43,7 @@ namespace Chartboost.Core.Android.AndroidJavaProxies
         /// <param name="result">Boolean value</param>
         [Preserve]
         // ReSharper disable once InconsistentNaming
-        private void onResult(bool result) => MainThreadDispatcher.Post(o => _complete(result));
+        private void onResult(bool result) => MainThreadDispatcher.Post(_ => _complete(result));
     }
 #nullable disable
 }

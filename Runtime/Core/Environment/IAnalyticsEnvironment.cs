@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 
 namespace Chartboost.Core.Environment
@@ -42,15 +43,13 @@ namespace Chartboost.Core.Environment
         
         /// <summary>
         /// The session duration, or 0 if the <see cref="ChartboostCore.Initialize"/> method has not been called yet.
-        /// A session starts the moment <see cref="ChartboostCore.Initialize"/> is called for the first time, or when the user consent status changes from
-        /// <see cref="Chartboost.Core.Consent.ConsentStatus.Granted"/> to any other status.
+        /// A session starts the moment <see cref="ChartboostCore.Initialize"/> is called for the first time.
         /// </summary>
         double AppSessionDuration { get; }
         
         /// <summary>
         /// The session identifier, or null if the <see cref="ChartboostCore.Initialize"/> method has not been called yet.
-        /// A session starts the moment <see cref="ChartboostCore.Initialize"/> is called for the first time, or when the user consent status changes from
-        /// <see cref="Chartboost.Core.Consent.ConsentStatus.Granted"/> to any other status.
+        /// A session starts the moment <see cref="ChartboostCore.Initialize"/> is called for the first time.
         /// </summary>
         string? AppSessionIdentifier { get; }
         
@@ -72,12 +71,12 @@ namespace Chartboost.Core.Environment
         string? PublisherAppIdentifier { get; }
         
         /// <summary>
-        /// The framework name set by the publisher through a call to <see cref="IPublisherMetadata.SetFrameworkName"/>.
+        /// The framework name set by the publisher through a call to <see cref="IPublisherMetadata.SetFramework"/>.
         /// </summary>
         string? FrameworkName { get; }
         
         /// <summary>
-        /// The framework version set by the publisher through a call to <see cref="IPublisherMetadata.SetFrameworkVersion"/>.
+        /// The framework version set by the publisher through a call to <see cref="IPublisherMetadata.SetFramework"/>.
         /// </summary>
         string? FrameworkVersion { get; }
         
@@ -90,6 +89,35 @@ namespace Chartboost.Core.Environment
         /// The system advertising identifier (IFA).
         /// </summary>
         new Task<string?> AdvertisingIdentifier { get; }
+        
+        /// <summary>
+        /// Subscribe to get notified when <see cref="IAnalyticsEnvironment.IsUserUnderage"/> changes.
+        /// </summary>
+        event Action IsUserUnderageChanged;
+        
+        /// <summary>
+        /// Subscribe to get notified when <see cref="IAnalyticsEnvironment.PublisherSessionIdentifier"/> changes.
+        /// </summary>
+        event Action PublisherSessionIdentifierChanged;
+        
+        /// <summary>
+        /// Subscribe to get notified when <see cref="IAnalyticsEnvironment.PublisherAppIdentifier"/> changes.
+        /// </summary>
+        event Action PublisherAppIdentifierChanged;
+        
+        /// <summary>
+        /// Subscribe to get notified when <see cref="IAnalyticsEnvironment.FrameworkName"/> changes.
+        /// </summary>
+        event Action FrameworkNameChanged;
+        
+        /// <summary>
+        /// Subscribe to get notified when <see cref="IAnalyticsEnvironment.FrameworkVersion"/> changes.
+        /// </summary>
+        event Action FrameworkVersionChanged;
+        
+        /// <summary>
+        /// Subscribe to get notified when <see cref="IAnalyticsEnvironment.PlayerIdentifier"/> changes.
+        /// </summary>
+        event Action PlayerIdentifierChanged;
     }
-    #nullable disable
 }

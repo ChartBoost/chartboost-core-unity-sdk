@@ -17,7 +17,7 @@ namespace Chartboost.Core.Android.Environment
         protected override string EnvironmentProperty => AndroidConstants.EnvironmentAdvertising;
         
         /// <inheritdoc cref="BaseAndroidEnvironment.EnvironmentBridge"/>
-        protected override Func<AndroidJavaClass> EnvironmentBridge => AndroidUtils.AdvertisingBridge;
+        protected override Func<AndroidJavaClass> EnvironmentBridge => Utilities.AndroidExtensions.AdvertisingBridge;
         
         /// <inheritdoc cref="IAdvertisingEnvironment.OSName"/>
         public string OSName => Property<string>(AndroidConstants.GetPropertyOSName);
@@ -34,14 +34,14 @@ namespace Chartboost.Core.Android.Environment
         /// <inheritdoc cref="IAdvertisingEnvironment.DeviceLocale"/>
         public string? DeviceLocale => Property<string>(AndroidConstants.GetPropertyDeviceLocale);
         
-        /// <inheritdoc cref="IAdvertisingEnvironment.ScreenHeight"/>
-        public double? ScreenHeight => DoubleProperty(AndroidConstants.GetPropertyScreenHeight);
+        /// <inheritdoc cref="IAdvertisingEnvironment.ScreenHeightPixels"/>
+        public double? ScreenHeightPixels => DoubleProperty(AndroidConstants.GetPropertyScreenHeightPixels);
         
         /// <inheritdoc cref="IAdvertisingEnvironment.ScreenScale"/>
         public double? ScreenScale => DoubleProperty(AndroidConstants.GetPropertyScreenScale);
         
-        /// <inheritdoc cref="IAdvertisingEnvironment.ScreenWidth"/>
-        public double? ScreenWidth => DoubleProperty(AndroidConstants.GetPropertyScreenWidth);
+        /// <inheritdoc cref="IAdvertisingEnvironment.ScreenWidthPixels"/>
+        public double? ScreenWidthPixels => DoubleProperty(AndroidConstants.GetPropertyScreenWidthPixels);
         
         /// <inheritdoc cref="IAdvertisingEnvironment.BundleIdentifier"/>
         public string? BundleIdentifier => Property<string?>(AndroidConstants.GetPropertyBundleIdentifier);

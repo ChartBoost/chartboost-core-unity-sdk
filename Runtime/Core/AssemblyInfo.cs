@@ -1,4 +1,14 @@
 using System.Runtime.CompilerServices;
+using Chartboost.Core;
 
-[assembly: InternalsVisibleTo("com.chartboost.core.android")]
-[assembly: InternalsVisibleTo("com.chartboost.core.ios")]
+[assembly: InternalsVisibleTo(AssemblyInfo.CoreAssemblyAndroid)]
+[assembly: InternalsVisibleTo(AssemblyInfo.CoreAssemblyIOS)]
+
+namespace Chartboost.Core
+{
+    internal class AssemblyInfo
+    {
+        public const string CoreAssemblyAndroid = "Chartboost.Core.Android";
+        public const string CoreAssemblyIOS = "Chartboost.Core.IOS";
+    }
+}

@@ -29,32 +29,35 @@ namespace Chartboost.Core.Android.Environment
         }
 
         protected string EnumPropertyAsString(string field) 
-            => AndroidUtils.EnumProperty(EnvironmentProperty, field);
+            => Utilities.AndroidExtensions.EnumProperty(EnvironmentProperty, field);
 
         #nullable enable
         protected bool? BoolProperty(string field) 
-            => AndroidUtils.BoolProperty(EnvironmentProperty, field);
+            => Utilities.AndroidExtensions.BoolProperty(EnvironmentProperty, field);
 
         protected double? DoubleProperty(string field) 
-            => AndroidUtils.DoubleProperty(EnvironmentProperty, field);
+            => Utilities.AndroidExtensions.DoubleProperty(EnvironmentProperty, field);
 
         protected float? FloatProperty(string field) 
-            => AndroidUtils.FloatProperty(EnvironmentProperty, field);
+            => Utilities.AndroidExtensions.FloatProperty(EnvironmentProperty, field);
 
         protected int? IntegerProperty(string field) 
-            => AndroidUtils.IntegerProperty(EnvironmentProperty, field);
+            => Utilities.AndroidExtensions.IntegerProperty(EnvironmentProperty, field);
 
         protected Task<string?> AwaitableString(string field) =>
-            AndroidUtils.AwaitableString(EnvironmentBridge, field);
+            Utilities.AndroidExtensions.AwaitableString(EnvironmentBridge, field);
         
         protected Task<bool?> AwaitableBoolean(string field) =>
-            AndroidUtils.AwaitableBoolean(EnvironmentBridge, field);
+            Utilities.AndroidExtensions.AwaitableBoolean(EnvironmentBridge, field);
 
         protected T Property<T>(string field) 
-            => AndroidUtils.Property<T>(EnvironmentProperty, field);
+            => Utilities.AndroidExtensions.Property<T>(EnvironmentProperty, field);
 
         protected void SetProperty<T>(string field, T value) 
-            => AndroidUtils.SetProperty(EnvironmentProperty, field, value);
+            => Utilities.AndroidExtensions.SetProperty(EnvironmentProperty, field, value);
+        
+        protected void SetProperty<T>(string field, T key, T value) 
+            => Utilities.AndroidExtensions.SetProperty(EnvironmentProperty, field, key, value);
         #nullable disable
     }
 }

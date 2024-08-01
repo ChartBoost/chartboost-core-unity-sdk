@@ -4,7 +4,7 @@
 @implementation CBCUnityObserver
 
 static NSMutableDictionary* _modulesToInit;
-static NSMutableDictionary* _nativeModuleStore;
+static NSMutableDictionary* _moduleStore;
 
 + (instancetype) sharedObserver {
     static dispatch_once_t pred = 0;
@@ -26,13 +26,13 @@ static NSMutableDictionary* _nativeModuleStore;
     [[self initializableModules] removeAllObjects];
 }
 
-- (NSMutableDictionary*) nativeModuleStore {
-    if (_nativeModuleStore == nil)
-        _nativeModuleStore = [NSMutableDictionary new];
-    return _nativeModuleStore;
+- (NSMutableDictionary*) moduleStore {
+    if (_moduleStore == nil)
+        _moduleStore = [NSMutableDictionary new];
+    return _moduleStore;
 }
 
-- (void)addModule:(id<CBCInitializableModule>)initializableModule {
+- (void)addModule:(id<CBCModule>)initializableModule {
     [[self initializableModules] setObject:initializableModule forKey:[initializableModule moduleID]];
 }
 
@@ -40,16 +40,17 @@ static NSMutableDictionary* _nativeModuleStore;
     [[self initializableModules] removeObjectForKey:moduleId];
 }
 
-- (void)storeModule:(id<CBCInitializableModule>)nativeModule {
-    [[self nativeModuleStore] setObject:nativeModule forKey:[nativeModule moduleID]];
+- (void)storeModule:(id<CBCModule>)nativeModule {
+    [[self moduleStore] setObject:nativeModule forKey:[nativeModule moduleID]];
 }
 
 #pragma mark CBCInitializableModuleObserver
 - (void)onModuleInitializationCompleted:(CBCModuleInitializationResult * _Nonnull)result {
     if (_onModuleInitializationCompleted == nil)
         return;
-    
-    const char* moduleIdentifier = [[[result module] moduleID] UTF8String];
+
+    const char * moduleId = toCStringOrNull([result moduleID]);
+    const char * moduleVersion = toCStringOrNull([result moduleVersion]);
     long start = ([[result startDate] timeIntervalSince1970] * 1000);
     long end = ([[result endDate] timeIntervalSince1970] * 1000);
     long duration = [result duration] * 1000;
@@ -70,58 +71,28 @@ static NSMutableDictionary* _nativeModuleStore;
                                 @"message" : message ?: [NSNull null],
                                 @"cause" : cause ?: [NSNull null],
                                 @"resolution" : resolution ?: [NSNull null] };
-        exception = dictToJson(dict);
+        exception = toJSON(dict);
     }
     
     if (_onModuleInitializationCompleted != nil)
-        _onModuleInitializationCompleted(moduleIdentifier, start, end, duration, exception);
-    [self removeModule:[[result module] moduleID]];
+        _onModuleInitializationCompleted(moduleId, start, end, duration, moduleId, moduleVersion, exception);
+    [self removeModule:[result moduleID]];
 }
 
 #pragma mark CBCConsentObserver
-- (void)onConsentChangeWithStandard:(CBCConsentStandard * _Nonnull)standard value:(CBCConsentValue * _Nullable)value {
-    if (_onConsentChangeForStandard != nil)
-        _onConsentChangeForStandard([[standard value] UTF8String], [[value value] UTF8String]);
-}
-
-- (void)onConsentStatusChange:(enum CBCConsentStatus)status {
-    if (_onConsentStatusChange != nil)
-        _onConsentStatusChange((int)status);
-}
-
-- (void)onConsentModuleReady {
+- (void)onConsentModuleReadyWithInitialConsents:(NSDictionary<NSString *,NSString *> * _Nonnull)initialConsents {
     if (_onConsentReady != nil)
-        _onConsentReady();
+        _onConsentReady(toJSON(initialConsents));
 }
 
-- (void)onPartnerConsentStatusChangeWithPartnerID:(NSString * _Nonnull)partnerID status:(enum CBCConsentStatus)status {
-    if (_onPartnerConsentChange != nil)
-        _onPartnerConsentChange([partnerID UTF8String], (int)status);
+- (void)onConsentChangeWithFullConsents:(NSDictionary<NSString *,NSString *> * _Nonnull)fullConsents modifiedKeys:(NSSet<NSString *> * _Nonnull)modifiedKeys {
+    if (_onConsentChange != nil)
+        _onConsentChange(toJSON(fullConsents), toJSON([modifiedKeys allObjects]));
 }
 
-#pragma mark CBCPublisherMetadataObserver
-- (void)onChange:(enum CBCPublisherMetadataProperty)property {
-    if (_onPublisherMetadataPropertyChange != nil)
-        _onPublisherMetadataPropertyChange((int)property);
+#pragma mark CBCEnvironmentObserver
+- (void)onChange:(enum CBCObservableEnvironmentProperty)property {
+    if (_onEnvironmentPropertyChanged != nil)
+        _onEnvironmentPropertyChanged((int)property);
 }
-
 @end
-
-extern "C" {
-    void _chartboostCoreSetModuleInitializationCallback(ChartboostCoreOnModuleInitializationResult onModuleInitializationResult){
-        [[CBCUnityObserver sharedObserver] setOnModuleInitializationCompleted:onModuleInitializationResult];
-    }
-
-    void _chartboostCoreSetConsentCallbacks(ChartboostCoreOnEnumStatusChange onConsentStatusChange, ChartboostCoreOnConsentChangeForStandard onConsentChangeForStandard, ChartboostCoreOnPartnerConsentChange onPartnerConsentChange, ChartboostCoreAction onConsentModuleReady){
-        [[CBCUnityObserver sharedObserver] setOnConsentStatusChange:onConsentStatusChange];
-        [[CBCUnityObserver sharedObserver] setOnConsentChangeForStandard:onConsentChangeForStandard];
-        [[CBCUnityObserver sharedObserver] setOnPartnerConsentChange:onPartnerConsentChange];
-        [[CBCUnityObserver sharedObserver] setOnConsentReady:onConsentModuleReady];
-        [[ChartboostCore consent] addObserver:[CBCUnityObserver sharedObserver]];
-    }
-
-    void _chartboostCoreSetPublisherMetadataCallbacks(ChartboostCoreOnEnumStatusChange onPublisherMetadataPropertyChange){
-        [[CBCUnityObserver sharedObserver] setOnPublisherMetadataPropertyChange:onPublisherMetadataPropertyChange];
-        [[ChartboostCore publisherMetadata] addObserver:[CBCUnityObserver sharedObserver]];
-    }
-}

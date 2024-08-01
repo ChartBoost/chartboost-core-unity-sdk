@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Chartboost.Core.Consent;
@@ -12,24 +11,18 @@ namespace Chartboost.Core.Default
     /// </summary>
     internal class ConsentManagementPlatform : IConsentManagementPlatform
     {
-        /// <inheritdoc cref="IConsentManagementPlatform.ConsentStatus"/>
-        public ConsentStatus ConsentStatus => ConsentStatus.Unknown;
-        
         /// <inheritdoc cref="IConsentManagementPlatform.Consents"/>
-        public Dictionary<ConsentStandard, ConsentValue> Consents { get; } = new Dictionary<ConsentStandard, ConsentValue>();
-
-        /// <inheritdoc cref="IConsentManagementPlatform.PartnerConsentStatus"/>
-        public Dictionary<string, ConsentStatus> PartnerConsentStatus { get; } = new Dictionary<string, ConsentStatus>();
+        public IReadOnlyDictionary<ConsentKey, ConsentValue> Consents { get; } = new Dictionary<ConsentKey, ConsentValue>();
 
         /// <inheritdoc cref="IConsentManagementPlatform.ShouldCollectConsent"/>
         public bool ShouldCollectConsent => false;
         
         /// <inheritdoc cref="IConsentManagementPlatform.GrantConsent"/>
-        public Task<bool> GrantConsent(ConsentStatusSource source) 
+        public Task<bool> GrantConsent(ConsentSource source) 
             => Task.FromResult(false);
 
         /// <inheritdoc cref="IConsentManagementPlatform.DenyConsent"/>
-        public Task<bool> DenyConsent(ConsentStatusSource source) 
+        public Task<bool> DenyConsent(ConsentSource source) 
             => Task.FromResult(false);
 
         /// <inheritdoc cref="IConsentManagementPlatform.ResetConsent"/>
@@ -40,18 +33,14 @@ namespace Chartboost.Core.Default
         public Task<bool> ShowConsentDialog(ConsentDialogType dialogType) 
             => Task.FromResult(false);
 
+        #nullable enable
         #pragma warning disable 0067
-        /// <inheritdoc cref="IConsentManagementPlatform.ConsentChangeForStandard"/>
-        public event ChartboostConsentChangeForStandard ConsentChangeForStandard;
-        
-        /// <inheritdoc cref="IConsentManagementPlatform.ConsentStatusChange"/>
-        public event ChartboostConsentStatusChange ConsentStatusChange;
+        /// <inheritdoc cref="IConsentManagementPlatform.ConsentChangeWithFullConsents"/>
+        public event ChartboostCoreConsentChangeWithFullConsents? ConsentChangeWithFullConsents;
 
-        /// <inheritdoc cref="IConsentManagementPlatform.PartnerConsentStatusChange"/>
-        public event ChartboostPartnerConsentStatusChange PartnerConsentStatusChange;
-
-        /// <inheritdoc cref="IConsentManagementPlatform.ConsentModuleReady"/>
-        public event Action ConsentModuleReady;
+        /// <inheritdoc cref="IConsentManagementPlatform.ConsentModuleReadyWithInitialConsents"/>
+        public event ChartboostCoreConsentModuleReadyWithInitialConsents? ConsentModuleReadyWithInitialConsents;
         #pragma warning restore 0067
+        #nullable disable
     }
 }

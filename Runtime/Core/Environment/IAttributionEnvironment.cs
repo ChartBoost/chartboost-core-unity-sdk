@@ -9,7 +9,7 @@ namespace Chartboost.Core.Environment
     public interface IAttributionEnvironment
     { 
         /// <summary>
-        /// The system advertising identifier (IFA).
+        /// The system advertising identifier.
         /// </summary>
         Task<string?> AdvertisingIdentifier { get; }
         
@@ -18,5 +18,4 @@ namespace Chartboost.Core.Environment
         /// </summary>
         Task<string?> UserAgent { get; }
     }
-    #nullable disable
 }
