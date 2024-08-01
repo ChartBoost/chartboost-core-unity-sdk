@@ -1,6 +1,6 @@
-#import "CBCUnityUtilities.h"
+#import "CBCDelegates.h"
 
-@interface CBCModuleWrapper : NSObject <CBCInitializableModule>
+@interface CBCModuleWrapper : NSObject <CBCModule>
 @property (nonnull, nonatomic, copy) NSString *moduleID;
 @property (nonnull, nonatomic, copy) NSString *moduleVersion;
 @property _Nullable ChartboostCoreOnModuleInitializeDelegate initializeCallback;

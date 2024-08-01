@@ -1,5 +1,0 @@
-<linker>
-    <assembly fullname="com.chartboost.core" preserve="all" />
-    <assembly fullname="com.chartboost.core.android" preserve="all" />
-    <assembly fullname="com.chartboost.core.ios" preserve="all" />
-</linker>

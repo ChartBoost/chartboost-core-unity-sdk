@@ -1,32 +1,28 @@
-#import "CBCUnityUtilities.h"
+#import "CBCDelegates.h"
+#import "CBCUnityObserver.h"
 
 extern "C" {
-    void _publisherMetadataSetIsUserUnderage(bool isUnderage){
+    void _CBCSetIsUserUnderage(bool isUnderage){
         [[ChartboostCore publisherMetadata] setIsUserUnderage:isUnderage];
     }
 
-    void _publisherMetadataSetPublisherSessionIdentifier(const char* publisherSessionIdentifier)
+    void _CBCSetPublisherSessionIdentifier(const char* publisherSessionIdentifier)
     {
-        [[ChartboostCore publisherMetadata] setPublisherSessionID:getNSStringOrNil(publisherSessionIdentifier)];
+        [[ChartboostCore publisherMetadata] setPublisherSessionID:toNSStringOrNull(publisherSessionIdentifier)];
     }
 
-    void _publisherMetadataSetPublisherAppIdentifier(const char* publisherAppIdentifier)
+    void _CBCSetPublisherAppIdentifier(const char* publisherAppIdentifier)
     {
-        [[ChartboostCore publisherMetadata] setPublisherAppID:getNSStringOrNil(publisherAppIdentifier)];
+        [[ChartboostCore publisherMetadata] setPublisherAppID:toNSStringOrNull(publisherAppIdentifier)];
     }
 
-    void _publisherMetadataSetFrameworkName(const char* frameworkName)
+    void _CBCSetFramework(const char* frameworkName, const char* frameworkVersion)
     {
-        [[ChartboostCore publisherMetadata] setFrameworkName:getNSStringOrNil(frameworkName)];
+        [[ChartboostCore publisherMetadata] setFrameworkWithName:toNSStringOrNull(frameworkName) version:toNSStringOrNull(frameworkVersion)];
     }
 
-    void _publisherMetadataSetFrameworkVersion(const char* frameworkVersion)
+    void _CBCSetPlayerIdentifier(const char* playerIdentifier)
     {
-        [[ChartboostCore publisherMetadata] setFrameworkVersion:getNSStringOrNil(frameworkVersion)];
-    }
-
-    void _publisherMetadataPlayerIdentifier(const char* playerIdentifier)
-    {
-        [[ChartboostCore publisherMetadata] setPlayerID:getNSStringOrNil(playerIdentifier)];
+        [[ChartboostCore publisherMetadata] setPlayerID:toNSStringOrNull(playerIdentifier)];
     }
 }

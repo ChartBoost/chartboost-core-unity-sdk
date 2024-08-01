@@ -1,6 +1,26 @@
 # Changelog
 All notable changes to this project will be documented in this file using the standards as defined at [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0).
 
+### Version 1.0.0 *(2024-08-01)*
+
+Added:
+- Support for `Unity` specific remote module initialization.
+- `event ChartboostCoreConsentChangeWithFullConsents ConsentChangeWithFullConsents` to `IConsentManagementPlatform`.
+- `event ChartboostCoreConsentModuleReadyWithInitialConsents ConsentModuleReadyWithInitialConsents` to `IConsentManagementPlatform`.
+- `IReadOnlyList<Module> Modules` to `SDKConfiguration`.
+- `IReadOnlyCollection<string> SkippedModuleIdentifiers` to `SDKConfiguration`
+
+Improvements:
+- Combined `FrameworkName` and `FrameworkVersion` setter into a single call `SetFramework`.
+- `PublisherMetadata` events moved to `AnalyticsEnvironment`.
+
+Removed:
+- `ConsentStatus ConsentStatus` from `IConsentManagementPlatform`.
+- `Dictionary<string, ConsentStatus> PartnerConsentStatus` from `IConsentManagementPlatform`.
+- `event ChartboostConsentStatusChange ConsentStatusChange` from `IConsentManagementPlatform`.
+- `event ChartboostPartnerConsentStatusChange PartnerConsentStatusChange` from `IConsentManagementPlatform`.
+- `event Action ConsentModuleReady` from `IConsentManagementPlatform`.
+
 ### Version 0.4.0 *(2023-12-7)*
 Improvements:
 - Added `PartnerConsentStatus: Dictionary<String, ConsentStatus>` to `IConsentManagementPlatform`. This is to facilitate per-partner consent for Mediation.

@@ -4,17 +4,17 @@ using Chartboost.Core.Initialization;
 namespace Chartboost.Core.Utilities
 {
     /// <summary>
-    /// Utility class to keep track of <see cref="InitializableModule"/> instances as they are initialized and sent back to developers.
+    /// Utility class to keep track of <see cref="Module"/> instances as they are initialized and sent back to developers.
     /// </summary>
     internal static class PendingModuleCache
     {
-        private static readonly Dictionary<string, InitializableModule> ModulesPendingToInitialize = new Dictionary<string, InitializableModule>();
+        private static readonly Dictionary<string, Module> ModulesPendingToInitialize = new();
 
         /// <summary>
-        /// Tracks a <see cref="InitializableModule"/> while it is being initialized. 
+        /// Tracks a <see cref="Module"/> while it is being initialized. 
         /// </summary>
-        /// <param name="module">The <see cref="InitializableModule"/> to be tracked.</param>
-        internal static void TrackInitializableModule(InitializableModule module)
+        /// <param name="module">The <see cref="Module"/> to be tracked.</param>
+        internal static void TrackModule(Module module)
         {
             var moduleName = module.ModuleId;
             
@@ -27,23 +27,26 @@ namespace Chartboost.Core.Utilities
         
         #nullable enable
         /// <summary>
-        /// Returns a <see cref="InitializableModule"/> based on a moduleId or null if not found.
+        /// Returns a <see cref="Module"/> based on a moduleId or null if not found.
         /// </summary>
         /// <param name="moduleId">String identifier for the module.</param>
-        /// <returns>The <see cref="InitializableModule"/> instance or null.</returns>
-        internal static InitializableModule? GetInitializableModule(string moduleId)
+        /// <returns>The <see cref="Module"/> instance or null.</returns>
+        internal static Module? GetModule(string moduleId)
         {
             // TODO - Handle scenario where requested module cannot be found 
-            return ModulesPendingToInitialize.TryGetValue(moduleId, out var module) ? module : null;
+            if (ModulesPendingToInitialize.TryGetValue(moduleId, out var module))
+            {
+                return module;
+            }
+            return null;
         }
 
         /// <summary>
-        /// Releases a <see cref="InitializableModule"/> based on a moduleId.
+        /// Releases a <see cref="Module"/> based on a moduleId.
         /// </summary>
         /// <param name="moduleId">String identifier for the module.</param>
-        /// <returns>The <see cref="InitializableModule"/> instance or null.</returns>
-        internal static void ReleaseInitializableModule(string moduleId) 
+        /// <returns>The <see cref="Module"/> instance or null.</returns>
+        internal static void ReleaseModule(string moduleId) 
             => ModulesPendingToInitialize[moduleId] = null;
-        #nullable disable
     }
 }

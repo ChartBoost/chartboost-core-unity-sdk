@@ -1,83 +1,61 @@
-// ReSharper disable InconsistentNaming
-
 namespace Chartboost.Core.Android.Utilities
 {
     internal class AndroidConstants
     {
-        #region Native Java/Kotlin Classes
-
-        internal const string ClassString = "java.lang.String";
-        internal const string ClassBoolean = "java.lang.Boolean";
-        internal const string ClassHashMap = "java.util.HashMap";
-
-        internal const string FunctionPut = "put";
-        internal const string FunctionSize = "size";
-        internal const string FunctionToString = "toString";
-        internal const string FunctionGetValue = "getValue";
-        internal const string FunctionNext = "next";
-        internal const string FunctionHasNext = "hasNext";
-        internal const string FunctionIterator = "iterator";
-        internal const string FunctionEntrySet = "entrySet";
-        internal const string FunctionGetKey = "getKey";
-        internal const string FunctionBooleanValue = "booleanValue";
-        internal const string FunctionDoubleValue = "doubleValue";
-        internal const string FunctionFloatValue = "floatValue";
-        internal const string FunctionIntValue = "intValue";
-        internal const string FunctionAddModule = "addModule";
-        internal const string FunctionClearModules = "clearModules";
-        internal const string FunctionCompleted = "completed";
-        #endregion
-
         #region Android Chartboost Core SDK
 
-        internal const string CoreError = "com.chartboost.core.unity.CoreErrorUnity";
-        internal const string GetError = "getError";
-        internal const string GetCode = "getCode";
-        internal const string GetMessage = "getMessage";
-        internal const string GetCause = "getCause";
-        internal const string GetResolution = "getResolution";
+        private const string NamespaceChartboostCore = "com.chartboost.core";
+        private static readonly string NamespaceUnity = $"{NamespaceChartboostCore}.unity";
         
-        internal const string ChartboostCore = "com.chartboost.core.ChartboostCore";
-        internal const string InitializeSDK = "initializeSdk";
-        internal const string GetSDKVersion = "getSdkVersion";
-        internal const string GetDebug = "getDebug";
-        internal const string SetDebug = "setDebug";
-        internal const string GetModuleId= "getModuleId";
-        internal const string GetModuleVersion = "getModuleVersion";
+        internal static readonly string CoreError = GetErrorType("CoreErrorUnity");
+        
+        private static string GetErrorType(string className) => $"{NamespaceUnity}.error.{className}";
+        
+        internal const string FunctionGetError = "getError";
+        internal const string FunctionGetCode = "getCode";
+        internal const string FunctionGetMessage = "getMessage";
+        internal const string FunctionGetCause = "getCause";
+        internal const string FunctionGetResolution = "getResolution";
 
-        internal const string SdkConfiguration = "com.chartboost.core.initialization.SdkConfiguration";
-        internal const string ConsentObserver = "com.chartboost.core.consent.ConsentObserver";
-        internal const string InitializableModuleObserver = "com.chartboost.core.initialization.InitializableModuleObserver";
-        internal const string PublisherMetadataObserver = "com.chartboost.core.environment.PublisherMetadataObserver";
-
-        internal const string ModuleConfigurationJson = "json";
-        internal const string Module = "module";
-        internal const string ModuleInitializationResultStart = "start";
-        internal const string ModuleInitializationResultEnd = "end";
-        internal const string ModuleInitializationResultDuration = "duration";
-        internal const string ModuleInitializationResultException = "exception";
-        internal const string InitializableModuleModuleId = "moduleId";
-        internal const string AddObserver = "addObserver";
-        internal const string RemoveObserver = "removeObserver";
+        private static string GetNativeType(string className) => $"{NamespaceChartboostCore}.{className}";
+        
+        internal static readonly string ChartboostCore = GetNativeType("ChartboostCore");
+        internal static readonly string ModuleObserver = GetNativeType("initialization.ModuleObserver");
+        internal static readonly string EnvironmentObserver = GetNativeType("environment.EnvironmentObserver");
+        
+        internal const string FunctionInitializeSDK = "initializeSdk";
+        internal const string FunctionGetNativeSDKConfiguration = "getNativeSDKConfiguration";
+        internal const string FunctionGetSDKVersion = "getSdkVersion";
+        internal const string FunctionGetModuleId= "getModuleId";
+        internal const string FunctionGetModuleVersion = "getModuleVersion";
+        internal const string FunctionGetChartboostApplicationIdentifier = "getChartboostApplicationIdentifier";
+        
+        internal const string FunctionGetStart = "getStart";
+        internal const string FunctionGetEnd = "getEnd";
+        internal const string FunctionGetDuration = "getDuration";
+        internal const string FunctionGetException = "getException";
+        internal const string FunctionAddObserver = "addObserver";
+        internal const string FunctionRemoveObserver = "removeObserver";
         
         #region Consent
+        internal static readonly string ConsentObserver = GetNativeConsentType("ConsentObserver");
         internal const string Consent = "getConsent";
         internal const string GetConsentShouldCollect = "getShouldCollectConsent";
         internal const string GetConsents = "getConsents";
-        internal const string GetPartnerConsentStatus = "getPartnerConsentStatus";
-        internal const string GetConsentStatus = "getConsentStatus";
         internal const string GrantConsentStatus = "grantConsentStatus";
         internal const string DenyConsentStatus = "denyConsentStatus";
         internal const string ResetConsentStatus = "resetConsentStatus";
-        internal const string ConsentStatusEnum = "com.chartboost.core.consent.ConsentStatus";
-        internal const string ConsentStatusSourceEnum = "com.chartboost.core.consent.ConsentStatusSource";
-        internal const string ConsentStatusSourceEnumUser = "USER";
-        internal const string ConsentStatusSourceEnumDeveloper = "DEVELOPER";
-        
         internal const string ConsentShowConsentDialog = "showConsentDialog";
-        internal const string ConsentDialogTypeEnum = "com.chartboost.core.consent.ConsentDialogType";
+        
+        internal static readonly string ConsentSourceEnum = GetNativeConsentType("ConsentSource");
+        internal const string ConsentSourceEnumUser = "USER";
+        internal const string ConsentSourceEnumDeveloper = "DEVELOPER";
+        
+        internal static readonly string ConsentDialogTypeEnum = GetNativeConsentType("ConsentDialogType");
         internal const string ConsentDialogTypeEnumConcise = "CONCISE";
         internal const string ConsentDialogTypeEnumDetailed = "DETAILED";
+        
+        private static string GetNativeConsentType(string className) => $"{NamespaceChartboostCore}.consent.{className}";
         #endregion
 
         #region Publisher Metadata
@@ -85,8 +63,7 @@ namespace Chartboost.Core.Android.Utilities
         internal const string SetPropertyIsUserUnderAge = "setIsUserUnderage";
         internal const string SetPropertyPublisherSessionIdentifier = "setPublisherSessionIdentifier";
         internal const string SetPropertyPublisherAppIdentifier = "setPublisherAppIdentifier";
-        internal const string SetPropertyFrameworkName = "setFrameworkName";
-        internal const string SetPropertyFrameworkVersion = "setFrameworkVersion";
+        internal const string SetPropertyFramework = "setFramework";
         internal const string SetPropertyPlayerIdentifier = "setPlayerIdentifier";
         #endregion
 
@@ -103,9 +80,9 @@ namespace Chartboost.Core.Android.Utilities
         internal const string GetPropertyDeviceMake = "getDeviceMake";
         internal const string GetPropertyDeviceModel = "getDeviceModel";
         internal const string GetPropertyDeviceLocale = "getDeviceLocale";
-        internal const string GetPropertyScreenHeight = "getScreenHeight";
+        internal const string GetPropertyScreenHeightPixels = "getScreenHeightPixels";
         internal const string GetPropertyScreenScale = "getScreenScale";
-        internal const string GetPropertyScreenWidth = "getScreenWidth";
+        internal const string GetPropertyScreenWidthPixels = "getScreenWidthPixels";
         internal const string GetPropertyBundleIdentifier = "getBundleIdentifier";
         internal const string GetPropertyLimitAdTrackingEnabled = "getLimitAdTrackingEnabled";
         #endregion
@@ -130,16 +107,32 @@ namespace Chartboost.Core.Android.Utilities
         #endregion
 
         #region Chartboost Core Android Bridge
-        internal const string BridgeCBC = "com.chartboost.core.unity.BridgeCBC";
-        internal const string BridgeCMP = "com.chartboost.core.unity.BridgeCMP";
-        internal const string BridgeEnvAdvertising = "com.chartboost.core.unity.BridgeEnvAdvertising";
-        internal const string BridgeEnvAnalytics = "com.chartboost.core.unity.BridgeEnvAnalytics";
-        internal const string BridgeEnvAttribution = "com.chartboost.core.unity.BridgeEnvAttribution";
-        internal const string ResultBoolean = "com.chartboost.core.unity.ResultBoolean";
-        internal const string ResultString = "com.chartboost.core.unity.ResultString";
-        internal const string ModuleInitializerConsumer = "com.chartboost.core.unity.ModuleInitializerConsumer";
-        internal const string ModuleFactory = "com.chartboost.core.unity.ModuleFactory";
-        internal const string FuncMakeUnityModule = "makeUnityModule";
+        internal static readonly string ClassBridgeChartboostCore = GetBridgeType("BridgeCBC");
+        internal static readonly string ClassBridgeConsentManagementPlatform = GetBridgeType("BridgeCMP");
+        internal static readonly string ClassBridgeEnvAdvertising = GetBridgeType("BridgeEnvAdvertising");
+        internal static readonly string ClassBridgeEnvAnalytics = GetBridgeType("BridgeEnvAnalytics");
+        internal static readonly string ClassBridgeEnvAttribution = GetBridgeType("BridgeEnvAttribution");
+        private static string GetBridgeType(string className) => $"{NamespaceUnity}.bridge.{className}";
+        
+        internal static readonly string InterfaceResultBoolean = GetResultType("ResultBoolean");
+        internal static readonly string InterfaceResultString = GetResultType("ResultString");
+        private static string GetResultType(string interfaceName) => $"{NamespaceUnity}.result.{interfaceName}";
+        
+        internal static readonly string InterfaceModuleInitializerConsumer = GetModuleType("ModuleEventConsumer");
+        internal static readonly string ClassModuleWrapper = GetModuleType("ModuleWrapper");
+        private static string GetModuleType(string className) => $"{NamespaceUnity}.initialization.{className}";
+        
+        internal const string FunctionWrapUnityModule = "wrapUnityModule";
+        internal const string FunctionAddModule = "addModule";
+        internal const string FunctionClearModules = "clearModules";
+        internal const string FunctionCompleted = "completed";
+        
+        internal static readonly string ClassModuleFactoryUnity = GetFactoryType("ModuleFactoryUnity");
+        internal static readonly string ClassModuleFactoryEventConsumer = GetFactoryType("ModuleFactoryEventConsumer");
+        private static string GetFactoryType(string className) => $"{NamespaceUnity}.factory.{className}";
+
+        internal const string FunctionSetModuleFactoryEventConsumer = "setModuleFactoryEventConsumer";
+        internal const string FunctionSetModuleFactoryUnity = "setModuleFactoryUnity";
         #endregion
     }
 }

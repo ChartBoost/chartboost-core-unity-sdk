@@ -12,13 +12,13 @@ namespace Chartboost.Core.Android.Environment
     /// <para>Android Implementation of <see cref="IAnalyticsEnvironment"/>.</para>
     /// <inheritdoc cref="IAnalyticsEnvironment"/>
     /// </summary>
-    internal class AnalyticsEnvironment : BaseAndroidEnvironment, IAnalyticsEnvironment
+    internal partial class AnalyticsEnvironment : BaseAndroidEnvironment, IAnalyticsEnvironment
     {
         /// <inheritdoc cref="BaseAndroidEnvironment.EnvironmentProperty"/>
-        protected override string EnvironmentProperty => AndroidConstants.EnvironmentAnalytics;
+        protected sealed override string EnvironmentProperty => AndroidConstants.EnvironmentAnalytics;
         
         /// <inheritdoc cref="BaseAndroidEnvironment.EnvironmentBridge"/>
-        protected override Func<AndroidJavaClass> EnvironmentBridge => AndroidUtils.AnalyticsBridge;
+        protected override Func<AndroidJavaClass> EnvironmentBridge => Utilities.AndroidExtensions.AnalyticsBridge;
         
         /// <inheritdoc cref="IAnalyticsEnvironment.OSName"/>
         public string OSName => Property<string>(AndroidConstants.GetPropertyOSName);
@@ -35,14 +35,14 @@ namespace Chartboost.Core.Android.Environment
         /// <inheritdoc cref="IAnalyticsEnvironment.DeviceLocale"/>
         public string? DeviceLocale => Property<string?>(AndroidConstants.GetPropertyDeviceLocale);
         
-        /// <inheritdoc cref="IAnalyticsEnvironment.ScreenHeight"/>
-        public double? ScreenHeight => DoubleProperty(AndroidConstants.GetPropertyScreenHeight);
+        /// <inheritdoc cref="IAdvertisingEnvironment.ScreenHeightPixels"/>
+        public double? ScreenHeightPixels => DoubleProperty(AndroidConstants.GetPropertyScreenHeightPixels);
         
         /// <inheritdoc cref="IAnalyticsEnvironment.ScreenScale"/>
         public double? ScreenScale => DoubleProperty(AndroidConstants.GetPropertyScreenScale);
         
-        /// <inheritdoc cref="IAnalyticsEnvironment.ScreenWidth"/>
-        public double? ScreenWidth => DoubleProperty(AndroidConstants.GetPropertyScreenWidth);
+        /// <inheritdoc cref="IAdvertisingEnvironment.ScreenWidthPixels"/>
+        public double? ScreenWidthPixels => DoubleProperty(AndroidConstants.GetPropertyScreenWidthPixels);
         
         /// <inheritdoc cref="IAnalyticsEnvironment.BundleIdentifier"/>
         public string? BundleIdentifier => Property<string?>(AndroidConstants.GetPropertyBundleIdentifier);
@@ -98,5 +98,4 @@ namespace Chartboost.Core.Android.Environment
         /// <inheritdoc cref="IAnalyticsEnvironment.PlayerIdentifier"/>
         public string? PlayerIdentifier => Property<string?>(AndroidConstants.GetPropertyPlayerIdentifier);
     }
-    #nullable disable
 }

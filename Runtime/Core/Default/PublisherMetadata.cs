@@ -16,42 +16,34 @@ namespace Chartboost.Core.Default
         internal static string FrameworkName;
         internal static string FrameworkVersion;
         internal static string PlayerIdentifier;
-
-        public event Action IsUserUnderageChanged;
-        public event Action PublisherSessionIdentifierChanged;
-        public event Action PublisherAppIdentifierChanged;
-        public event Action FrameworkNameChanged;
-        public event Action FrameworkVersionChanged;
-        public event Action PlayerIdentifierChanged;
-
+        
         /// <inheritdoc cref="IPublisherMetadata.SetIsUserUnderage"/>
         public void SetIsUserUnderage(bool isUserUnderage)
         {
             if (isUserUnderage == IsUserUnderAge)
                 return;
             IsUserUnderAge = isUserUnderage;
-            IsUserUnderageChanged?.Invoke();
+            AnalyticsEnvironment.OnIsUserUnderageChanged();
         }
 
         /// <inheritdoc cref="IPublisherMetadata.SetPublisherSessionIdentifier"/>
         public void SetPublisherSessionIdentifier(string publisherSessionIdentifier) 
-            => SetProperty(ref PublisherSessionIdentifier, publisherSessionIdentifier, PublisherSessionIdentifierChanged);
+            => SetProperty(ref PublisherSessionIdentifier, publisherSessionIdentifier, AnalyticsEnvironment.OnPublisherSessionIdentifierChanged);
 
         /// <inheritdoc cref="IPublisherMetadata.SetPublisherAppIdentifier"/>
         public void SetPublisherAppIdentifier(string publisherAppIdentifier) 
-            => SetProperty(ref PublisherAppIdentifier, publisherAppIdentifier, PublisherAppIdentifierChanged);
+            => SetProperty(ref PublisherAppIdentifier, publisherAppIdentifier, AnalyticsEnvironment.OnPublisherAppIdentifierChanged);
 
-        /// <inheritdoc cref="IPublisherMetadata.SetFrameworkName"/>
-        public void SetFrameworkName(string frameworkName)
-            => SetProperty(ref FrameworkName, frameworkName, FrameworkNameChanged);
-
-        /// <inheritdoc cref="IPublisherMetadata.SetFrameworkVersion"/>
-        public void SetFrameworkVersion(string frameworkVersion) 
-            => SetProperty(ref FrameworkVersion, frameworkVersion, FrameworkVersionChanged);
+        /// <inheritdoc cref="IPublisherMetadata.SetFramework"/>
+        public void SetFramework(string frameworkName, string frameworkVersion)
+        {
+            SetProperty(ref FrameworkName, frameworkName, AnalyticsEnvironment.OnFrameworkNameChanged);
+            SetProperty(ref FrameworkVersion, frameworkVersion, AnalyticsEnvironment.OnFrameworkVersionChanged);
+        }
 
         /// <inheritdoc cref="IPublisherMetadata.SetPlayerIdentifier"/>
         public void SetPlayerIdentifier(string playerIdentifier) 
-            => SetProperty(ref PlayerIdentifier, playerIdentifier, PlayerIdentifierChanged);
+            => SetProperty(ref PlayerIdentifier, playerIdentifier, AnalyticsEnvironment.OnPlayerIdentifierChanged);
 
         private static void SetProperty(ref string property, string value, Action onChanged)
         {

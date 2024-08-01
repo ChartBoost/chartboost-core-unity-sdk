@@ -9,7 +9,7 @@ namespace Chartboost.Core.Environment
     public interface IAdvertisingEnvironment
     {
         /// <summary>
-        /// The OS name, e.g. “iOS” or “iPadOS”.
+        /// The OS name, e.g. “iOS”, "Android", etc.
         /// </summary>
         string OSName { get; }
         
@@ -36,7 +36,7 @@ namespace Chartboost.Core.Environment
         /// <summary>
         /// The height of the screen in pixels.
         /// </summary>
-        double? ScreenHeight { get; }
+        double? ScreenHeightPixels { get; }
         
         /// <summary>
         /// The screen scale.
@@ -46,7 +46,7 @@ namespace Chartboost.Core.Environment
         /// <summary>
         /// The width of the screen in pixels.
         /// </summary>
-        double? ScreenWidth { get; }
+        double? ScreenWidthPixels { get; }
         
         /// <summary>
         /// The app bundle identifier.
@@ -59,9 +59,8 @@ namespace Chartboost.Core.Environment
         Task<bool?> LimitAdTrackingEnabled { get; }
         
         /// <summary>
-        /// The system advertising identifier (IFA).
+        /// The system advertising identifier.
         /// </summary>
         Task<string?> AdvertisingIdentifier { get; }
     }
-    #nullable disable
 }

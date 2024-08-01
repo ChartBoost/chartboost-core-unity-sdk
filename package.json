@@ -1,13 +1,15 @@
 {
   "name": "com.chartboost.core",
   "displayName": "Chartboost Core",
-  "version": "0.4.0",
-  "unity": "2020.3",
+  "version": "1.0.0",
+  "unity": "2022.3",
   "dependencies": {
-    "com.unity.nuget.newtonsoft-json": "3.2.1"
+    "com.chartboost.unity.threading": "1.0.1",
+    "com.chartboost.unity.utilities": "1.0.1",
+    "com.chartboost.unity.logging": "1.0.0"
   },
   "keywords": [],
-  "license": "",
+  "license": "MIT",
   "author": {
     "name": "Chartboost",
     "email": "",

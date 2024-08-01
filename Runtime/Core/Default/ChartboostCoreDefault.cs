@@ -1,11 +1,10 @@
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Linq;
 using Chartboost.Core.Consent;
 using Chartboost.Core.Environment;
 using Chartboost.Core.Error;
 using Chartboost.Core.Initialization;
-using Chartboost.Core.Utilities;
+using Chartboost.Logging;
 using UnityEngine;
 
 namespace Chartboost.Core.Default
@@ -15,25 +14,46 @@ namespace Chartboost.Core.Default
     /// <br/>
     /// <para> Default class implementation for unsupported platforms.</para>
     /// </summary>
-    public class ChartboostCoreDefault : ChartboostCore
+    internal class ChartboostCoreDefault : ChartboostCoreBase
     {
-        protected override IConsentManagementPlatform _consent { get; } = new ConsentManagementPlatform();
-        protected override IPublisherMetadata _publisherMetadata { get; } = new PublisherMetadata();
-        protected override IAdvertisingEnvironment _advertisingEnvironment { get; } = new AdvertisingEnvironment();
-        protected override IAnalyticsEnvironment _analyticsEnvironment { get; } = new AnalyticsEnvironment();
-        protected override IAttributionEnvironment _attributionEnvironment { get; } = new AttributionEnvironment();
-        protected override bool _debug { get; set; }
-        protected override string _version => "0.3.0";
-        protected override void _initialize(SDKConfiguration sdkConfiguration, IEnumerable<InitializableModule> modules)
+        /// <inheritdoc cref="ChartboostCore.NativeVersion"/>
+        public override string NativeVersion => ChartboostCore.Version;
+        
+        /// <inheritdoc cref="ChartboostCore.LogLevel"/>
+        public override LogLevel LogLevel { get; set; }
+        
+        /// <inheritdoc cref="ChartboostCore.Consent"/>
+        public override IConsentManagementPlatform Consent { get; } = new ConsentManagementPlatform();
+        
+        /// <inheritdoc cref="ChartboostCore.PublisherMetadata"/>
+        public override IPublisherMetadata PublisherMetadata { get; } = new PublisherMetadata();
+        
+        /// <inheritdoc cref="ChartboostCore.AdvertisingEnvironment"/>
+        public override IAdvertisingEnvironment AdvertisingEnvironment { get; } = new AdvertisingEnvironment();
+        
+        /// <inheritdoc cref="ChartboostCore.AnalyticsEnvironment"/>
+        public override IAnalyticsEnvironment AnalyticsEnvironment { get; } = new AnalyticsEnvironment();
+        
+        /// <inheritdoc cref="ChartboostCore.AttributionEnvironment"/>
+        public override IAttributionEnvironment AttributionEnvironment { get; } = new AttributionEnvironment();
+        
+        /// <inheritdoc cref="ChartboostCore.Initialize"/>
+        public override void Initialize(SDKConfiguration sdkConfiguration)
         {
-            foreach (var module in modules)
+            foreach (var module in sdkConfiguration.Modules)
             {
+                if(sdkConfiguration.SkippedModuleIdentifiers.Contains(module.ModuleId))
+                {
+                    LogController.Log($"Skipping {module.ModuleId} from Initialization as it was added to Skipped Module Identifiers", LogLevel.Debug);
+                    continue;
+                }
+                
                 var start = DateTime.Now;
                 if (module.NativeModule)
                 {
                     const string message = "Default environment is unable to initialize native modules.";
-                    ChartboostCoreLogger.LogWarning(message);
-                    OnModuleInitializationCompleted(new ModuleInitializationResult(start, DateTime.Now, new ChartboostCoreError(-1, message), module));
+                    LogController.Log(message, LogLevel.Warning);
+                    ChartboostCore.OnModuleInitializationCompleted(new ModuleInitializationResult(start, DateTime.Now, module.ModuleId, module.ModuleVersion, new ChartboostCoreError(-1, message)));
                     continue;
                 }
 
@@ -42,16 +62,16 @@ namespace Chartboost.Core.Default
                     ChartboostCoreError? error = null;
                     try
                     {
-                        error = await module.OnInitialize(new ModuleInitializationConfiguration(Application.identifier));
+                        error = await module.OnInitialize(new ModuleConfiguration(Application.identifier));
                     }
-                    catch (Exception e)
+                    catch (Exception exception)
                     {
-                        ChartboostCoreLogger.LogException(e);
-                        error = new ChartboostCoreError(-1, e.Message);
+                        LogController.LogException(exception);
+                        error = new ChartboostCoreError(-1, exception.Message);
                     }
                     finally
                     {
-                        OnModuleInitializationCompleted(new ModuleInitializationResult(start, DateTime.Now, error, module));
+                        ChartboostCore.OnModuleInitializationCompleted(new ModuleInitializationResult(start, DateTime.Now, module.ModuleId, module.ModuleVersion, error));
                     }
                 });
             }

@@ -1,5 +1,3 @@
-using System;
-
 namespace Chartboost.Core.Environment
 {
     #nullable enable
@@ -8,13 +6,6 @@ namespace Chartboost.Core.Environment
     /// </summary>
     public interface IPublisherMetadata
     {
-        event Action IsUserUnderageChanged;
-        event Action PublisherSessionIdentifierChanged;
-        event Action PublisherAppIdentifierChanged;
-        event Action FrameworkNameChanged;
-        event Action FrameworkVersionChanged;
-        event Action PlayerIdentifierChanged;
-        
         /// <summary>
         /// Indicates if the user is underage as determined by the publisher.
         /// </summary>
@@ -32,19 +23,14 @@ namespace Chartboost.Core.Environment
         /// </summary>
         /// <param name="publisherAppIdentifier">App identifier to be set.</param>
         void SetPublisherAppIdentifier(string? publisherAppIdentifier);
-        
+
         /// <summary>
-        /// Sets the framework name for this app. 
+        /// Sets the framework name and version.
         /// </summary>
-        /// <param name="frameworkName">e.g. “Unity”.</param>
-        void SetFrameworkName(string? frameworkName);
-        
-        /// <summary>
-        /// Sets the framework version for this app.
-        /// </summary>
+        /// <param name="frameworkName">Framework name to be set, e.g. “Unity”.</param>
         /// <param name="frameworkVersion">Framework version to be set.</param>
-        void SetFrameworkVersion(string? frameworkVersion);
-        
+        void SetFramework(string? frameworkName, string? frameworkVersion);
+
         /// <summary>
         /// Sets a publisher-defined player identifier.
         /// </summary>

@@ -1,7 +1,7 @@
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Chartboost.Constants;
 using Chartboost.Core.Environment;
-using Chartboost.Core.iOS.Utilities;
 
 namespace Chartboost.Core.iOS.Environment
 {
@@ -10,52 +10,52 @@ namespace Chartboost.Core.iOS.Environment
     /// <para>iOS Implementation of <see cref="IAdvertisingEnvironment"/>.</para>
     /// <inheritdoc cref="IAdvertisingEnvironment"/>
     /// </summary>
-    public class AdvertisingEnvironment : BaseIOSEnvironment, IAdvertisingEnvironment
+    internal class AdvertisingEnvironment : BaseIOSEnvironment, IAdvertisingEnvironment
     {
         /// <inheritdoc cref="IAdvertisingEnvironment.OSName"/>
-        public string OSName => _advertisingEnvironmentGetOsName();
+        public string OSName => _CBCAdvertisingGetOsName();
         
         /// <inheritdoc cref="IAdvertisingEnvironment.OSVersion"/>
-        public string OSVersion => _advertisingEnvironmentGetOsVersion();
+        public string OSVersion => _CBCAdvertisingGetOsVersion();
         
         /// <inheritdoc cref="IAdvertisingEnvironment.DeviceMake"/>
-        public string DeviceMake => _advertisingEnvironmentGetDeviceMake();
+        public string DeviceMake => _CBCAdvertisingGetDeviceMake();
         
         /// <inheritdoc cref="IAdvertisingEnvironment.DeviceModel"/>
-        public string DeviceModel => _advertisingEnvironmentGetDeviceModel();
+        public string DeviceModel => _CBCAdvertisingGetDeviceModel();
         
         /// <inheritdoc cref="IAdvertisingEnvironment.DeviceLocale"/>
-        public string? DeviceLocale => _advertisingEnvironmentGetDeviceLocale();
+        public string? DeviceLocale => _CBCAdvertisingGetDeviceLocale();
         
-        /// <inheritdoc cref="IAdvertisingEnvironment.ScreenHeight"/>
-        public double? ScreenHeight => _advertisingEnvironmentGetScreenHeight();
+        /// <inheritdoc cref="IAdvertisingEnvironment.ScreenHeightPixels"/>
+        public double? ScreenHeightPixels => _CBCAdvertisingGetScreenHeight();
         
         /// <inheritdoc cref="IAdvertisingEnvironment.ScreenScale"/>
-        public double? ScreenScale => _advertisingEnvironmentGetScreenScale();
+        public double? ScreenScale => _CBCAdvertisingGetScreenScale();
         
-        /// <inheritdoc cref="IAdvertisingEnvironment.ScreenWidth"/>
-        public double? ScreenWidth => _advertisingEnvironmentGetScreenWidth();
+        /// <inheritdoc cref="IAdvertisingEnvironment.ScreenWidthPixels"/>
+        public double? ScreenWidthPixels => _CBCAdvertisingGetScreenWidth();
         
         /// <inheritdoc cref="IAdvertisingEnvironment.BundleIdentifier"/>
-        public string? BundleIdentifier => _advertisingEnvironmentGetBundleIdentifier();
+        public string? BundleIdentifier => _CBCAdvertisingGetBundleIdentifier();
         
         /// <inheritdoc cref="IAdvertisingEnvironment.LimitAdTrackingEnabled"/>
-        public Task<bool?> LimitAdTrackingEnabled => Task.FromResult<bool?>(_advertisingEnvironmentGetLimitAdTrackingEnabled());
+        public Task<bool?> LimitAdTrackingEnabled => Task.FromResult<bool?>(_CBCAdvertisingGetLimitAdTrackingEnabled());
         
         /// <inheritdoc cref="IAdvertisingEnvironment.AdvertisingIdentifier"/>
-        public Task<string?> AdvertisingIdentifier => Task.FromResult(_advertisingEnvironmentGetAdvertisingIdentifier());
+        public Task<string?> AdvertisingIdentifier => Task.FromResult(_CBCAdvertisingGetAdvertisingIdentifier());
         
-        [DllImport(IOSConstants.DLLImport)] private static extern string _advertisingEnvironmentGetOsName();
-        [DllImport(IOSConstants.DLLImport)] private static extern string _advertisingEnvironmentGetOsVersion();
-        [DllImport(IOSConstants.DLLImport)] private static extern string _advertisingEnvironmentGetDeviceMake();
-        [DllImport(IOSConstants.DLLImport)] private static extern string _advertisingEnvironmentGetDeviceModel();
-        [DllImport(IOSConstants.DLLImport)] private static extern string? _advertisingEnvironmentGetDeviceLocale();
-        [DllImport(IOSConstants.DLLImport)] private static extern double _advertisingEnvironmentGetScreenHeight();
-        [DllImport(IOSConstants.DLLImport)] private static extern double _advertisingEnvironmentGetScreenScale();
-        [DllImport(IOSConstants.DLLImport)] private static extern double _advertisingEnvironmentGetScreenWidth();
-        [DllImport(IOSConstants.DLLImport)] private static extern string? _advertisingEnvironmentGetBundleIdentifier();
-        [DllImport(IOSConstants.DLLImport)] private static extern bool _advertisingEnvironmentGetLimitAdTrackingEnabled();
-        [DllImport(IOSConstants.DLLImport)] private static extern string? _advertisingEnvironmentGetAdvertisingIdentifier();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string _CBCAdvertisingGetOsName();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string _CBCAdvertisingGetOsVersion();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string _CBCAdvertisingGetDeviceMake();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string _CBCAdvertisingGetDeviceModel();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string? _CBCAdvertisingGetDeviceLocale();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern double _CBCAdvertisingGetScreenHeight();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern double _CBCAdvertisingGetScreenScale();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern double _CBCAdvertisingGetScreenWidth();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string? _CBCAdvertisingGetBundleIdentifier();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern bool _CBCAdvertisingGetLimitAdTrackingEnabled();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string? _CBCAdvertisingGetAdvertisingIdentifier();
     }
     #nullable enable
 }

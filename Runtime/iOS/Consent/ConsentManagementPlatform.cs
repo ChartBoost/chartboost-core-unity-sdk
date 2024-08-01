@@ -1,12 +1,10 @@
-using System;
 using AOT;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Chartboost.Constants;
 using Chartboost.Core.Consent;
-using Chartboost.Core.iOS.Utilities;
 using Chartboost.Core.Utilities;
-using Newtonsoft.Json;
 
 namespace Chartboost.Core.iOS.Consent
 {
@@ -15,56 +13,41 @@ namespace Chartboost.Core.iOS.Consent
     /// <br/>
     /// <para>iOS implementation.</para>
     /// </summary>
-    public class ConsentManagementPlatform : IConsentManagementPlatform
+    internal class ConsentManagementPlatform : IConsentManagementPlatform
     {
         private static ConsentManagementPlatform _instance;
 
         static ConsentManagementPlatform()
-            => _chartboostCoreSetConsentCallbacks(OnConsentStatusChange, OnConsentChangeForStandard, OnPartnerConsentChange, OnConsentModuleReady);
+            => _CBCSetConsentCallbacks(OnConsentChangeWithFullConsents, OnConsentModuleReadyWithInitialConsents);
 
-        internal ConsentManagementPlatform() 
-            => _instance ??= this;
-
-        /// <inheritdoc cref="IConsentManagementPlatform.ConsentStatus"/>
-        public ConsentStatus ConsentStatus 
-            => (ConsentStatus)_chartboostCoreGetConsentStatus();
+        internal ConsentManagementPlatform()
+        {
+            _instance ??= this;
+            ConsentChangeWithFullConsents = null!;
+            ConsentModuleReadyWithInitialConsents = null!;
+        }
 
         /// <inheritdoc cref="IConsentManagementPlatform.Consents"/>
-        public Dictionary<ConsentStandard, ConsentValue> Consents
-        {
-            get
-            {
-                var json = _chartboostCoreGetConsents();
-                return JsonConvert.DeserializeObject<Dictionary<ConsentStandard, ConsentValue>>(json);
-            }
-        }
-
-        /// <inheritdoc cref="IConsentManagementPlatform.PartnerConsentStatus"/>
-        public Dictionary<string, ConsentStatus> PartnerConsentStatus {
-            get
-            {
-                var json = _chartboostCoreGetPartnerConsents();
-                return JsonConvert.DeserializeObject<Dictionary<string, ConsentStatus>>(json);
-            }
-        }
+        public IReadOnlyDictionary<ConsentKey, ConsentValue> Consents 
+            => _CBCGetConsents().ToConsentDictionary();
 
         /// <inheritdoc cref="IConsentManagementPlatform.ShouldCollectConsent"/>
         public bool ShouldCollectConsent 
-            => _chartboostCoreShouldCollectConsent();
+            => _CBCShouldCollectConsent();
 
         /// <inheritdoc cref="IConsentManagementPlatform.GrantConsent"/>
-        public async Task<bool> GrantConsent(ConsentStatusSource source)
+        public async Task<bool> GrantConsent(ConsentSource source)
         {
             var (proxy, hashCode) = AwaitableProxies.SetupProxy<bool>();
-            _chartboostCoreGrantConsent((int)source, hashCode, OnConsentActionCompletion);
+            _CBCGrantConsent((int)source, hashCode, OnConsentActionCompletion);
             return await proxy;
         }
 
         /// <inheritdoc cref="IConsentManagementPlatform.DenyConsent"/>
-        public async Task<bool> DenyConsent(ConsentStatusSource source)
+        public async Task<bool> DenyConsent(ConsentSource source)
         {
             var (proxy, hashCode) = AwaitableProxies.SetupProxy<bool>();
-            _chartboostCoreDenyConsent((int)source, hashCode, OnConsentActionCompletion);
+            _CBCDenyConsent((int)source, hashCode, OnConsentActionCompletion);
             return await proxy;
         }
 
@@ -72,7 +55,7 @@ namespace Chartboost.Core.iOS.Consent
         public async Task<bool> ResetConsent()
         {
             var (proxy, hashCode) = AwaitableProxies.SetupProxy<bool>();
-            _chartboostCoreResetConsent(hashCode, OnConsentActionCompletion);
+            _CBCResetConsent(hashCode, OnConsentActionCompletion);
             return await proxy;
         }
         
@@ -80,62 +63,43 @@ namespace Chartboost.Core.iOS.Consent
         public async Task<bool> ShowConsentDialog(ConsentDialogType dialogType)
         {
             var (proxy, hashCode) = AwaitableProxies.SetupProxy<bool>();
-            _chartboostCoreShowConsentDialog((int)dialogType, hashCode, OnConsentActionCompletion);
+            _CBCShowConsentDialog((int)dialogType, hashCode, OnConsentActionCompletion);
             return await proxy;
         }
         
-        /// <inheritdoc cref="IConsentManagementPlatform.ConsentChangeForStandard"/>
-        public event ChartboostConsentChangeForStandard ConsentChangeForStandard;
+        #nullable enable
+        /// <inheritdoc cref="IConsentManagementPlatform.ConsentChangeWithFullConsents"/>
+        public event ChartboostCoreConsentChangeWithFullConsents? ConsentChangeWithFullConsents;
         
-        /// <inheritdoc cref="IConsentManagementPlatform.ConsentStatusChange"/>
-        public event ChartboostConsentStatusChange ConsentStatusChange;
+        /// <inheritdoc cref="IConsentManagementPlatform.ConsentModuleReadyWithInitialConsents"/>
+        public event ChartboostCoreConsentModuleReadyWithInitialConsents? ConsentModuleReadyWithInitialConsents;
+        #nullable disable
 
-        /// <inheritdoc cref="IConsentManagementPlatform.PartnerConsentStatusChange"/>
-        public event ChartboostPartnerConsentStatusChange PartnerConsentStatusChange;
+        /// <inheritdoc cref="IConsentManagementPlatform.ConsentChangeWithFullConsents"/>
+        [MonoPInvokeCallback(typeof(ExternChartboostCoreOnConsentChangeWithFullConsents))]
+        private static void OnConsentChangeWithFullConsents(string consentsJson, string modifiedKeysJson)
+            => MainThreadDispatcher.Post(_ => _instance?.ConsentChangeWithFullConsents?.Invoke(consentsJson.ToConsentDictionary(), modifiedKeysJson.ToConsentKeys()));
 
-        /// <inheritdoc cref="IConsentManagementPlatform.ConsentModuleReady"/>
-        public event Action ConsentModuleReady;
-
-        /// <inheritdoc cref="IConsentManagementPlatform.ConsentChangeForStandard"/>
-        /// <param name="standard">The <see cref="ConsentStandard"/> obtained from the observer.</param>
-        /// <param name="value">The <see cref="ConsentValue"/> obtained from the observer.</param>
-        [MonoPInvokeCallback(typeof(ChartboostCoreOnConsentChangeForStandard))]
-        private static void OnConsentChangeForStandard(string standard, string value)
-            => MainThreadDispatcher.Post(o => _instance?.ConsentChangeForStandard?.Invoke(standard, value));
-
-        /// <inheritdoc cref="IConsentManagementPlatform.ConsentStatusChange"/>
-        /// <param name="status">The <see cref="ConsentStatus"/> native value.</param>
-        [MonoPInvokeCallback(typeof(ChartboostCoreOnEnumStatusChange))]
-        private static void OnConsentStatusChange(int status) 
-            => MainThreadDispatcher.Post(o => _instance?.ConsentStatusChange?.Invoke((ConsentStatus)status));
-
-        /// <inheritdoc cref="IConsentManagementPlatform.PartnerConsentStatusChange"/>
-        [MonoPInvokeCallback(typeof(ChartboostCoreOnPartnerConsentChange))]
-        private static void OnPartnerConsentChange(string partnerIdentifier, int value)
-            => MainThreadDispatcher.Post(o => _instance?.PartnerConsentStatusChange?.Invoke(partnerIdentifier, (ConsentStatus)value));
-
-        /// <inheritdoc cref="IConsentManagementPlatform.ConsentModuleReady"/>
-        [MonoPInvokeCallback(typeof(Action))]
-        private static void OnConsentModuleReady()
-            => MainThreadDispatcher.Post(o => _instance?.ConsentModuleReady?.Invoke());
+        /// <inheritdoc cref="IConsentManagementPlatform.ConsentModuleReadyWithInitialConsents"/>
+        [MonoPInvokeCallback(typeof(ExternChartboostCoreOnConsentReadyWithInitialConsents))]
+        private static void OnConsentModuleReadyWithInitialConsents(string consentsJson) 
+            => MainThreadDispatcher.Post(_ => _instance?.ConsentModuleReadyWithInitialConsents?.Invoke(consentsJson.ToConsentDictionary()));
 
         /// <summary>
         /// Utilized to await on consent actions
         /// </summary>
         /// <param name="hashCode">Hashcode associated to Awaitable Proxy.</param>
         /// <param name="completion">Result of the operation.</param>
-        [MonoPInvokeCallback(typeof(ChartboostCoreOnResultBoolean))]
+        [MonoPInvokeCallback(typeof(ExternChartboostCoreOnResultBoolean))]
         private static void OnConsentActionCompletion(int hashCode, bool completion)
-            => MainThreadDispatcher.Post(o => AwaitableProxies.ResolveCallbackProxy(hashCode, completion));
+            => MainThreadDispatcher.Post(_ => AwaitableProxies.ResolveCallbackProxy(hashCode, completion));
 
-        [DllImport(IOSConstants.DLLImport)] private static extern int _chartboostCoreGetConsentStatus();
-        [DllImport(IOSConstants.DLLImport)] private static extern string _chartboostCoreGetConsents();
-        [DllImport(IOSConstants.DLLImport)] private static extern string _chartboostCoreGetPartnerConsents();
-        [DllImport(IOSConstants.DLLImport)] private static extern bool _chartboostCoreShouldCollectConsent();
-        [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreGrantConsent(int statusSource, int hashCode, ChartboostCoreOnResultBoolean callback);
-        [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreDenyConsent(int statusSource, int hashCode, ChartboostCoreOnResultBoolean callback);
-        [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreResetConsent(int hashCode, ChartboostCoreOnResultBoolean callback);
-        [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreShowConsentDialog(int dialogType, int hashCode, ChartboostCoreOnResultBoolean callback);
-        [DllImport(IOSConstants.DLLImport)] private static extern void _chartboostCoreSetConsentCallbacks(ChartboostCoreOnEnumStatusChange onEnumStatusChange, ChartboostCoreOnConsentChangeForStandard onConsentChangeForStandard, ChartboostCoreOnPartnerConsentChange onPartnerConsentChange, Action onInitialConsentInfoAvailable);
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern string _CBCGetConsents();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern bool _CBCShouldCollectConsent();
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern void _CBCGrantConsent(int statusSource, int hashCode, ExternChartboostCoreOnResultBoolean callback);
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern void _CBCDenyConsent(int statusSource, int hashCode, ExternChartboostCoreOnResultBoolean callback);
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern void _CBCResetConsent(int hashCode, ExternChartboostCoreOnResultBoolean callback);
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern void _CBCShowConsentDialog(int dialogType, int hashCode, ExternChartboostCoreOnResultBoolean callback);
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern void _CBCSetConsentCallbacks(ExternChartboostCoreOnConsentChangeWithFullConsents onConsentChangeWithFullConsents, ExternChartboostCoreOnConsentReadyWithInitialConsents onInitialConsentInfoAvailable);
     }
 }

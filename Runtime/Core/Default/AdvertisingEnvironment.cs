@@ -36,14 +36,14 @@ namespace Chartboost.Core.Default
         /// <inheritdoc cref="IAdvertisingEnvironment.DeviceLocale"/>
         public string DeviceLocale => System.Globalization.CultureInfo.CurrentCulture.TwoLetterISOLanguageName;
         
-        /// <inheritdoc cref="IAdvertisingEnvironment.ScreenHeight"/>
-        public double? ScreenHeight => Screen.height; 
+        /// <inheritdoc cref="IAdvertisingEnvironment.ScreenHeightPixels"/>
+        public double? ScreenHeightPixels => Screen.height; 
         
         /// <inheritdoc cref="IAdvertisingEnvironment.ScreenScale"/>
         public double? ScreenScale => Screen.dpi;
         
-        /// <inheritdoc cref="IAdvertisingEnvironment.ScreenWidth"/>
-        public double? ScreenWidth => Screen.width;
+        /// <inheritdoc cref="IAdvertisingEnvironment.ScreenWidthPixels"/>
+        public double? ScreenWidthPixels => Screen.width;
         
         /// <inheritdoc cref="IAdvertisingEnvironment.BundleIdentifier"/>
         public string BundleIdentifier => Application.identifier;

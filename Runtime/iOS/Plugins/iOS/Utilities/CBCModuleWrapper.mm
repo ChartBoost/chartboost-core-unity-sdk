@@ -19,11 +19,11 @@
     return [self init];
 }
 
-- (void)initializeWithConfiguration:(CBCModuleInitializationConfiguration * _Nonnull)configuration completion:(void (^ _Nonnull)(NSError * _Nullable))completion {
+- (void)initializeWithConfiguration:(CBCModuleConfiguration * _Nonnull)configuration completion:(void (^ _Nonnull)(NSError * _Nullable))completion {
     _completer = ^(NSError * error){
         completion(error);
     };
-    _initializeCallback(getCStringOrNull(_moduleID), getCStringOrNull([configuration  chartboostAppID]));
+    _initializeCallback(toCStringOrNull(_moduleID), toCStringOrNull([configuration  chartboostAppID]));
 }
 
 - (void)completeInitializationWithError:(NSError* _Nullable)error; {
@@ -33,17 +33,40 @@
 @end
 
 extern "C" {
-    void _completeModuleInitialization(const char* moduleIdentifier, const char* _Nullable jsonError)
+    const void * _CBCWrapUnityModule(const char* moduleIdentifier, const char* moduleVersion, ChartboostCoreOnModuleInitializeDelegate initializeCallback){
+
+        id<CBCModule> chartboostCoreModule  = [[CBCModuleWrapper alloc] initWithModuleID:toNSStringOrEmpty(moduleIdentifier) moduleVersion:toNSStringOrEmpty(moduleVersion) initializeCallback:initializeCallback];
+        [[CBCUnityObserver sharedObserver] storeModule:chartboostCoreModule];
+        return (__bridge void*)chartboostCoreModule;
+    }
+
+    void _CBCAddModule(const void* uniqueId){
+        id<CBCModule> chartboostCoreModule = (__bridge id<CBCModule>)uniqueId;
+        [[CBCUnityObserver sharedObserver] addModule:chartboostCoreModule];
+        [[CBCUnityObserver sharedObserver] storeModule:chartboostCoreModule];
+    }
+
+    const char* _CBCGetModuleId(const void* uniqueId) {
+        id<CBCModule> chartboostCoreModule = (__bridge id<CBCModule>)uniqueId;
+        return toCStringOrNull([chartboostCoreModule moduleID]);
+    }
+
+    const char* _CBCGetModuleVersion(const void* uniqueId) {
+        id<CBCModule> chartboostCoreModule = (__bridge id<CBCModule>)uniqueId;
+        return toCStringOrNull([chartboostCoreModule moduleVersion]);
+    }
+
+    void _CBCCompleteModuleInitialization(const char* moduleIdentifier, const char* _Nullable jsonError)
     {
-        CBCModuleWrapper* targetModule = [[[CBCUnityObserver sharedObserver] initializableModules] valueForKey:getNSStringOrEmpty(moduleIdentifier)];
-        
+        CBCModuleWrapper* targetModule = [[[CBCUnityObserver sharedObserver] moduleStore] valueForKey:toNSStringOrEmpty(moduleIdentifier)];
+
         if (targetModule == nil)
             return;
         
         if (jsonError != NULL)
         {
             NSError* error = nil;
-            NSDictionary* errorAsDictionary= stringToNSDictionary(jsonError);
+            NSDictionary* errorAsDictionary= toNSDictionary(jsonError);
             NSString* domain = [errorAsDictionary objectForKey:@"domain"];
             int code = [errorAsDictionary objectForKey:@"code"] ? [[errorAsDictionary objectForKey:@"code"] intValue] : -1;
             NSString* message = [errorAsDictionary valueForKey:@"message"];

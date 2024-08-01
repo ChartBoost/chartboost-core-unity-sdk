@@ -1,13 +1,13 @@
-#import "CBCUnityUtilities.h"
+#import "CBCDelegates.h"
 
 extern "C" {
-    const char* _attributionEnvironmentGetAdvertisingIdentifier(){
-        return getCStringOrNull([[ChartboostCore attributionEnvironment] advertisingID]);
+    const char* _CBCAttributionGetAdvertisingIdentifier(){
+        return toCStringOrNull([[ChartboostCore attributionEnvironment] advertisingID]);
     }
 
-    void _attributionEnvironmentGetUserAgent(int hashCode, ChartbosotCoreResultString onResult){
+    void _CBCAttributionGetUserAgent(int hashCode, ChartbosotCoreResultString onResult){
         [[ChartboostCore attributionEnvironment] userAgentWithCompletion:^(NSString * _Nonnull userAgent) {
-            onResult(hashCode, getCStringOrNull(userAgent));
+            onResult(hashCode, toCStringOrNull(userAgent));
         }];
     }
 }

@@ -1,26 +1,24 @@
-#import "CBCUnityUtilities.h"
+#import "CBCDelegates.h"
 
-@interface CBCUnityObserver : NSObject<CBCInitializableModuleObserver, CBCConsentObserver, CBCPublisherMetadataObserver>
+@interface CBCUnityObserver : NSObject<CBCModuleObserver, CBCConsentObserver, CBCEnvironmentObserver>
 
 + (instancetype) sharedObserver;
 - (NSMutableDictionary*) initializableModules;
-- (NSMutableDictionary*) nativeModuleStore;
-- (void) addModule:(id<CBCInitializableModule>)initializableModule;
-- (void)removeModule:(NSString*)moduleId;
+- (NSMutableDictionary*) moduleStore;
+- (void) addModule:(id<CBCModule>)initializableModule;
+- (void) removeModule:(NSString*)moduleId;
 - (void) clearInitializableModules;
-- (void) storeModule:(id<CBCInitializableModule>)nativeModule;
+- (void) storeModule:(id<CBCModule>)nativeModule;
 
 #pragma mark CBCInitializableModuleObserver
 @property ChartboostCoreOnModuleInitializationResult onModuleInitializationCompleted;
 
 #pragma mark CBCConsentObserver
-@property ChartboostCoreOnEnumStatusChange onConsentStatusChange;
-@property ChartboostCoreOnConsentChangeForStandard onConsentChangeForStandard;
-@property ChartboostCoreOnPartnerConsentChange onPartnerConsentChange;
-@property ChartboostCoreAction onConsentReady;
+@property ChartboostCoreOnConsentChangeWithFullConsents onConsentChange;
+@property ChartboostCoreOnConsentReadyWithInitialConsents onConsentReady;
 
 #pragma mark CBCPublisherMetadataObserver
 
-@property ChartboostCoreOnEnumStatusChange onPublisherMetadataPropertyChange;
+@property ChartboostCoreOnEnumStatusChange onEnvironmentPropertyChanged;
 
 @end

@@ -17,7 +17,7 @@ namespace Chartboost.Core.Android.Environment
         protected override string EnvironmentProperty => AndroidConstants.EnvironmentAttribution;
         
         /// <inheritdoc cref="BaseAndroidEnvironment.EnvironmentBridge"/>
-        protected override Func<AndroidJavaClass> EnvironmentBridge => AndroidUtils.AttributionBridge;
+        protected override Func<AndroidJavaClass> EnvironmentBridge => Utilities.AndroidExtensions.AttributionBridge;
         
         /// <inheritdoc cref="IAttributionEnvironment.AdvertisingIdentifier"/>
         public Task<string?> AdvertisingIdentifier => AwaitableString(AndroidConstants.GetPropertyAdvertisingIdentifier);

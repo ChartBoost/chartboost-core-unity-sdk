@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Chartboost.Core.Environment;
+using Chartboost.Json;
 using Newtonsoft.Json;
 
 namespace Chartboost.Core.Utilities
@@ -9,7 +10,7 @@ namespace Chartboost.Core.Utilities
     /// <summary>
     /// Extension class to simplify serialization of Core environments.
     /// </summary>
-    public static class EnvironmentSerialization
+    internal static class EnvironmentSerialization
     {
         #region Advertising
         /// <summary>
@@ -25,9 +26,9 @@ namespace Chartboost.Core.Utilities
                 {nameof(env.DeviceMake), env.DeviceMake},
                 {nameof(env.DeviceModel), env.DeviceModel},
                 {nameof(env.DeviceLocale), env.DeviceLocale},
-                {nameof(env.ScreenHeight), env.ScreenHeight},
+                {nameof(env.ScreenHeightPixels), env.ScreenHeightPixels},
                 {nameof(env.ScreenScale), env.ScreenScale},
-                {nameof(env.ScreenWidth), env.ScreenWidth},
+                {nameof(env.ScreenWidthPixels), env.ScreenWidthPixels},
                 {nameof(env.BundleIdentifier), env.BundleIdentifier},
                 {nameof(env.LimitAdTrackingEnabled), env.LimitAdTrackingEnabled},
                 {nameof(env.AdvertisingIdentifier), await env.AdvertisingIdentifier},
@@ -54,9 +55,9 @@ namespace Chartboost.Core.Utilities
                 {nameof(env.DeviceMake), env.DeviceMake},
                 {nameof(env.DeviceModel), env.DeviceModel},
                 {nameof(env.DeviceLocale), env.DeviceLocale},
-                {nameof(env.ScreenHeight), env.ScreenHeight},
+                {nameof(env.ScreenHeightPixels), env.ScreenHeightPixels},
                 {nameof(env.ScreenScale), env.ScreenScale},
-                {nameof(env.ScreenWidth), env.ScreenWidth},
+                {nameof(env.ScreenWidthPixels), env.ScreenWidthPixels},
                 {nameof(env.BundleIdentifier), env.BundleIdentifier},
                 {nameof(env.LimitAdTrackingEnabled), env.LimitAdTrackingEnabled},
                 {nameof(env.AdvertisingIdentifier), await env.AdvertisingIdentifier},
@@ -112,9 +113,8 @@ namespace Chartboost.Core.Utilities
         private static async Task<string?> ToJson(Task<Dictionary<string, object?>?> objects)
         {
             var contents= await objects;
-            var contentsAsJson = JsonConvert.SerializeObject(contents);
+            var contentsAsJson = JsonTools.SerializeObject(contents);
             return contentsAsJson;
         }
     }
-    #nullable disable
 }

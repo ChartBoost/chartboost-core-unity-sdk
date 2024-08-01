@@ -1,54 +1,45 @@
-#import "CBCUnityUtilities.h"
+#import "CBCDelegates.h"
 #import "UnityAppController.h"
 #import "CBCUnityObserver.h"
 
 extern "C" {
-    int _chartboostCoreGetConsentStatus(){
-        return (int)[[ChartboostCore consent] consentStatus];
+    const char* _CBCGetConsents(){
+        NSDictionary *consents = [[ChartboostCore consent] consents];
+        return toJSON(consents);
     }
 
-    const char* _chartboostCoreGetConsents(){
-        NSDictionary<CBCConsentStandard *, CBCConsentValue*>* consents = [[ChartboostCore consent] consents];
-        NSMutableDictionary *retConsents = [NSMutableDictionary dictionary];
-        for(CBCConsentStandard* standard in consents)
-        {
-            CBCConsentValue* consentValue = consents[standard];
-            retConsents[[standard value]] = [consentValue value];
-        }
-        return dictToJson(retConsents);
-    }
-
-    const char* _chartboostCoreGetPartnerConsents(){
-        NSDictionary<NSString*, NSNumber*>* partnerConsents = [[ChartboostCore consent] objc_partnerConsentStatus];
-        return dictToJson(partnerConsents);
-    }
-
-    bool _chartboostCoreShouldCollectConsent(){
+    bool _CBCShouldCollectConsent(){
         return [[ChartboostCore consent] shouldCollectConsent];
     }
 
-    void _chartboostCoreGrantConsent(int statusSource, int hashCode, ChartboostCoreResultBoolean callback){
-        [[ChartboostCore consent] grantConsentWithSource:(CBCConsentStatusSource)statusSource completion:^(BOOL result) {
+    void _CBCGrantConsent(int source, int hashCode, ChartboostCoreResultBoolean callback){
+        [[ChartboostCore consent] grantConsentWithSource:(CBCConsentSource)source completion:^(BOOL result) {
             callback(hashCode, result);
         }];
     }
 
-    void _chartboostCoreDenyConsent(int statusSource, int hashCode, ChartboostCoreResultBoolean callback){
-        [[ChartboostCore consent] denyConsentWithSource:(CBCConsentStatusSource)statusSource completion:^(BOOL result) {
+    void _CBCDenyConsent(int source, int hashCode, ChartboostCoreResultBoolean callback){
+        [[ChartboostCore consent] denyConsentWithSource:(CBCConsentSource)source completion:^(BOOL result) {
             callback(hashCode, result);
         }];
     }
 
-    void _chartboostCoreResetConsent(int hashCode, ChartboostCoreResultBoolean callback){
+    void _CBCResetConsent(int hashCode, ChartboostCoreResultBoolean callback){
         [[ChartboostCore consent] resetConsentWithCompletion:^(BOOL result) {
             callback(hashCode, result);
         }];
     }
 
-    void _chartboostCoreShowConsentDialog(int dialogType, int hashCode, ChartboostCoreResultBoolean callback){
+    void _CBCShowConsentDialog(int dialogType, int hashCode, ChartboostCoreResultBoolean callback){
         CBCConsentDialogType consentDialogType = (CBCConsentDialogType)dialogType;
         [[ChartboostCore consent] showConsentDialog:consentDialogType from:UnityGetGLViewController() completion:^(BOOL result) {
             callback(hashCode, result);
         }];
+    }
+
+    void _CBCSetConsentCallbacks(ChartboostCoreOnConsentChangeWithFullConsents onConsentChange, ChartboostCoreOnConsentReadyWithInitialConsents onConsentModuleReady){
+        [[CBCUnityObserver sharedObserver] setOnConsentChange:onConsentChange];
+        [[CBCUnityObserver sharedObserver] setOnConsentReady:onConsentModuleReady];
+        [[ChartboostCore consent] addObserver:[CBCUnityObserver sharedObserver]];
     }
 }

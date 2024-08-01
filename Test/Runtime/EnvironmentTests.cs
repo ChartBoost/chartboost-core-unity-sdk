@@ -1,10 +1,11 @@
-using System;
 using System.Collections;
-using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using Chartboost.Core.Environment;
 using Chartboost.Core.Initialization;
 using Chartboost.Core.Modules;
-using Newtonsoft.Json;
+using Chartboost.Json;
+using Chartboost.Logging;
 using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -18,11 +19,11 @@ namespace Chartboost.Core.Tests
         private const bool ConstIsUserUnderage = true;
         private const string ConstPlayerIdentifier = "PLAYER_IDENTIFIER_ANALYTICS";
         private const string ConstPublisherSessionIdentifier = "SESSION_IDENTIFIER_ANALYTICS";
-        private static readonly InitializableModule SuccessfulModule = new TestUnityModuleSuccess();
-        private static readonly InitializableModule FailureModule = new TestUnityModuleFailure();
+        private static readonly Module SuccessfulModule = new TestUnityModuleSuccess();
+        private static readonly Module FailureModule = new TestUnityModuleFailure();
         private const float ConstDelayAfterInit = 10f;
         
-        private readonly InitializableModule[] _modules = new[]
+        private readonly List<Module> _modules = new()
         {
             SuccessfulModule,
             FailureModule
@@ -31,20 +32,20 @@ namespace Chartboost.Core.Tests
         [SetUp]
         public void Setup()
         {
-            ChartboostCore.Debug = true;
+            LogController.LoggingLevel = LogLevel.Debug;
         }
 
         [Test, Order(0)]
         public void Version()
         {
-            var nativeSDKVersion = ChartboostCore.NativeSDKVersion;
+            var nativeSDKVersion = ChartboostCore.NativeVersion;
             Assert.IsNotNull(nativeSDKVersion);
             Assert.IsNotEmpty(nativeSDKVersion);
 
-            var unitySDKVersion = ChartboostCore.UnitySDKVersion;
+            var unitySDKVersion = ChartboostCore.Version;
             
-            ChartboostCoreLogger.Log($"NativeSDKVersion: {nativeSDKVersion}");
-            ChartboostCoreLogger.Log($"UnitySDKVersion: {unitySDKVersion}");
+            LogController.Log($"NativeSDKVersion: {nativeSDKVersion}", LogLevel.Debug);
+            LogController.Log($"UnitySDKVersion: {unitySDKVersion}", LogLevel.Debug);
             
             Assert.IsNotNull(unitySDKVersion);
             Assert.IsNotEmpty(unitySDKVersion);
@@ -52,7 +53,7 @@ namespace Chartboost.Core.Tests
             if (unitySDKVersion == nativeSDKVersion) 
                 return;
 
-            ChartboostCoreLogger.Log($"NativeSDKVersion does not match UnitySDKVersion, this is expected but not ideal.");
+            LogController.Log($"NativeSDKVersion does not match UnitySDKVersion, this is expected but not ideal.", LogLevel.Debug);
             Assert.Pass();
         }
 
@@ -72,46 +73,65 @@ namespace Chartboost.Core.Tests
                 Assert.IsNotNull(result.Start);
                 Assert.IsNotNull(result.End);
                 Assert.GreaterOrEqual(result.Duration, 0);
-                ChartboostCoreLogger.Log($"--------");
-                ChartboostCoreLogger.Log($"Start: {result.Start.ToString(dateFormat)}");
-                ChartboostCoreLogger.Log($"End: {result.End.ToString(dateFormat)}");
-                ChartboostCoreLogger.Log($"Duration: {result.Duration}");
-                ChartboostCoreLogger.Log($"Module Id: {result.Module.ModuleId}");
-                ChartboostCoreLogger.Log($"Module Version: {result.Module.ModuleVersion}");
+                LogController.Log($"--------", LogLevel.Debug);
+                LogController.Log($"Start: {result.Start.ToString(dateFormat)}", LogLevel.Debug);
+                LogController.Log($"End: {result.End.ToString(dateFormat)}", LogLevel.Debug);
+                LogController.Log($"Duration: {result.Duration}", LogLevel.Debug);
+                LogController.Log($"Module Id: {result.ModuleId}", LogLevel.Debug);
+                LogController.Log($"Module Version: {result.ModuleVersion}", LogLevel.Debug);
                 
-                if (result.Module == SuccessfulModule)
+                if (result.ModuleId == SuccessfulModule.ModuleId)
                 {
-                    Assert.AreEqual(result.Module.ModuleId, SuccessfulModule.ModuleId);
-                    Assert.AreEqual(result.Module.ModuleVersion, SuccessfulModule.ModuleVersion);
+                    Assert.AreEqual(result.ModuleId, SuccessfulModule.ModuleId);
+                    Assert.AreEqual(result.ModuleVersion, SuccessfulModule.ModuleVersion);
                     Assert.IsNull(result.Error);
                 }
 
-                else if (result.Module == FailureModule)
+                else if (result.ModuleId == FailureModule.ModuleId)
                 {
-                    Assert.AreEqual(result.Module.ModuleId, FailureModule.ModuleId);
-                    Assert.AreEqual(result.Module.ModuleVersion, FailureModule.ModuleVersion);
+                    Assert.AreEqual(result.ModuleId, FailureModule.ModuleId);
+                    Assert.AreEqual(result.ModuleVersion, FailureModule.ModuleVersion);
                     Assert.IsNotNull(result.Error);
-                    ChartboostCoreLogger.Log($"Exception: {JsonConvert.SerializeObject(result.Error)}\n Default: {JsonConvert.SerializeObject(TestUnityModuleFailure.Error)}");
+                    LogController.Log($"Exception: {JsonTools.SerializeObject(result.Error)}\n Default: {JsonTools.SerializeObject(TestUnityModuleFailure.Error)}", LogLevel.Debug);
                     Assert.AreEqual(result.Error, TestUnityModuleFailure.Error);
                 }
-                ChartboostCoreLogger.Log($"--------");
+                LogController.Log($"--------", LogLevel.Debug);
             }
 
-            var sdkConfig = new SDKConfiguration(Application.identifier);
-            ChartboostCore.Initialize(sdkConfig, _modules);
+            var sdkConfig = new SDKConfiguration(Application.identifier, _modules, new HashSet<string> { "chartboost_mediation"});
+            ChartboostCore.Initialize(sdkConfig);
             yield return new WaitForSeconds(ConstDelayAfterInit);
             ChartboostCore.ModuleInitializationCompleted -= AssertModules;
         }
 
         [Test, Order(1)]
-        public void Debug()
+        public void LoggingLevel()
         {
-            ChartboostCore.Debug = false;
-            Assert.IsFalse(ChartboostCore.Debug);
-            ChartboostCore.Debug = true;
-            var debugging = ChartboostCore.Debug;
-            Assert.IsTrue(debugging);
-            ChartboostCoreLogger.Log($"Debug: {debugging}");
+            var initial = ChartboostCore.LogLevel;
+            
+            ChartboostCore.LogLevel = LogLevel.Disabled;
+            Assert.AreEqual(LogLevel.Disabled, ChartboostCore.LogLevel);
+            
+            ChartboostCore.LogLevel = LogLevel.Error;
+            Assert.AreEqual(LogLevel.Error, ChartboostCore.LogLevel);
+            
+            ChartboostCore.LogLevel = LogLevel.Warning;
+            Assert.AreEqual(LogLevel.Warning, ChartboostCore.LogLevel);
+            
+            ChartboostCore.LogLevel = LogLevel.Info;
+            Assert.AreEqual(LogLevel.Info, ChartboostCore.LogLevel);
+    
+            ChartboostCore.LogLevel = LogLevel.Info;
+            Assert.AreEqual(LogLevel.Info, ChartboostCore.LogLevel);
+            
+            ChartboostCore.LogLevel = LogLevel.Debug;
+            Assert.AreEqual(LogLevel.Debug, ChartboostCore.LogLevel);
+            
+            ChartboostCore.LogLevel = LogLevel.Verbose;
+            Assert.AreEqual(LogLevel.Verbose, ChartboostCore.LogLevel);
+            
+            ChartboostCore.LogLevel = initial;
+            Assert.AreEqual(initial, ChartboostCore.LogLevel);
         }
 
         [UnityTest, Order(1)]
@@ -128,17 +148,15 @@ namespace Chartboost.Core.Tests
             var analyticsResult = analyticsTask.Result;
             var attributionResult = attributionTask.Result;
             
-            ChartboostCoreLogger.Log($"AdvertisingIdentifier Advertising: {advertisingResult},");
-            ChartboostCoreLogger.Log($"AdvertisingIdentifier Analytics: {analyticsResult}");
-            ChartboostCoreLogger.Log($"AdvertisingIdentifier Attribution: {attributionResult}");
+            LogController.Log($"AdvertisingIdentifier Advertising: {advertisingResult},", LogLevel.Debug);
+            LogController.Log($"AdvertisingIdentifier Analytics: {analyticsResult}", LogLevel.Debug);
+            LogController.Log($"AdvertisingIdentifier Attribution: {attributionResult}", LogLevel.Debug);
             
             Assert.AreEqual(attributionResult, advertisingResult);
             Assert.AreEqual(advertisingResult, analyticsResult);
 
-            if (!string.IsNullOrEmpty(analyticsResult)) 
-                yield break;
-            ChartboostCoreLogger.Log($"AdvertisingIdentifier can be null");
-            Assert.Inconclusive();
+            if (string.IsNullOrEmpty(analyticsResult)) 
+                Assert.Pass("AdvertisingIdentifier can be null");
         }
 
         [UnityTest, Order(1)]
@@ -152,15 +170,13 @@ namespace Chartboost.Core.Tests
             var attributionResult = attributionTask.Result;
             var analyticsResult = analyticsTask.Result;
             
-            ChartboostCoreLogger.Log($"UserAgent Attribution: {attributionResult}");
-            ChartboostCoreLogger.Log($"UserAgent Analytics: {analyticsResult}");
+            LogController.Log($"UserAgent Attribution: {attributionResult}", LogLevel.Debug);
+            LogController.Log($"UserAgent Analytics: {analyticsResult}", LogLevel.Debug);
             
             Assert.AreEqual(attributionResult, analyticsResult);
             
             if (string.IsNullOrEmpty(analyticsResult))
-                Assert.Inconclusive("UserAgent can be null");
-            else
-                Assert.Pass();
+                Assert.Pass("UserAgent can be null");
         }
         
         [Test, Order(1)]
@@ -168,8 +184,8 @@ namespace Chartboost.Core.Tests
         {
             var advertising = ChartboostCore.AdvertisingEnvironment.OSName;
             var analytics = ChartboostCore.AnalyticsEnvironment.OSName;
-            ChartboostCoreLogger.Log($"OSName Advertising: {advertising}");
-            ChartboostCoreLogger.Log($"OSName Analytics: {analytics}");
+            LogController.Log($"OSName Advertising: {advertising}", LogLevel.Debug);
+            LogController.Log($"OSName Analytics: {analytics}", LogLevel.Debug);
             Assert.AreEqual(advertising, analytics);
 
             switch (Application.platform)
@@ -189,8 +205,8 @@ namespace Chartboost.Core.Tests
         {
             var advertising = ChartboostCore.AdvertisingEnvironment.OSVersion;
             var analytics = ChartboostCore.AnalyticsEnvironment.OSVersion;
-            ChartboostCoreLogger.Log($"OSVersion Advertising: {advertising}");
-            ChartboostCoreLogger.Log($"OSVersion Analytics: {analytics}");
+            LogController.Log($"OSVersion Advertising: {advertising}", LogLevel.Debug);
+            LogController.Log($"OSVersion Analytics: {analytics}", LogLevel.Debug);
             Assert.AreEqual(advertising, analytics);
             Assert.IsNotNull(analytics);
             Assert.IsNotEmpty(analytics);
@@ -201,8 +217,8 @@ namespace Chartboost.Core.Tests
         {
             var advertising = ChartboostCore.AdvertisingEnvironment.DeviceMake;
             var analytics = ChartboostCore.AnalyticsEnvironment.DeviceMake;
-            ChartboostCoreLogger.Log($"DeviceMake Advertising: {advertising}");
-            ChartboostCoreLogger.Log($"DeviceMake Analytics: {analytics}");
+            LogController.Log($"DeviceMake Advertising: {advertising}", LogLevel.Debug);
+            LogController.Log($"DeviceMake Analytics: {analytics}", LogLevel.Debug);
             Assert.AreEqual(advertising, analytics);
             Assert.IsNotNull(analytics);
             Assert.IsNotEmpty(analytics);
@@ -213,8 +229,8 @@ namespace Chartboost.Core.Tests
         {
             var advertising = ChartboostCore.AdvertisingEnvironment.DeviceModel;
             var analytics = ChartboostCore.AnalyticsEnvironment.DeviceModel;
-            ChartboostCoreLogger.Log($"DeviceModel Advertising: {advertising}");
-            ChartboostCoreLogger.Log($"DeviceModel Analytics: {analytics}");
+            LogController.Log($"DeviceModel Advertising: {advertising}", LogLevel.Debug);
+            LogController.Log($"DeviceModel Analytics: {analytics}", LogLevel.Debug);
             Assert.AreEqual(advertising, analytics);
             Assert.IsNotNull(analytics);
             Assert.IsNotEmpty(analytics);
@@ -225,8 +241,8 @@ namespace Chartboost.Core.Tests
         {
             var advertising = ChartboostCore.AdvertisingEnvironment.DeviceLocale;
             var analytics = ChartboostCore.AnalyticsEnvironment.DeviceLocale;
-            ChartboostCoreLogger.Log($"DeviceLocale Advertising: {advertising}");
-            ChartboostCoreLogger.Log($"DeviceLocale Analytics: {analytics}");
+            LogController.Log($"DeviceLocale Advertising: {advertising}", LogLevel.Debug);
+            LogController.Log($"DeviceLocale Analytics: {analytics}", LogLevel.Debug);
             Assert.AreEqual(advertising, analytics);
             Assert.IsNotNull(analytics);
             Assert.IsNotEmpty(analytics);
@@ -235,11 +251,11 @@ namespace Chartboost.Core.Tests
         [Test, Order(1)]
         public void ScreenHeight()
         {
-            var advertising = ChartboostCore.AdvertisingEnvironment.ScreenHeight;
-            var analytics = ChartboostCore.AnalyticsEnvironment.ScreenHeight;
-            ChartboostCoreLogger.Log($"ScreenWidth Advertising: {advertising}");
-            ChartboostCoreLogger.Log($"ScreenWidth Analytics: {analytics}");
-            ChartboostCoreLogger.Log($"ScreenWidth Unity: {Screen.height}");
+            var advertising = ChartboostCore.AdvertisingEnvironment.ScreenHeightPixels;
+            var analytics = ChartboostCore.AnalyticsEnvironment.ScreenHeightPixels;
+            LogController.Log($"ScreenWidth Advertising: {advertising}", LogLevel.Debug);
+            LogController.Log($"ScreenWidth Analytics: {analytics}", LogLevel.Debug);
+            LogController.Log($"ScreenWidth Unity: {Screen.height}", LogLevel.Debug);
             Assert.AreEqual(advertising, analytics);
             Assert.GreaterOrEqual(Screen.height, analytics);
             Assert.IsNotNull(analytics);
@@ -248,10 +264,10 @@ namespace Chartboost.Core.Tests
         [Test, Order(1)]
         public void ScreenWidth()
         {
-            var advertising = ChartboostCore.AdvertisingEnvironment.ScreenWidth;
-            var analytics = ChartboostCore.AnalyticsEnvironment.ScreenWidth;
-            ChartboostCoreLogger.Log($"ScreenWidth Advertising: {advertising}");
-            ChartboostCoreLogger.Log($"ScreenWidth Analytics: {analytics}");
+            var advertising = ChartboostCore.AdvertisingEnvironment.ScreenWidthPixels;
+            var analytics = ChartboostCore.AnalyticsEnvironment.ScreenWidthPixels;
+            LogController.Log($"ScreenWidth Advertising: {advertising}", LogLevel.Debug);
+            LogController.Log($"ScreenWidth Analytics: {analytics}", LogLevel.Debug);
             Assert.AreEqual(advertising, analytics);
             Assert.AreEqual(analytics, Screen.width);
             Assert.IsNotNull(analytics);
@@ -262,9 +278,9 @@ namespace Chartboost.Core.Tests
         {
             var advertising = ChartboostCore.AdvertisingEnvironment.ScreenScale;
             var analytics = ChartboostCore.AnalyticsEnvironment.ScreenScale;
-            ChartboostCoreLogger.Log($"ScreenScale Advertising: {advertising}");
-            ChartboostCoreLogger.Log($"ScreenScale Analytics: {analytics}");
-            ChartboostCoreLogger.Log($"ScreenScale Unity: {Screen.dpi}");
+            LogController.Log($"ScreenScale Advertising: {advertising}", LogLevel.Debug);
+            LogController.Log($"ScreenScale Analytics: {analytics}", LogLevel.Debug);
+            LogController.Log($"ScreenScale Unity: {Screen.dpi}", LogLevel.Debug);
             Assert.AreEqual(advertising, analytics);
             Assert.Greater(ChartboostCore.AdvertisingEnvironment.ScreenScale, 0);
             Assert.IsNotNull(analytics);
@@ -275,9 +291,9 @@ namespace Chartboost.Core.Tests
         {
             var advertising = ChartboostCore.AdvertisingEnvironment.BundleIdentifier;
             var analytics = ChartboostCore.AnalyticsEnvironment.BundleIdentifier;
-            ChartboostCoreLogger.Log($"BundleIdentifier Advertising: {advertising}");
-            ChartboostCoreLogger.Log($"BundleIdentifier Analytics: {analytics}");
-            ChartboostCoreLogger.Log($"BundleIdentifier Unity: {Application.identifier}");
+            LogController.Log($"BundleIdentifier Advertising: {advertising}", LogLevel.Debug);
+            LogController.Log($"BundleIdentifier Analytics: {analytics}", LogLevel.Debug);
+            LogController.Log($"BundleIdentifier Unity: {Application.identifier}", LogLevel.Debug);
             Assert.AreEqual(advertising, analytics);
             Assert.AreEqual(analytics, Application.identifier);
             Assert.IsNotNull(analytics);
@@ -294,8 +310,8 @@ namespace Chartboost.Core.Tests
             var advertisingResult = advertisingTask.Result;
             var analyticsResult = analyticsTask.Result;
             
-            ChartboostCoreLogger.Log($"LimitAdTrackingEnabled Advertising: {advertisingResult}");
-            ChartboostCoreLogger.Log($"LimitAdTrackingEnabled Analytics: {analyticsResult}");
+            LogController.Log($"LimitAdTrackingEnabled Advertising: {advertisingResult}", LogLevel.Debug);
+            LogController.Log($"LimitAdTrackingEnabled Analytics: {analyticsResult}", LogLevel.Debug);
             Assert.AreEqual(advertisingResult, analyticsResult);
         }
         
@@ -303,7 +319,7 @@ namespace Chartboost.Core.Tests
         public void NetworkConnectionType()
         {
             var networkConnectionType = ChartboostCore.AnalyticsEnvironment.NetworkConnectionType;
-            ChartboostCoreLogger.Log($"NetworkConnectionType Analytics: {networkConnectionType}");
+            LogController.Log($"NetworkConnectionType Analytics: {networkConnectionType}", LogLevel.Debug);
             
             if (Application.internetReachability == NetworkReachability.NotReachable)
                 Assert.AreEqual(networkConnectionType, Environment.NetworkConnectionType.Unknown);
@@ -316,7 +332,7 @@ namespace Chartboost.Core.Tests
             var vendorIdentifierScopeTask = ChartboostCore.AnalyticsEnvironment.VendorIdentifierScope;
             yield return new WaitUntil(() => vendorIdentifierScopeTask.IsCompleted);
             var vendorIdentifierScope = vendorIdentifierScopeTask.Result;
-            ChartboostCoreLogger.Log($"VendorIdentifierScope Analytics: {vendorIdentifierScope}");
+            LogController.Log($"VendorIdentifierScope Analytics: {vendorIdentifierScope}", LogLevel.Debug);
             Assert.IsNotNull(vendorIdentifierScope);
         }
 
@@ -324,9 +340,9 @@ namespace Chartboost.Core.Tests
         public void Volume()
         {
             var volume = ChartboostCore.AnalyticsEnvironment.Volume;
-            ChartboostCoreLogger.Log($"Volume Analytics: {volume}");
+            LogController.Log($"Volume Analytics: {volume}", LogLevel.Debug);
             if (volume == null)
-                Assert.Inconclusive();
+                Assert.Pass("Volume can be null");
             Assert.GreaterOrEqual(volume, 0);
             Assert.IsNotNull(volume);
         }
@@ -338,19 +354,17 @@ namespace Chartboost.Core.Tests
             yield return new WaitUntil(() => vendorIdentifierTask.IsCompleted);
 
             var vendorIdentifier = vendorIdentifierTask.Result;
-            ChartboostCoreLogger.Log($"VendorIdentifier Analytics: {vendorIdentifier}");
-            
-            if (!string.IsNullOrEmpty(vendorIdentifier)) 
-                yield break;
-            ChartboostCoreLogger.Log($"VendorIdentifier can be null");
-            Assert.Inconclusive();
+            LogController.Log($"VendorIdentifier Analytics: {vendorIdentifier}", LogLevel.Debug);
+
+            if (string.IsNullOrEmpty(vendorIdentifier)) 
+                Assert.Pass("VendorIdentifier can be null");
         }
         
         [Test, Order(1)]
         public void AppTrackingTransparencyStatus()
         {
             var appTrackingTransparencyStatus = ChartboostCore.AnalyticsEnvironment.AppTrackingTransparencyStatus;
-            ChartboostCoreLogger.Log($"AppTrackingTransparencyStatus Analytics: {appTrackingTransparencyStatus}");
+            LogController.Log($"AppTrackingTransparencyStatus Analytics: {appTrackingTransparencyStatus}", LogLevel.Debug);
             
             switch (Application.platform)
             {
@@ -369,8 +383,8 @@ namespace Chartboost.Core.Tests
         public void AppVersion()
         {
             var appVersion = ChartboostCore.AnalyticsEnvironment.AppVersion;
-            ChartboostCoreLogger.Log($"AppVersion Analytics: {appVersion}");
-            ChartboostCoreLogger.Log($"AppVersion Unity: {Application.version}");
+            LogController.Log($"AppVersion Analytics: {appVersion}", LogLevel.Debug);
+            LogController.Log($"AppVersion Unity: {Application.version}", LogLevel.Debug);
             Assert.AreEqual(appVersion, Application.version);
             Assert.IsNotNull(appVersion);
             Assert.IsNotEmpty(appVersion);
@@ -380,48 +394,45 @@ namespace Chartboost.Core.Tests
         public void AppSessionDuration()
         {
             var appSessionDuration = ChartboostCore.AnalyticsEnvironment.AppSessionDuration;
-            ChartboostCoreLogger.Log($"AppSessionDuration Analytics: {appSessionDuration}");
+            LogController.Log($"AppSessionDuration Analytics: {appSessionDuration}", LogLevel.Debug);
             Assert.IsNotNull(appSessionDuration);
             
             if (appSessionDuration <= 0)
-                Assert.Inconclusive("AppSessionDuration can be 0, it only increases after initialization");
-            else
-                Assert.Pass();
+                Assert.Pass("AppSessionDuration can be 0, it only increases after initialization");
         }
         
         [Test, Order(1)]
         public void AppSessionIdentifier()
         {
             var appSessionIdentifier = ChartboostCore.AnalyticsEnvironment.AppSessionIdentifier;
-            ChartboostCoreLogger.Log($"AppSessionIdentifier Analytics: {appSessionIdentifier}");
+            LogController.Log($"AppSessionIdentifier Analytics: {appSessionIdentifier}", LogLevel.Debug);
+            
             if (string.IsNullOrEmpty(appSessionIdentifier))
-                Assert.Inconclusive("AppSessionIdentifier can be null");
-            else
-                Assert.Pass();
+                Assert.Pass("AppSessionIdentifier can be null");
         }
         
         [UnityTest, Order(1)]
         public IEnumerator FrameworkName()
         {
             Assert.IsNull(ChartboostCore.AnalyticsEnvironment.FrameworkName);
-            ChartboostCore.PublisherMetadata.SetFrameworkName(ConstFrameworkName);
             var fired = false;
-            ChartboostCore.PublisherMetadata.FrameworkNameChanged += WaitForChange;
+            ChartboostCore.AnalyticsEnvironment.FrameworkNameChanged += WaitForChange;
             void WaitForChange()
             {
-                ChartboostCore.PublisherMetadata.FrameworkNameChanged -= WaitForChange;
+                ChartboostCore.AnalyticsEnvironment.FrameworkNameChanged -= WaitForChange;
                 fired = true;
-                ChartboostCoreLogger.Log("FrameworkName Changed");
+                LogController.Log("FrameworkName Changed", LogLevel.Debug);
             }
             
-            var frameworkName = ChartboostCore.AnalyticsEnvironment.FrameworkName;
+            ChartboostCore.PublisherMetadata.SetFramework(ConstFrameworkName, null);
             yield return new WaitUntil(() => fired);
-            
-            ChartboostCoreLogger.Log($"FrameworkName Analytics: {frameworkName}, Expected: {ConstFrameworkName}");
+
+            var frameworkName = ChartboostCore.AnalyticsEnvironment.FrameworkName;
+            LogController.Log($"FrameworkName Analytics: {frameworkName}, Expected: {ConstFrameworkName}", LogLevel.Debug);
             Assert.IsNotNull(frameworkName);
             Assert.AreEqual(frameworkName, ConstFrameworkName);
             
-            ChartboostCore.PublisherMetadata.SetFrameworkName(null);
+            ChartboostCore.PublisherMetadata.SetFramework(null, null);
             Assert.IsNull(ChartboostCore.AnalyticsEnvironment.FrameworkName);
         }
 
@@ -430,23 +441,23 @@ namespace Chartboost.Core.Tests
         {
             Assert.IsNull(ChartboostCore.AnalyticsEnvironment.FrameworkVersion);
             var fired = false;
-            ChartboostCore.PublisherMetadata.FrameworkVersionChanged += WaitForChange;
+            ChartboostCore.AnalyticsEnvironment.FrameworkVersionChanged += WaitForChange;
             void WaitForChange()
             {
-                ChartboostCore.PublisherMetadata.FrameworkVersionChanged -= WaitForChange;
+                ChartboostCore.AnalyticsEnvironment.FrameworkVersionChanged -= WaitForChange;
                 fired = true;
-                ChartboostCoreLogger.Log("FrameworkVersion Changed");
+                LogController.Log("FrameworkVersion Changed", LogLevel.Debug);
             }
             
-            ChartboostCore.PublisherMetadata.SetFrameworkVersion(ConstFrameworkVersion);
+            ChartboostCore.PublisherMetadata.SetFramework(null, ConstFrameworkVersion);
             yield return new WaitUntil(() => fired);
             
             var frameworkVersion = ChartboostCore.AnalyticsEnvironment.FrameworkVersion;
-            ChartboostCoreLogger.Log($"FrameworkVersion Analytics: {frameworkVersion}, Expected: {ConstFrameworkVersion}");
+            LogController.Log($"FrameworkVersion Analytics: {frameworkVersion}, Expected: {ConstFrameworkVersion}", LogLevel.Debug);
             Assert.IsNotNull(frameworkVersion);
             Assert.AreEqual(frameworkVersion, ConstFrameworkVersion);
             
-            ChartboostCore.PublisherMetadata.SetFrameworkVersion(null);
+            ChartboostCore.PublisherMetadata.SetFramework(null, null);
             Assert.IsNull(ChartboostCore.AnalyticsEnvironment.FrameworkVersion);
         }
 
@@ -455,19 +466,19 @@ namespace Chartboost.Core.Tests
         {
             Assert.IsFalse(ChartboostCore.AnalyticsEnvironment.IsUserUnderage);
             var fired = false;
-            ChartboostCore.PublisherMetadata.IsUserUnderageChanged += WaitForChange;
+            ChartboostCore.AnalyticsEnvironment.IsUserUnderageChanged += WaitForChange;
             void WaitForChange()
             {
-                ChartboostCore.PublisherMetadata.IsUserUnderageChanged -= WaitForChange;
+                ChartboostCore.AnalyticsEnvironment.IsUserUnderageChanged -= WaitForChange;
                 fired = true;
-                ChartboostCoreLogger.Log("IsUserUnderage Changed");
+                LogController.Log("IsUserUnderage Changed", LogLevel.Debug);
             }
             
             ChartboostCore.PublisherMetadata.SetIsUserUnderage(ConstIsUserUnderage);
             yield return new WaitUntil(() => fired);
             
             var isUserUnderage = ChartboostCore.AnalyticsEnvironment.IsUserUnderage;
-            ChartboostCoreLogger.Log($"IsUserUnderage Analytics: {isUserUnderage}, Expected: {ConstIsUserUnderage}");
+            LogController.Log($"IsUserUnderage Analytics: {isUserUnderage}, Expected: {ConstIsUserUnderage}", LogLevel.Debug);
             Assert.IsNotNull(isUserUnderage);
             Assert.AreEqual(isUserUnderage, ConstIsUserUnderage);
             
@@ -480,19 +491,19 @@ namespace Chartboost.Core.Tests
         {
             Assert.IsNull(ChartboostCore.AnalyticsEnvironment.PlayerIdentifier);
             var fired = false;
-            ChartboostCore.PublisherMetadata.PlayerIdentifierChanged += WaitForChange;
+            ChartboostCore.AnalyticsEnvironment.PlayerIdentifierChanged += WaitForChange;
             void WaitForChange()
             {
-                ChartboostCore.PublisherMetadata.PlayerIdentifierChanged -= WaitForChange;
+                ChartboostCore.AnalyticsEnvironment.PlayerIdentifierChanged -= WaitForChange;
                 fired = true;
-                ChartboostCoreLogger.Log("PlayerIdentifier Changed");
+                LogController.Log("PlayerIdentifier Changed", LogLevel.Debug);
             }
             
             ChartboostCore.PublisherMetadata.SetPlayerIdentifier(ConstPlayerIdentifier);
             yield return new WaitUntil(() => fired);
             
             var playerIdentifier = ChartboostCore.AnalyticsEnvironment.PlayerIdentifier;
-            ChartboostCoreLogger.Log($"PlayerIdentifier Analytics: {playerIdentifier}, Expected: {ConstPlayerIdentifier}");
+            LogController.Log($"PlayerIdentifier Analytics: {playerIdentifier}, Expected: {ConstPlayerIdentifier}", LogLevel.Debug);
             Assert.IsNotNull(playerIdentifier);
             Assert.AreEqual(playerIdentifier, ConstPlayerIdentifier);
             
@@ -505,19 +516,19 @@ namespace Chartboost.Core.Tests
         {
             Assert.IsNull(ChartboostCore.AnalyticsEnvironment.PublisherAppIdentifier);
             var fired = false;
-            ChartboostCore.PublisherMetadata.PublisherAppIdentifierChanged += WaitForChange;
+            ChartboostCore.AnalyticsEnvironment.PublisherAppIdentifierChanged += WaitForChange;
             void WaitForChange()
             {
-                ChartboostCore.PublisherMetadata.PublisherAppIdentifierChanged -= WaitForChange;
+                ChartboostCore.AnalyticsEnvironment.PublisherAppIdentifierChanged -= WaitForChange;
                 fired = true;
-                ChartboostCoreLogger.Log("PublisherAppIdentifier Changed");
+                LogController.Log("PublisherAppIdentifier Changed", LogLevel.Debug);
             }
             
             ChartboostCore.PublisherMetadata.SetPublisherAppIdentifier(Application.identifier);
             yield return new WaitUntil(() => fired);
             
             var publisherAppIdentifier = ChartboostCore.AnalyticsEnvironment.PublisherAppIdentifier;
-            ChartboostCoreLogger.Log($"PublisherAppIdentifier Analytics: {publisherAppIdentifier}, Expected: {Application.identifier}");
+            LogController.Log($"PublisherAppIdentifier Analytics: {publisherAppIdentifier}, Expected: {Application.identifier}", LogLevel.Debug);
             Assert.IsNotNull(publisherAppIdentifier);
             Assert.AreEqual(publisherAppIdentifier, Application.identifier);
             
@@ -530,19 +541,19 @@ namespace Chartboost.Core.Tests
         {
             Assert.IsNull(ChartboostCore.AnalyticsEnvironment.PublisherSessionIdentifier);
             var fired = false;
-            ChartboostCore.PublisherMetadata.PublisherSessionIdentifierChanged += WaitForChange;
+            ChartboostCore.AnalyticsEnvironment.PublisherSessionIdentifierChanged += WaitForChange;
             void WaitForChange()
             {
-                ChartboostCore.PublisherMetadata.PublisherSessionIdentifierChanged -= WaitForChange;
+                ChartboostCore.AnalyticsEnvironment.PublisherSessionIdentifierChanged -= WaitForChange;
                 fired = true;
-                ChartboostCoreLogger.Log("PublisherSessionIdentifier Changed");
+                LogController.Log("PublisherSessionIdentifier Changed", LogLevel.Debug);
             }
             
             ChartboostCore.PublisherMetadata.SetPublisherSessionIdentifier(ConstPublisherSessionIdentifier);
             yield return new WaitUntil(() => fired);
             
             var publisherSessionIdentifier = ChartboostCore.AnalyticsEnvironment.PublisherSessionIdentifier;
-            ChartboostCoreLogger.Log($"PublisherSessionIdentifier Analytics: {publisherSessionIdentifier}, Expected: {ConstPublisherSessionIdentifier}");
+            LogController.Log($"PublisherSessionIdentifier Analytics: {publisherSessionIdentifier}, Expected: {ConstPublisherSessionIdentifier}", LogLevel.Debug);
             Assert.IsNotNull(publisherSessionIdentifier);
             Assert.AreEqual(publisherSessionIdentifier, ConstPublisherSessionIdentifier);
             
