@@ -15,14 +15,16 @@ extern "C" {
         [ChartboostCore setLogLevel:(CBCLogLevel)logLevel];
     }
 
-    void _CBCInitialize(const char* chartboostAppIdentifier){
+    void _CBCInitialize(const char* chartboostAppIdentifier, const char** skippedModuleIds, int skippedModuleIdsSize){
+
+        NSMutableArray* skippedModules = [NSMutableArray new];
+
+        if (skippedModuleIdsSize > 0)
+            skippedModules = toNSMutableArray(skippedModuleIds, skippedModuleIdsSize);
+
         NSArray* modules = [[[CBCUnityObserver sharedObserver] initializableModules] allValues];
-
-        CBCSDKConfiguration* configuration = [[CBCSDKConfiguration alloc] initWithChartboostAppID:toNSStringOrEmpty(chartboostAppIdentifier) modules:modules skippedModuleIDs:[NSArray new]];
-
-        id<CBCModuleObserver> observer = [CBCUnityObserver sharedObserver];
-
-        [ChartboostCore initializeSDKWithConfiguration:configuration moduleObserver:observer];
+        CBCSDKConfiguration* configuration = [[CBCSDKConfiguration alloc] initWithChartboostAppID:toNSStringOrEmpty(chartboostAppIdentifier) modules:modules skippedModuleIDs:skippedModules];
+        [ChartboostCore initializeSDKWithConfiguration:configuration moduleObserver:[CBCUnityObserver sharedObserver]];
     }
 
     void _CBCSetModuleInitializationResultCallback(ChartboostCoreOnModuleInitializationResult onModuleInitializationResult){
