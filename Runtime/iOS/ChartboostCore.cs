@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Runtime.InteropServices;
 using AOT;
 using Chartboost.Constants;
@@ -65,7 +66,8 @@ namespace Chartboost.Core.iOS
                 }
             }
 
-            _CBCInitialize(sdkConfiguration.ChartboostApplicationIdentifier);
+            var skippedModuleIdsAsArray = sdkConfiguration.SkippedModuleIdentifiers.ToArray();
+            _CBCInitialize(sdkConfiguration.ChartboostApplicationIdentifier, skippedModuleIdsAsArray, skippedModuleIdsAsArray.Length);
         }
         
         [MonoPInvokeCallback(typeof(ExternChartboostCoreOnModuleInitializationResult))]
@@ -84,7 +86,7 @@ namespace Chartboost.Core.iOS
         [DllImport(SharedIOSConstants.DLLImport)] private static extern string _CBCVersion();
         [DllImport(SharedIOSConstants.DLLImport)] private static extern int _CBCGetLogLevel();
         [DllImport(SharedIOSConstants.DLLImport)] private static extern void _CBCSetLogLevel(int logLevel);
-        [DllImport(SharedIOSConstants.DLLImport)] private static extern void _CBCInitialize(string chartboostAppIdentifier);
+        [DllImport(SharedIOSConstants.DLLImport)] private static extern void _CBCInitialize(string chartboostAppIdentifier, string[] skippedModuleIds, int skippedModulesIdSize);
         [DllImport(SharedIOSConstants.DLLImport)] private static extern void _CBCSetModuleInitializationResultCallback(ExternChartboostCoreOnModuleInitializationResult onModuleInitializationResult);
     }
 }
