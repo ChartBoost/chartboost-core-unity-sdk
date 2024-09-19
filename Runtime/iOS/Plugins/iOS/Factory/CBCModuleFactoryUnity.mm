@@ -1,5 +1,7 @@
 #import "CBCModuleFactoryUnity.h"
 
+NSString* const CBCModuleFactoryUnityTAG = @"CBCModuleFactoryUnity";
+
 @implementation CBCModuleFactoryUnity
 
 + (instancetype) sharedFactory {
@@ -15,6 +17,7 @@
 - (void)makeModuleWithClassName:(NSString * _Nonnull)className credentials:(NSDictionary<NSString *,id> * _Nullable)credentials completion:(void (^ _Nonnull)(id<CBCModule> _Nullable))completion { 
     _completer = ^(id<CBCModule> coreModule){
         completion(coreModule);
+        [[CBLUnityLoggingBridge sharedLogger] logWithTag:CBCModuleFactoryUnityTAG log:[NSString stringWithFormat:@"ModuleFactory created module: %@", className] logLevel:CBLLogLevelVerbose];
     };
 
     _onMakeModule(toCStringOrNull(className), toJSON(credentials));
@@ -30,6 +33,7 @@ extern "C" {
     void _CBCSetModuleFactoryUnityCallbacks(ChartboostCoreOnMakeModule onMakeModule) {
         [[CBCModuleFactoryUnity sharedFactory] setOnMakeModule:onMakeModule];
         [ChartboostCore performSelector:@selector(setNonNativeModuleFactory:) withObject:[CBCModuleFactoryUnity sharedFactory]];
+        [[CBLUnityLoggingBridge sharedLogger] logWithTag:CBCModuleFactoryUnityTAG log:@"Set ModuleFactory Callbacks" logLevel:CBLLogLevelVerbose];
     }
 
     void _CBCCompleteModuleMake(const void * uniqueId){

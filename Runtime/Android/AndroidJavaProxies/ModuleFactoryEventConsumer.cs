@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using Chartboost.Constants;
 using Chartboost.Core.Android.Utilities;
 using Chartboost.Core.Initialization;
 using Chartboost.Core.Utilities;
@@ -27,7 +28,7 @@ namespace Chartboost.Core.Android.AndroidJavaProxies
                 if (type == null)
                 {
                     LogController.Log($"Requested {className} for Remote Initialization but Class was not found!", LogLevel.Error);
-                    completion.Call(AndroidConstants.FunctionCompleted, wrappedModule);
+                    completion.Call(SharedAndroidConstants.FunctionCompleted, wrappedModule);
                     return;
                 }
             
@@ -38,7 +39,7 @@ namespace Chartboost.Core.Android.AndroidJavaProxies
                 using var moduleWrapper = new AndroidJavaClass(AndroidConstants.ClassModuleWrapper);
                 
                 wrappedModule = moduleWrapper.CallStatic<AndroidJavaObject>(AndroidConstants.FunctionWrapUnityModule, module.ModuleId, module.ModuleVersion, moduleEventConsumer);
-                completion.Call(AndroidConstants.FunctionCompleted, wrappedModule);
+                completion.Call(SharedAndroidConstants.FunctionCompleted, wrappedModule);
                 wrappedModule.Dispose();
             });
         }

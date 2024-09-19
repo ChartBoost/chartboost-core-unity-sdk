@@ -13,7 +13,7 @@ namespace Chartboost.Core.Initialization
     {
         // ReSharper disable once StaticMemberInGenericType
         public static Type InstanceType { get; set; }
-        private readonly Module _instance;
+        protected readonly Module Instance;
 
         private const string LogNativeModuleInstanceTypeNull = "Unable to create an instance of NativeModule, InstanceType is null.";
         private static string LogNativeModuleFailed => $"Unable to create an instance of {InstanceType.Name}.";
@@ -35,16 +35,16 @@ namespace Chartboost.Core.Initialization
             }
             
             LogController.Log(LogNativeModuleCreated, LogLevel.Verbose);
-            _instance = instance;
+            Instance = instance;
         }
 
         protected abstract string DefaultModuleId { get; }
         protected abstract string DefaultModuleVersion { get; }
 
         public override string ModuleId 
-            => _instance?.ModuleId ?? DefaultModuleId;
+            => Instance?.ModuleId ?? DefaultModuleId;
         public override string ModuleVersion 
-            => _instance?.ModuleVersion ?? DefaultModuleVersion;
+            => Instance?.ModuleVersion ?? DefaultModuleVersion;
 
         protected override Task<ChartboostCoreError?> Initialize(ModuleConfiguration configuration)
         {
@@ -53,6 +53,6 @@ namespace Chartboost.Core.Initialization
 
         internal override bool NativeModule => true;
 
-        internal override void AddNativeInstance() => _instance?.AddNativeInstance();
+        internal override void AddNativeInstance() => Instance?.AddNativeInstance();
     }
 }

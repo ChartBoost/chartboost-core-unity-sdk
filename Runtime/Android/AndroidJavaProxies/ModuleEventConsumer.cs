@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Chartboost.Constants;
 using Chartboost.Core.Android.Utilities;
 using Chartboost.Core.Error;
 using Chartboost.Core.Initialization;
@@ -53,12 +54,12 @@ namespace Chartboost.Core.Android.AndroidJavaProxies
                 {
                     try
                     {
-                        completion.Call(AndroidConstants.FunctionCompleted, error?.ToNativeCoreError());
+                        completion.Call(SharedAndroidConstants.FunctionCompleted, error?.ToNativeCoreError());
                     }
                     catch (Exception exception)
                     {
                         LogController.LogException(exception);
-                        completion.Call(AndroidConstants.FunctionCompleted, new ChartboostCoreError(-1, exception.Message).ToNativeCoreError());
+                        completion.Call(SharedAndroidConstants.FunctionCompleted, new ChartboostCoreError(-1, exception.Message).ToNativeCoreError());
                     }
                 }
             });

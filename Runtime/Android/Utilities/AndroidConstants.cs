@@ -125,7 +125,6 @@ namespace Chartboost.Core.Android.Utilities
         internal const string FunctionWrapUnityModule = "wrapUnityModule";
         internal const string FunctionAddModule = "addModule";
         internal const string FunctionClearModules = "clearModules";
-        internal const string FunctionCompleted = "completed";
         
         internal static readonly string ClassModuleFactoryUnity = GetFactoryType("ModuleFactoryUnity");
         internal static readonly string ClassModuleFactoryEventConsumer = GetFactoryType("ModuleFactoryEventConsumer");

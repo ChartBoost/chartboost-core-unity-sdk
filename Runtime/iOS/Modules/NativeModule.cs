@@ -10,7 +10,7 @@ namespace Chartboost.Core.iOS.Modules
     /// </summary>
     public abstract class NativeModule : Module
     {
-        private readonly IntPtr _nativeInstance;
+        protected readonly IntPtr NativeInstance;
 
         /// <summary>
         /// Create a Unity representation of <see cref="Module"/>.
@@ -18,14 +18,14 @@ namespace Chartboost.Core.iOS.Modules
         /// <param name="instance">Native <see cref="Module"/> reference.</param>
         public NativeModule(IntPtr instance)
         {
-            _nativeInstance = instance;
+            NativeInstance = instance;
         }
 
         /// <inheritdoc cref="Module.ModuleId"/>
-        public override string ModuleId => ModuleWrapper.GetModuleId(_nativeInstance);
+        public override string ModuleId => ModuleWrapper.GetModuleId(NativeInstance);
        
         /// <inheritdoc cref="Module.ModuleVersion"/>
-        public override string ModuleVersion => ModuleWrapper.GetModuleVersion(_nativeInstance);
+        public override string ModuleVersion => ModuleWrapper.GetModuleVersion(NativeInstance);
 
         /// <summary>
         /// Native modules do not initialized by Unity C#, they are handled natively.
@@ -41,7 +41,7 @@ namespace Chartboost.Core.iOS.Modules
         /// </summary>
         internal override void AddNativeInstance()
         {
-            ModuleWrapper.AddModule(_nativeInstance);
+            ModuleWrapper.AddModule(NativeInstance);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Chartboost.Core.Consent
         /// <see cref="Chartboost.Core.Consent.ConsentValue.Granted"/>, 
         /// <see cref="Chartboost.Core.Consent.ConsentValue.DoesNotApply"/>.
         ///</summary>
-        public static readonly ConsentKey GDPRConsentGiven = "gdpr_consent_given";
+        public static readonly ConsentKey GDPRConsentGiven = "chartboost_core_gdpr_consent_given";
         
         /// <summary>
         /// CCPA opt-in standard. Possible values are:
@@ -23,22 +23,22 @@ namespace Chartboost.Core.Consent
         /// <see cref="Chartboost.Core.Consent.ConsentValue.Granted"/>, 
         /// <see cref="Chartboost.Core.Consent.ConsentValue.DoesNotApply"/>.
         ///</summary>
-        public static readonly ConsentKey CCPAOptIn =  "ccpa_opt_in";
+        public static readonly ConsentKey CCPAOptIn =  "chartboost_core_ccpa_opt_in";
         
         /// <summary>
         /// USP standard. Possible values are IAB’s USP strings, as defined in <a href="https://github.com/InteractiveAdvertisingBureau/USPrivacy/blob/master/CCPA/US%20Privacy%20String.md">InteractiveAdvertisingBureau/USPrivacy</a>
         /// </summary>
-        public static readonly ConsentKey USP = "usp";
+        public static readonly ConsentKey USP = "IABUSPrivacy_String";
         
         /// <summary>
         /// TCF standard. Possible values are IAB’s TCF strings, as defined in <a href="https://github.com/InteractiveAdvertisingBureau/GDPR-Transparency-and-Consent-Framework/blob/master/TCFv2/IAB%20Tech%20Lab%20-%20Consent%20string%20and%20vendor%20list%20formats%20v2.md">InteractiveAdvertisingBureau/GDPR-Transparency-and-Consent-Framework</a>
         /// </summary>
-        public static readonly ConsentKey TCF = "tcf";
+        public static readonly ConsentKey TCF = "IABTCF_TCString";
         
         /// <summary>
         /// GPP standard. Possible values are IAB’s GPP strings, as defined in <a href="https://github.com/InteractiveAdvertisingBureau/Global-Privacy-Platform/blob/main/Core/Consent%20String%20Specification.md">InteractiveAdvertisingBureau/Global-Privacy-Platform</a>
         /// </summary>
-        public static readonly ConsentKey GPP = "gpp";
+        public static readonly ConsentKey GPP = "IABGPP_HDR_GppString";
 
         /// <summary>
         /// Creates a custom standard with an arbitrary string value.
