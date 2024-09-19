@@ -1,3 +1,4 @@
+@file:Suppress("PackageDirectoryMismatch")
 package com.chartboost.core.unity.error
 
 import com.chartboost.core.error.ChartboostCoreErrorContract

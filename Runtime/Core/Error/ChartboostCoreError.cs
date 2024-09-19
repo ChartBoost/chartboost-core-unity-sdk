@@ -48,5 +48,4 @@ namespace Chartboost.Core.Error
             Resolution = resolution;
         }
     }
-    #nullable disable
 }

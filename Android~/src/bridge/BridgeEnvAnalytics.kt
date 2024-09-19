@@ -1,3 +1,4 @@
+@file:Suppress("PackageDirectoryMismatch")
 package com.chartboost.core.unity.bridge
 
 import com.chartboost.core.ChartboostCore

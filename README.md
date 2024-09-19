@@ -145,6 +145,40 @@ var sdkConfig = new SDKConfiguration(chartboostApplicationIdentifier, modulesToI
 ChartboostCore.Initialize(sdkConfig);
 ```
 
+## Module Initialization Results
+
+There are multiple ways to be notified for when a `Module` initialization process is completed.
+
+### Unity - Client Modules
+
+If you are initializing Unity modules locally, you can subscribe to their corresponding `ModuleReady` event, this will notify you when the initialization process is completed and the `Module` is ready to be used. e.g:
+
+```csharp
+var testModule = new TestModule();
+testModule.ModuleReady  +=  testModule => Debug.Log($"Module: {testModule.ModuleId} is ready");
+```
+
+> **Warning** \
+> This callback is not very useful for Chartboost Core modules that aren't expliclty exposed to developers or modules initialized automatically through the backend.
+
+### ChartboostCore.ModuleInitializationCompleted Event
+
+If you wish to have granular details about Chartboost Core Module initialization details, you can subscribe to the `ChartboostCore.ModuleInitializationCompleted`, where information for Client/Remote modules is readily available, as seen below:
+
+```csharp
+ChartboostCore.ModuleInitializationCompleted += result =>
+{
+    Debug.Log($"Received initialization result for: {result.ModuleId} start:{result.Start}, end:{result.End} with duration: {result.Duration}");
+
+    // Module failed to initialize module
+    if (result.Error.HasValue) 
+        Debug.LogError($"Module: {result.ModuleId} failed to initialize with error: {JsonTools.SerializeObject(result.Error.Value)}");
+    // Modue succeeded to initialize, add to list of modules to skip to pass on the next ChartboostCore.Initialize call.
+    else
+        modulesToSkip.Add(result.ModuleId);
+};
+```
+
 ## Publisher Metadata
 
 Chartboost Core allows developer to set Publisher provided metadata, as seen in the following examples.

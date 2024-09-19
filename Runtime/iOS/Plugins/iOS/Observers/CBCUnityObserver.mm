@@ -1,6 +1,8 @@
 #import "CBCUnityObserver.h"
 #import "CBCModuleWrapper.h"
 
+NSString* const CBCUnityObserverTAG = @"CBCUnityObserver";
+
 @implementation CBCUnityObserver
 
 static NSMutableDictionary* _modulesToInit;
@@ -24,6 +26,7 @@ static NSMutableDictionary* _moduleStore;
 
 - (void) clearInitializableModules {
     [[self initializableModules] removeAllObjects];
+    [[CBLUnityLoggingBridge sharedLogger] logWithTag:CBCUnityObserverTAG log:@"Cleared Initializable Modules" logLevel:CBLLogLevelVerbose];
 }
 
 - (NSMutableDictionary*) moduleStore {
@@ -33,15 +36,20 @@ static NSMutableDictionary* _moduleStore;
 }
 
 - (void)addModule:(id<CBCModule>)initializableModule {
-    [[self initializableModules] setObject:initializableModule forKey:[initializableModule moduleID]];
+    NSString* moduleId = [initializableModule moduleID];
+    [[self initializableModules] setObject:initializableModule forKey:moduleId];
+    [[CBLUnityLoggingBridge sharedLogger] logWithTag:CBCUnityObserverTAG log:[NSString stringWithFormat:@"Added Module:%@ to Initializable Modules", moduleId] logLevel:CBLLogLevelVerbose];
 }
 
 - (void)removeModule:(NSString*)moduleId{
     [[self initializableModules] removeObjectForKey:moduleId];
+    [[CBLUnityLoggingBridge sharedLogger] logWithTag:CBCUnityObserverTAG log:[NSString stringWithFormat:@"Removed Module:%@ from Initializable Modules", moduleId] logLevel:CBLLogLevelVerbose];
 }
 
 - (void)storeModule:(id<CBCModule>)nativeModule {
-    [[self moduleStore] setObject:nativeModule forKey:[nativeModule moduleID]];
+    NSString* moduleId = [nativeModule moduleID];
+    [[self moduleStore] setObject:nativeModule forKey:moduleId];
+    [[CBLUnityLoggingBridge sharedLogger] logWithTag:CBCUnityObserverTAG log:[NSString stringWithFormat:@"Added Module:%@ to Module Store", moduleId] logLevel:CBLLogLevelVerbose];
 }
 
 #pragma mark CBCInitializableModuleObserver

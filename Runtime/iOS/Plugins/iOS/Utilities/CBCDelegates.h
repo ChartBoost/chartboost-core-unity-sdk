@@ -1,3 +1,4 @@
+#import "CBLUnityLoggingBridge.h"
 #import "ChartboostUnityUtilities.h"
 #import <objc/runtime.h>
 #import <AppTrackingTransparency/AppTrackingTransparency.h>

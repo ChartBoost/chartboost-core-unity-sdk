@@ -13,19 +13,19 @@ namespace Chartboost.Core.Android.Modules
     [Preserve]
     public abstract class NativeModule : Module
     {
-        private readonly AndroidJavaObject _nativeInstance;
+        protected readonly AndroidJavaObject NativeInstance;
 
         /// <summary>
         /// Create a Unity representation of <see cref="Module"/>.
         /// </summary>
         /// <param name="instance">Native <see cref="Module"/> reference.</param>
-        protected NativeModule(AndroidJavaObject instance) => _nativeInstance = instance;
+        protected NativeModule(AndroidJavaObject instance) => NativeInstance = instance;
 
         /// <inheritdoc cref="Module.ModuleId"/>
-        public override string ModuleId => _nativeInstance.Call<string>(AndroidConstants.FunctionGetModuleId);
+        public override string ModuleId => NativeInstance.Call<string>(AndroidConstants.FunctionGetModuleId);
 
         /// <inheritdoc cref="Module.ModuleVersion"/>
-        public override string ModuleVersion => _nativeInstance.Call<string>(AndroidConstants.FunctionGetModuleVersion);
+        public override string ModuleVersion => NativeInstance.Call<string>(AndroidConstants.FunctionGetModuleVersion);
 
         /// <summary>
         /// Native modules do not initialized by Unity C#, they are handled natively.
@@ -42,7 +42,7 @@ namespace Chartboost.Core.Android.Modules
         internal override void AddNativeInstance()
         {
             using var bridge = Utilities.AndroidExtensions.AndroidBridge();
-            bridge.CallStatic(AndroidConstants.FunctionAddModule, _nativeInstance);
+            bridge.CallStatic(AndroidConstants.FunctionAddModule, NativeInstance);
         }
     }
 }

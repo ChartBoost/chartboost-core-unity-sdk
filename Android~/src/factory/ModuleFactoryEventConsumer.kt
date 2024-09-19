@@ -1,3 +1,4 @@
+@file:Suppress("PackageDirectoryMismatch")
 package com.chartboost.core.unity.factory
 
 interface ModuleFactoryEventConsumer {

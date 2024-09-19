@@ -1,9 +1,12 @@
+@file:Suppress("PackageDirectoryMismatch")
 package com.chartboost.core.unity.bridge
 
 import com.chartboost.core.ChartboostCore
 import com.chartboost.core.consent.ConsentDialogType
 import com.chartboost.core.consent.ConsentSource
 import com.chartboost.core.unity.result.ResultBoolean
+import com.chartboost.mediation.unity.logging.LogLevel
+import com.chartboost.mediation.unity.logging.UnityLoggingBridge
 import com.unity3d.player.UnityPlayer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,12 +17,16 @@ class BridgeCMP {
 
     companion object
     {
+        private val TAG = BridgeCMP::class.simpleName
+
         @JvmStatic
         fun grantConsentStatus(statusSource: ConsentSource, result: ResultBoolean){
             CoroutineScope(Dispatchers.Main).launch {
                 UnityPlayer.currentActivity.let {
                     val grantConsentResult = ChartboostCore.consent.grantConsent(it, statusSource)
-                    result.onResult(grantConsentResult.isSuccess)
+                    val success = grantConsentResult.isSuccess
+                    UnityLoggingBridge.log(TAG, "Granted Consent Status: $success", LogLevel.VERBOSE)
+                    result.onResult(success)
                 }
             }
         }
@@ -29,17 +36,21 @@ class BridgeCMP {
             CoroutineScope(Dispatchers.Main).launch {
                 UnityPlayer.currentActivity.let {
                     val denyConsentResult = ChartboostCore.consent.denyConsent(it, statusSource)
-                    result.onResult(denyConsentResult.isSuccess)
+                    val success = denyConsentResult.isSuccess
+                    UnityLoggingBridge.log(TAG, "Denied Consent Status: $success", LogLevel.VERBOSE)
+                    result.onResult(success)
                 }
             }
         }
 
         @JvmStatic
-        fun resetConsentStatus(resultBoolean: ResultBoolean){
+        fun resetConsentStatus(result: ResultBoolean){
             CoroutineScope(Dispatchers.Main).launch {
                 UnityPlayer.currentActivity.let {
-                    val result = ChartboostCore.consent.resetConsent(it)
-                    resultBoolean.onResult(result.isSuccess)
+                    val resetConsentResult = ChartboostCore.consent.resetConsent(it)
+                    val success = resetConsentResult.isSuccess
+                    UnityLoggingBridge.log(TAG, "Reset Consent Status: $success", LogLevel.VERBOSE)
+                    result.onResult(success)
                 }
             }
         }
@@ -49,11 +60,12 @@ class BridgeCMP {
         {
             CoroutineScope(Dispatchers.Main).launch {
                 UnityPlayer.currentActivity.let {
-                    val result = ChartboostCore.consent.showConsentDialog(it, dialogType)
-                    resultBoolean.onResult(result.isSuccess)
+                    val showConsentDialogResult = ChartboostCore.consent.showConsentDialog(it, dialogType)
+                    val success = showConsentDialogResult.isSuccess
+                    UnityLoggingBridge.log(TAG, "Showed Consent Dialog: $success", LogLevel.VERBOSE)
+                    resultBoolean.onResult(success)
                 }
             }
         }
-
     }
 }

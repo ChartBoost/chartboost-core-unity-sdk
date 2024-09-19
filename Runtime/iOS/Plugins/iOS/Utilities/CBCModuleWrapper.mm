@@ -1,6 +1,8 @@
 #import "CBCModuleWrapper.h"
 #import "CBCUnityObserver.h"
 
+NSString* const CBCModuleWrapperTAG = @"CBCModuleWrapper";
+
 @implementation CBCModuleWrapper
 
 - (instancetype)initWithModuleID:(NSString * _Nonnull)moduleID
@@ -21,8 +23,11 @@
 
 - (void)initializeWithConfiguration:(CBCModuleConfiguration * _Nonnull)configuration completion:(void (^ _Nonnull)(NSError * _Nullable))completion {
     _completer = ^(NSError * error){
+        [[CBLUnityLoggingBridge sharedLogger] logWithTag:CBCModuleWrapperTAG log:@"Wrapped module initialization result obtained" logLevel:CBLLogLevelVerbose];
         completion(error);
     };
+
+    [[CBLUnityLoggingBridge sharedLogger] logWithTag:CBCModuleWrapperTAG log:[NSString stringWithFormat:@"Wrapped module: %@ attempting initialization", _moduleID] logLevel:CBLLogLevelVerbose];
     _initializeCallback(toCStringOrNull(_moduleID), toCStringOrNull([configuration  chartboostAppID]));
 }
 
