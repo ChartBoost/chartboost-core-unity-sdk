@@ -34,7 +34,7 @@ namespace Chartboost.Core
         /// <summary>
         /// The version of the Unity Core SDK.
         /// </summary>
-        public const string Version = "1.0.0";
+        public const string Version = "1.0.3";
 
         /// <summary>
         /// The native Chartboost Core SDK version.
@@ -83,9 +83,9 @@ namespace Chartboost.Core
         /// </summary>
         public static IAttributionEnvironment AttributionEnvironment => Instance.AttributionEnvironment;
 
+        /// <summary>
         /// Initializes the Chartboost Core SDK and its modules.
         ///
-        /// <br/>
         /// As part of initialization Core will:
         /// <br/>
         /// - Fetch an app config from the Chartboost Core dashboard with all the info needed for Core and its
@@ -101,7 +101,7 @@ namespace Chartboost.Core
         /// - Set a module that conforms to ``ConsentAdapter`` as the backing CMP for <see cref="ChartboostCore.Consent"/>,
         /// and thus enabling CMP functionalities.
         /// <br/>
-        ///
+        /// </summary>
         /// <param name="sdkConfiguration">Initialization configuration parameters.</param>
         public static void Initialize(SDKConfiguration sdkConfiguration) => Instance.Initialize(sdkConfiguration);
 

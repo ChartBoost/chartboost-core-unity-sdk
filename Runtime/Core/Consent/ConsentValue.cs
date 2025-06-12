@@ -1,13 +1,14 @@
+using System;
 using System.ComponentModel;
-using Chartboost.Core.Utilities;
+using Chartboost.Generics;
 
 namespace Chartboost.Core.Consent
 {
     /// <summary>
-    /// A model representing a consent value for a specific standard, like IAB’s TCF or USP strings. It is used by <see cref="IConsentManagementPlatform"/>> to provide detailed consent status.
+    /// A model representing a consent value for a specific standard, like IAB’s TCF or USP strings. It is used by <see cref="IConsentManagementPlatform"/> to provide detailed consent status.
     /// </summary>
     [TypeConverter(typeof(StringTypeConverter<ConsentValue>))]
-    public class ConsentValue : StronglyTyped<string>
+    public class ConsentValue : StronglyTyped<string>, IComparable<ConsentValue>, IComparable<string>
     {
         /// <summary>
         /// Indicates the user granted consent.
@@ -33,5 +34,8 @@ namespace Chartboost.Core.Consent
         {
             return new ConsentValue(obj);
         }
+        
+        public int CompareTo(ConsentValue other) => other == null ? 1 : string.Compare(Value, other.Value, StringComparison.Ordinal);
+        public int CompareTo(string other) => other == null ? 1 : string.Compare(Value, other, StringComparison.Ordinal);
     }
 }

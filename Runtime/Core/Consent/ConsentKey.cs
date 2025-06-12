@@ -1,13 +1,14 @@
+using System;
 using System.ComponentModel;
-using Chartboost.Core.Utilities;
+using Chartboost.Generics;
 
 namespace Chartboost.Core.Consent
 {
     /// <summary>
-    /// A model representing a user consent standard, like IAB’s TCF or USP strings. It is used by <see cref="IConsentManagementPlatform"/>> to provide detailed consent status.
+    /// A model representing a user consent standard, like IAB’s TCF or USP strings. It is used by <see cref="IConsentManagementPlatform"/> to provide detailed consent status.
     /// </summary>
     [TypeConverter(typeof(StringTypeConverter<ConsentKey>))]
-    public class ConsentKey : StronglyTyped<string>
+    public class ConsentKey : StronglyTyped<string>, IComparable<ConsentKey>, IComparable<string>
     {
         /// <summary>
         /// GDPR opt-in standard. Possible values are:
@@ -49,5 +50,8 @@ namespace Chartboost.Core.Consent
         {
             return new ConsentKey(obj);
         }
+        
+        public int CompareTo(ConsentKey other) => other == null ? 1 : string.Compare(Value, other.Value, StringComparison.Ordinal);
+        public int CompareTo(string other) => other == null ? 1 : string.Compare(Value, other, StringComparison.Ordinal);
     }
 }

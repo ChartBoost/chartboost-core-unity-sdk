@@ -41,10 +41,26 @@ namespace Chartboost.Core.Initialization
         protected abstract string DefaultModuleId { get; }
         protected abstract string DefaultModuleVersion { get; }
 
-        public override string ModuleId 
-            => Instance?.ModuleId ?? DefaultModuleId;
-        public override string ModuleVersion 
-            => Instance?.ModuleVersion ?? DefaultModuleVersion;
+        public override string ModuleId
+        {
+            get
+            {
+                if (Instance != null && !string.IsNullOrEmpty(Instance?.ModuleId))
+                    return Instance?.ModuleId;
+                
+                return DefaultModuleId;
+            }
+        }
+
+        public override string ModuleVersion
+        {
+            get
+            {
+                if (Instance != null && !string.IsNullOrEmpty(Instance?.ModuleVersion))
+                    return Instance?.ModuleVersion;
+                return DefaultModuleVersion;
+            }
+        }
 
         protected override Task<ChartboostCoreError?> Initialize(ModuleConfiguration configuration)
         {
