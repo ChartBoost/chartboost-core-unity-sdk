@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file using the standards as defined at [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0).
 
+### Version 1.0.3 *(2025-06-11)*
+Bug Fixes:
+- Fix support for consent adapters in Unity Editor.
+- Fix `StronglyTyped` definitions to conform to `IComparable` interface.
+- Fix unit tests to properly validate Unity Core version.
+
 ### Version 1.0.2 *(2024-09-19)*
 Improvements:
 - Modified `NativeModule` internal class to expand API flexibility of wrapped native modules.

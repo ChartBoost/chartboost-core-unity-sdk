@@ -29,7 +29,7 @@ In order to add the Chartboost Core Unity SDK to your project using the npm pack
 
 ```json
 "dependencies": {
-    "com.chartboost.core": "1.0.1",
+    "com.chartboost.core": "1.0.3",
     ...
 },
 "scopedRegistries": [

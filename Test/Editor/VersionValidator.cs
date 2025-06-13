@@ -7,9 +7,9 @@ namespace Chartboost.Core.Tests.Editor
     {
         private const string UnityPackageManagerPackageName = "com.chartboost.core";
         private const string NuGetPackageName = "Chartboost.CSharp.Core.Unity";
-        
+
         [Test]
         public void ValidateVersion() 
-            => VersionCheck.ValidateVersions(UnityPackageManagerPackageName, NuGetPackageName);
+            => VersionCheck.ValidateVersions(UnityPackageManagerPackageName, NuGetPackageName, ChartboostCore.Version);
     }
 }
