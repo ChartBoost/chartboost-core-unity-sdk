@@ -2,7 +2,7 @@
 <dependencies>
     <androidPackages>
         <!-- Chartboost Core Dependency -->
-        <androidPackage spec="com.chartboost:chartboost-core-sdk:1.0.+"/>
+        <androidPackage spec="com.chartboost:chartboost-core-sdk:1.1.+"/>
         <androidPackage spec="org.jetbrains.kotlin:kotlin-reflect:1.8.10"/>
         <repositories>
             <repository>https://cboost.jfrog.io/artifactory/chartboost-core/</repository>
@@ -10,7 +10,7 @@
     </androidPackages>
     <iosPods>
         <!-- Chartboost Mediation SDK Private Podspec Repo -->
-        <iosPod name="ChartboostCoreSDK" version="~> 1.0.0">
+        <iosPod name="ChartboostCoreSDK" version="~> 1.1.0">
             <sources>
                 <source>https://github.com/CocoaPods/Specs</source>
             </sources>

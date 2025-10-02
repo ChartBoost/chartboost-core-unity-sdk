@@ -34,7 +34,7 @@ namespace Chartboost.Core
         /// <summary>
         /// The version of the Unity Core SDK.
         /// </summary>
-        public const string Version = "1.0.3";
+        public const string Version = "1.1.0";
 
         /// <summary>
         /// The native Chartboost Core SDK version.
