@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file using the standards as defined at [Keep a Changelog](https://keepachangelog.com/en/1.0.0/). This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0).
 
+### Version 1.1.0 *(2025-10-02)*
+This version of the Chartboost Core Unity SDK supports the following native SDK dependencies:
+  * Android: `com.chartboost:chartboost-core-sdk:1.1.+`
+  * iOS: `ChartboostCoreSDK: ~> 1.1.0`
+
 ### Version 1.0.3 *(2025-06-11)*
 Bug Fixes:
 - Fix support for consent adapters in Unity Editor.
